@@ -12,7 +12,7 @@ target_sources(cmsis
 
 target_sources(cmsis
     PRIVATE
-        GD/GD32W51X/SOURCE/GCC/startup_gd32w51x.s
+        GD/GD32W51x/Source/GCC/startup_gd32w51x.s
 )
 
 target_sources(cmsis
