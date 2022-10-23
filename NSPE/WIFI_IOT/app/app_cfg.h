@@ -39,7 +39,7 @@ OF SUCH DAMAGE.
 #define CONFIG_CONSOLE_ENABLE
 #ifdef CONFIG_CONSOLE_ENABLE
 // #define CONFIG_INTERNAL_DEBUG
-// #define CONFIG_MP_SUPPORT
+// #define CONFIG_RF_TEST_SUPPORT
 #define CONFIG_BASECMD
 //#define CONFIG_ATCMD
 #endif
@@ -50,6 +50,8 @@ OF SUCH DAMAGE.
 
 #define CONFIG_JOIN_GROUP_SUPPORT
 
+// #define CONFIG_SOFTAP_CALLBACK_ENABLED
+
 // #define CONFIG_TELNET_SERVER
 // #define CONFIG_WIFI_HIGH_PERFORMANCE
 
@@ -59,6 +61,8 @@ OF SUCH DAMAGE.
 // #define CONFIG_GAGENT_TEST
 
 // #define CONFIG_FATFS_SUPPORT
+
+// #define CONFIG_IPV6_SUPPORT
 
 #define USE_MBL_API
 
@@ -73,11 +77,6 @@ OF SUCH DAMAGE.
 #define WIFI_ROAMING_TASK_STK_SIZE             256
 #define WIFI_ROAMING_TASK_PRIO                 TASK_PRIO_APP_BASE
 #define WIFI_ROAMING_QUEUE_SIZE                4
-
-#ifdef CONFIG_MP_SUPPORT
-#define PACKET_TX_TASK_STK_SIZE                512
-#define PACKET_TX_TASK_PRIO                    TASK_PRIO_APP_BASE
-#endif
 
 #define TCP_TEST_STACK_SIZE                    256  // 128
 #define TCP_TEST_SERVER_PRIO                   TASK_PRIO_APP_BASE

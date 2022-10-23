@@ -45,19 +45,25 @@ OF SUCH DAMAGE.
 /* QSPI FLASH COMMANDs */
 #define WRITE_ENABLE_CMD            0x06
 #define WRITE_DISABLE_CMD           0x04
+#define READ_DATA_BYTE_CMD          0x03
 #define READ_STATUS_REG1_CMD        0x05
 #define WRITE_STATUS_REG1_CMD       0x01
 #define READ_STATUS_REG_CMD         0x35
 #define WRITE_STATUS_REG_CMD        0x31
+#define DUAL_IO_FAST_READ_CMD       0xBB
+#define PAGE_PROG_CMD               0x02
 #define QUAD_IN_FAST_PROG_CMD       0x32
 #define QUAD_OUT_FAST_READ_CMD      0x6B
+#define QUAD_IO_FAST_READ_CMD       0xEB
 #define SECTOR_ERASE_CMD            0x20    // 0xD8
 #define HIGH_PERFORMANCE_CMD        0xA3
 #define CHIP_ERASE_CMD              0xC7
+#define CHIP_READ_ID_CMD            0x9F
 
 /* QSPI FLASH APIs */
 void qspi_flash_config(uint32_t clock_prescaler);
 int32_t qspi_flash_sector_erase(uint32_t address);
+int32_t qspi_flash_read_id(void *id);
 int32_t qspi_flash_read(uint32_t address, void *data, uint32_t size);
 int32_t qspi_flash_page_program(uint32_t address, const uint8_t *data, uint32_t size);
 

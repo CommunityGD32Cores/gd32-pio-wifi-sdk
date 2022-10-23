@@ -67,8 +67,8 @@ OF SUCH DAMAGE.
 #include "alicloud_entry.h"
 #endif
 #if defined(CONFIG_CONSOLE_ENABLE)
-#ifdef CONFIG_MP_SUPPORT
-#include "cmd_wifi_mp.c"
+#ifdef CONFIG_RF_TEST_SUPPORT
+#include "cmd_rf_test.h"
 #endif
 #ifdef CONFIG_INTERNAL_DEBUG
 #include "cmd_inner_wifi.c"
@@ -456,6 +456,14 @@ static void cmd_wifi_status(int argc, char **argv)
     DEBUGPRINT("\rMAC:         [%02x:%02x:%02x:%02x:%02x:%02x]\r\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
     DEBUGPRINT("\rIP:          [%d.%d.%d.%d]\r\n", ip[0], ip[1], ip[2], ip[3]);
     DEBUGPRINT("\rGW:          [%d.%d.%d.%d]\r\n", gw[0], gw[1], gw[2], gw[3]);
+#ifdef CONFIG_IPV6_SUPPORT
+    if (!p_wifi_netlink->ap_started) {
+        ip6_addr_t *ip6_local = (ip6_addr_t *)wifi_netif_get_ip6(0);
+        ip6_addr_t *ip6_uniqe = (ip6_addr_t *)wifi_netif_get_ip6(1);
+        DEBUGPRINT("\rIP6_local:   [%s]\r\n", ip6addr_ntoa(ip6_local));
+        DEBUGPRINT("\rIP6_uniqe:   [%s]\r\n", ip6addr_ntoa(ip6_uniqe));
+    }
+#endif
 }
 
 /*!
@@ -965,6 +973,109 @@ void cmd_fatfs (int argc, char **argv)
 }
 #endif
 
+/*!
+    \brief      set bw to support 20MHz only or 20/40MHz
+    \param[in]  argc: number of parameters
+    \param[in]  argv: the pointer to the array that holds the parameters
+    \param[out] none
+    \retval     none
+*/
+static void cmd_bw_set(int argc, char **argv)
+{
+    char *endptr = NULL;
+    uint32_t cmd_bw = CHANNEL_WIDTH_20, cur_bw = 0, connected_bw = 0;
+    int status = 0;
+
+    if (!p_wifi_netlink->device_opened) {
+        DEBUGPRINT("wifi device is closed! please use 'wifi_open' to open device\r\n");
+        return;
+    }
+
+    if (argc >= 3) {
+        DEBUGPRINT("wifi_set_bw: command format error!\r\n");
+        goto Usage;
+    }
+
+    // get current supported bw
+    status = wifi_netlink_bw_get(&cur_bw);
+    if (status != 0) {
+        DEBUGPRINT("ERROR: get current supported bandwidth failed\r\n");
+        goto Usage;
+    }
+
+    if(argc == 2) {
+        cmd_bw = (uint32_t)strtoul((const char *)argv[1], &endptr, 10);
+        if (*endptr != '\0' || (cmd_bw != CHANNEL_WIDTH_20 && cmd_bw != CHANNEL_WIDTH_40)) {
+            DEBUGPRINT("wifi_set_bw: invalid bandwidth\r\n");
+            goto Usage;
+        }
+
+        if (cmd_bw == cur_bw) {
+            DEBUGPRINT("No need to modify the supported bandwidth.\r\n");
+            return;
+        }
+
+        if (wifi_netlink_link_state_get() >= WIFI_NETLINK_STATUS_LINKED) {
+            connected_bw = p_wifi_netlink->connected_ap_info.bw;
+            if ((cmd_bw == connected_bw) && (connected_bw != cur_bw)) {
+                status = wifi_netlink_bw_set(cmd_bw);
+                if (status != 0)
+                    DEBUGPRINT("ERROR: wifi_set_bw failed\r\n");
+                return;
+            }
+
+            // reconnect
+            wifi_management_disconnect();
+            status = wifi_netlink_bw_set(cmd_bw);
+            if (status != 0) {
+                DEBUGPRINT("ERROR: wifi_set_bw failed\r\n");
+                return;
+            }
+            if (WIFI_ENCRYPT_PROTOCOL_OPENSYS == p_wifi_netlink->connect_info.encryp_protocol) {
+                status = wifi_management_connect(p_wifi_netlink->connect_info.ssid.ssid,
+                                            NULL, FALSE);
+            } else {
+                status = wifi_management_connect(p_wifi_netlink->connect_info.ssid.ssid,
+                                            p_wifi_netlink->connect_info.passwd, FALSE);
+            }
+            if (status != 0)
+                DEBUGPRINT("start wifi_connect failed\r\n");
+        } else {
+            status = wifi_netlink_bw_set(cmd_bw);
+            if (status != 0)
+                DEBUGPRINT("ERROR: wifi_set_bw failed\r\n");
+        }
+        return;
+    } else {
+        switch (cur_bw) {
+        case CHANNEL_WIDTH_20:
+            DEBUGPRINT("\rBW:          20M\r\n");
+            break;
+        case CHANNEL_WIDTH_40:
+            DEBUGPRINT("\rBW:          40M\r\n");
+            break;
+        case CHANNEL_WIDTH_80:
+            DEBUGPRINT("\rBW:          80M\r\n");
+            break;
+        case CHANNEL_WIDTH_160:
+            DEBUGPRINT("\rBW:          160M\r\n");
+            break;
+        case CHANNEL_WIDTH_80_80:
+            DEBUGPRINT("\rBW:          80+80M\r\n");
+            break;
+        default:
+            DEBUGPRINT("\rBW:          UnKnown\r\n");
+            break;
+        }
+    }
+
+Usage:
+    DEBUGPRINT("\rUsage:\r\n");
+    DEBUGPRINT("    wifi_set_bw [0/1]\r\n");
+    DEBUGPRINT("    0 #      support 20MHz only\r\n");
+    DEBUGPRINT("    1 #      support 20/40MHz\r\n");
+}
+
 static const cmd_entry cmd_table[] = {
 #ifdef CONFIG_BASECMD
     {"wifi_open", cmd_wifi_open},
@@ -1007,6 +1118,7 @@ static const cmd_entry cmd_table[] = {
 #ifdef CONFIG_FATFS_SUPPORT
    {"fatfs", cmd_fatfs},
 #endif
+    {"wifi_set_bw", cmd_bw_set},
 #endif
     {"reboot", cmd_reboot},
     {"help", cmd_help}
@@ -1029,7 +1141,7 @@ static void cmd_help(int argc, char **argv)
     for (i = 0; i < ARRAY_SIZE(cmd_table); i++)
         DEBUGPRINT("    %s\r\n", cmd_table[i].command);
 
-#ifdef CONFIG_MP_SUPPORT
+#ifdef CONFIG_RF_TEST_SUPPORT
     mp_cmd_help();
 #endif
 #ifdef CONFIG_INTERNAL_DEBUG
@@ -1132,7 +1244,7 @@ void command_handler(void)
                         break;
                     }
                 }
-#ifdef CONFIG_MP_SUPPORT
+#ifdef CONFIG_RF_TEST_SUPPORT
                 if (!found) {
                     found = mp_cmd_handler(argc, argv);
                 }

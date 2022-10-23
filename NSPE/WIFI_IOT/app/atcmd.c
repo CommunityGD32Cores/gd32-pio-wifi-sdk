@@ -40,6 +40,7 @@ OF SUCH DAMAGE.
 #include "bsp_inc.h"
 #include "ping/ping.h"
 #include "lwip/sockets.h"
+#include "nspe_region.h"
 #if defined(CONFIG_TZ_ENABLED)
 #include "rom_export.h"
 #include "mbl_nsc_api.h"
@@ -277,8 +278,8 @@ static void at_reset(int argc, char **argv)
 static void at_version(int argc, char **argv)
 {
     AT_RSP("==================================\r\n");
-    AT_RSP("SDK version: "WIFI_RELEASE_VERSION" \r\n");
-    AT_RSP("SDK build revision: "WIFI_BUILD_REVISION" \r\n");
+    AT_RSP("SDK git revision: "WIFI_GIT_REVISION" \r\n");
+    AT_RSP("SDK version: V%d.%d.%d\r\n", (RE_NSPE_VERSION >> 24), ((RE_NSPE_VERSION & 0xFF0000) >> 16), (RE_NSPE_VERSION & 0xFFFF));
     AT_RSP("SDK build date: "BUILD_DATE" \r\n");
     at_rsp_ok();
 }

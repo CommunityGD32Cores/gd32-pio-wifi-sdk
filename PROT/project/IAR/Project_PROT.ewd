@@ -56,11 +56,11 @@
                 </option>
                 <option>
                     <name>CExtraOptionsCheck</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CExtraOptions</name>
-                    <state></state>
+                    <state>--drv_vector_table_base=0x0FF84000</state>
                 </option>
                 <option>
                     <name>CFpuProcessor</name>

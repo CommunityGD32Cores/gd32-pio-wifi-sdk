@@ -459,3 +459,8 @@ uint32_t rf_efuse_reg_read(void)
 {
     return *((volatile uint32_t *)RF_THERMAL_REG);
 }
+
+uint32_t rf_efuse_type_reg_read(void)
+{
+    return *((volatile uint32_t *)TYPE_REG);
+}

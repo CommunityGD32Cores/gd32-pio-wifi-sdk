@@ -11,7 +11,6 @@ if (APP_ALI_CLOUD)
 endif()
 
 if (APP_IPERF)
-    MESSAGE("Support iperf test")
     SET(CONFIG_IPERF_TEST ON)
 endif()
 

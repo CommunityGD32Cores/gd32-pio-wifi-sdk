@@ -32,6 +32,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
+#include "platform_def.h"
+
+// #define CONFIG_IMAGE_VERIFICATION
+
 /* REGION DEFINE */
 #define RE_FLASH_BASE_S       0x08000000      /* !Keep unchanged! */
 #define RE_FLASH_BASE_NS      0x08000000      /* !Keep unchanged! */
@@ -40,11 +44,18 @@ OF SUCH DAMAGE.
 
 /* SRAM LAYOUT */
 #define RE_MBL_DATA_START     0x200           /* !Keep unchanged! */
-#define RE_NSPE_DATA_START    0x200           /* !For SIP flash!  */
-// #define RE_NSPE_DATA_START    0x1500          /* !For QSPI flash! Flash code must run in the SRAM */
+#if (CONFIG_XIP_FLASH == XIP_FLASH_SIP)
+    #define RE_NSPE_DATA_START    0x200           /* !For SIP flash!  */
+#elif (CONFIG_XIP_FLASH == XIP_FLASH_EXT)
+    #define RE_NSPE_DATA_START    0x1500          /* !For QSPI flash! Flash code must run in the SRAM */
+#endif
 
 /* FLASH LAYEROUT */
-#define RE_VTOR_ALIGNMENT     0x200           /* !Keep unchanged! */
+#ifdef CONFIG_IMAGE_VERIFICATION
+    #define RE_VTOR_ALIGNMENT     0x200           /* !Keep unchanged! */
+#else
+    #define RE_VTOR_ALIGNMENT     0           /* !Keep unchanged! */
+#endif
 #define RE_MBL_OFFSET         0x0             /* !Keep unchanged! */
 #define RE_SYS_STATUS_OFFSET  0x8000          /* !Keep unchanged! */
 #define RE_IMG_0_PROT_OFFSET  0xA000          /* Consistent with the codes when TZEN is 1 */
@@ -54,5 +65,5 @@ OF SUCH DAMAGE.
 #define RE_IMG_1_END_OFFSET   0x200000
 
 /* FW_VERSION */
-#define RE_MBL_VERSION        0x01000000
-#define RE_NSPE_VERSION       0x01000000
+#define RE_MBL_VERSION        0x01000002
+#define RE_NSPE_VERSION       0x01000002

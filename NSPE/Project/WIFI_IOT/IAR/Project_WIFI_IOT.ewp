@@ -44,7 +44,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -724,7 +724,7 @@
             <archiveVersion>1</archiveVersion>
             <data>
                 <prebuild>$PROJ_DIR$\nspe_prebuild.bat NTZ $PROJ_DIR$ "$TOOLKIT_DIR$"</prebuild>
-                <postbuild>$PROJ_DIR$\..\nspe_afterbuild.bat NTZ SIP "" DAPLINK $TARGET_DIR$ IAR "$TOOLKIT_DIR$"</postbuild>
+                <postbuild>$PROJ_DIR$\..\nspe_afterbuild.bat $TARGET_DIR$ IAR "$TOOLKIT_DIR$"</postbuild>
             </data>
         </settings>
         <settings>

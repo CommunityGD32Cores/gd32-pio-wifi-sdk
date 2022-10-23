@@ -44,6 +44,7 @@ OF SUCH DAMAGE.
 #include "console.h"
 #include "main.h"
 #include "wifi_version.h"
+#include "nspe_region.h"
 #ifdef CONFIG_FATFS_SUPPORT
 #include "fatfs.h"
 #endif
@@ -122,8 +123,8 @@ int main(void)
 {
     platform_init();
 
-    DEBUGPRINT("SDK version: "WIFI_RELEASE_VERSION" \r\n");
-    DEBUGPRINT("SDK build revision: "WIFI_BUILD_REVISION" \r\n");
+    DEBUGPRINT("SDK git revision: "WIFI_GIT_REVISION" \r\n");
+    DEBUGPRINT("SDK version: V%d.%d.%d\r\n", (RE_NSPE_VERSION >> 24), ((RE_NSPE_VERSION & 0xFF0000) >> 16), (RE_NSPE_VERSION & 0xFFFF));
     DEBUGPRINT("SDK build date: "BUILD_DATE" \r\n");
 
     sys_os_init();

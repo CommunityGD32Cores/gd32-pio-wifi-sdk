@@ -76,7 +76,11 @@ OF SUCH DAMAGE.
 #define MAX_VER_MINOR             254  // 16
 
 /* Image header size */
+#ifdef CONFIG_IMAGE_VERIFICATION
 #define IMAGE_HEADER_SIZE         sizeof(struct image_header)
+#else
+#define IMAGE_HEADER_SIZE         0
+#endif
 
 /** Image header.  All fields are in little endian byte order. Total 32 bytes. */
 struct image_header {

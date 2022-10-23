@@ -62,6 +62,6 @@ target_link_options(${TARGET_EXE}
 )
 
 add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
-    COMMAND ${TAGET_PROJECT_DIR}/mbl_afterbuild_ns.bat SIP \"\" JLINK ${TAGET_PROJECT_DIR}/GCC/output/bin ${TARGET_EXE} GCC \"\"
+    COMMAND ${TAGET_PROJECT_DIR}/mbl_afterbuild.bat ${TAGET_PROJECT_DIR}/GCC/output/bin ${TARGET_EXE} GCC \"\"
     COMMENT "Building ${TARGET_EXE}"
 )

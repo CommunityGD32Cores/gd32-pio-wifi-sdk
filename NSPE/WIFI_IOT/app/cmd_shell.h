@@ -63,10 +63,6 @@ extern const uint32_t MISC_CMD_TABLE_SZ;
 /*============================ PROTOTYPES ====================================*/
 void command_handler(void);
 
-#ifdef CONFIG_MP_SUPPORT
-void mp_mode_config(void);
-#endif
-
 #ifdef CONFIG_TELNET_SERVER
 void cmd_telnet_server(int argc, char **argv);
 #endif

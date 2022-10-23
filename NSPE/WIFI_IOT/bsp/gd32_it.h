@@ -60,6 +60,9 @@ void WLAN_WKUP_IRQHandler(void);
 
 void USART0_IRQHandler(void);
 void USART1_IRQHandler(void);
+void USART2_IRQHandler(void);
+void EXTI5_9_IRQHandler(void);
+void EXTI10_15_IRQHandler(void);
 void DMA1_Channel0_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
 

@@ -16,6 +16,8 @@ struct udp_pcb *UdpPcb = NULL;
 int    pass_wan_domain = 0;
 #define DHCP_SERVER_PORT  67
 
+extern void wifi_netlink_indicate_softap_sta_add(uint8_t *mac_addr, uint32_t ip_addr);
+
 //pickup what i want according to "code" in the packet, "dest" callback
 unsigned char *dhcpd_pickup_opt(struct dhcpd *packet, int code, int dest_len, void *dest)
 {
@@ -182,6 +184,17 @@ struct dhcpOfferedAddr *DHCPD_FindLeaseByChaddr(uint8_t *chaddr)
     return NULL;
 }
 
+uint32_t softap_find_ipaddr_by_macaddr(uint8_t *mac_addr)
+{
+   struct dhcpOfferedAddr *dhcp_offered_addr = NULL;
+   dhcp_offered_addr = DHCPD_FindLeaseByChaddr(mac_addr);
+   if (dhcp_offered_addr) {
+       return dhcp_offered_addr->yiaddr.s_addr;
+   } else {
+       return 0;
+   }
+}
+
 void make_dhcpd_packet(struct dhcpd *packet, struct dhcpd *oldpacket, char type)
 {
     uint32_t lease_time = server_config.lease;
@@ -285,6 +298,7 @@ static int request(struct dhcpd *packetinfo)
             (uint32_t)((payload_out.yiaddr >> 16) & 0xFF), (uint32_t)(payload_out.yiaddr >> 24),
             packetinfo->chaddr[0], packetinfo->chaddr[1], packetinfo->chaddr[2],
             packetinfo->chaddr[3], packetinfo->chaddr[4], packetinfo->chaddr[5]);
+        wifi_netlink_indicate_softap_sta_add(packetinfo->chaddr, payload_out.yiaddr);
     }
     else
     {
@@ -496,7 +510,15 @@ void UDP_Receive(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_
 {
     ip_addr_t destAddr;
     struct pbuf *q;
+
+#if LWIP_IPV6
+    if (addr->type == IPADDR_TYPE_V6)
+        destAddr.u_addr.ip6.addr[0] = 0xff;
+    else
+        destAddr.u_addr.ip4.addr = htonl(IPADDR_BROADCAST);
+#else
     destAddr.addr = htonl(IPADDR_BROADCAST);
+#endif
     if (p!=NULL) {
         LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("[DHCPD]: UDP_Receive ....\r\n"));
         if (dhcp_process(p->payload) != 0) {

@@ -34,6 +34,7 @@ OF SUCH DAMAGE.
 
 #include "gd32w51x.h"
 #include "mbl_qspi_flash.h"
+#include "platform_def.h"
 
 /*!
     \brief      configure qspi flash gpio
@@ -78,7 +79,6 @@ static void qspi_flash_write_enable(void)
     sCommand.dummycycles         = 0;
     sCommand.datamode            = QSPI_DATA_NONE;
     sCommand.nbdata              = 0;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
 
     qspi_command(&sCommand);
@@ -120,7 +120,6 @@ static void qspi_flash_autopolling_ready(void)
     sCommand.dummycycles         = 0;
     sCommand.datamode            = QSPI_DATA_1_LINE;
     sCommand.nbdata              = 0;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
 
     sConfig.match                = 0x00;
@@ -133,6 +132,141 @@ static void qspi_flash_autopolling_ready(void)
     qspi_autopolling(&sCommand, &sConfig);
 }
 
+static void qspi_tcfg_fmc_set(void)
+{
+    qspi_command_struct sCommand;
+
+#if ( QSPI_FLASH_MODE == QSPI_FLASH_4_LINES )
+    sCommand.instructionmode     = TCFGF_IMODF(0x1);                            // 1 line
+    sCommand.instruction         = TCFGF_INSTRUCTIONF(QUAD_IO_FAST_READ_CMD);   // 0xeb
+    sCommand.addressmode         = TCFGF_ADDRMODF(0x3);                         // 4 lines
+    sCommand.addresssize         = TCFGF_ADDRSZF(0x2);                          // 24 bits address
+    sCommand.address             = 0;
+    sCommand.alternatebytemode   = TCFGF_ALTEMODF(0x3);                         // 4 lines
+    sCommand.alternatebytessize  = TCFGF_ALTESZF(0);                            // 8 bits
+    sCommand.alternatebytes      = 0;
+    sCommand.dummycycles         = TCFGF_DUMYCF(0x4);                           // 4 dummy cycles
+    sCommand.datamode            = TCFGF_DATAMODF(0x3);                         // 4 lines
+    sCommand.nbdata              = 0;
+    sCommand.sioomode            = TCFGF_SIOOF(0);
+#elif ( QSPI_FLASH_MODE == QSPI_FLASH_2_LINES )
+    sCommand.instructionmode     = TCFGF_IMODF(0x1);                            // 1 line
+    sCommand.instruction         = TCFGF_INSTRUCTIONF(DUAL_IO_FAST_READ_CMD);   // 0xBB
+    sCommand.addressmode         = TCFGF_ADDRMODF(0x2);                         // 2 lines
+    sCommand.addresssize         = TCFGF_ADDRSZF(0x2);                          // 24 bits address
+    sCommand.address             = 0;
+    sCommand.alternatebytemode   = TCFGF_ALTEMODF(0x2);                         // 2 lines
+    sCommand.alternatebytessize  = TCFGF_ALTESZF(0);                            // 8 bits
+    sCommand.alternatebytes      = 0;
+    /*
+        according to GD25Q16C datasheet, there are 4 alternate bits and 2 dummy cycles for 0xBB cmd,
+        but GD32W51x QSPI mode has alternate bits's limit to 8bits, so set sCommand.alternatebytessize
+        to 8, so alternate data[3:0]'s transfer costs 2 cycles on two lines transfer, so set
+        sCommand.dummycycles to 0(which not means there is no dummy cycles)
+    */
+    sCommand.dummycycles         = TCFGF_DUMYCF(0);                             // 0 dummy cycles
+    sCommand.datamode            = TCFGF_DATAMODF(0x2);                         // 2 lines
+    sCommand.nbdata              = 0;
+    sCommand.sioomode            = TCFGF_SIOOF(0);
+#elif ( QSPI_FLASH_MODE == QSPI_FLASH_1_LINE )
+    sCommand.instructionmode     = TCFGF_IMODF(0x1);                            // 1 line
+    sCommand.instruction         = TCFGF_INSTRUCTIONF(READ_DATA_BYTE_CMD);      // 0x03
+    sCommand.addressmode         = TCFGF_ADDRMODF(0x1);                         // 1 line
+    sCommand.addresssize         = TCFGF_ADDRSZF(0x2);                          // 24 bits address
+    sCommand.address             = 0;
+    sCommand.alternatebytemode   = TCFGF_ALTEMODF(0);                           // no alternate byte
+    sCommand.alternatebytessize  = TCFGF_ALTESZF(0);                            // 8 bits
+    sCommand.alternatebytes      = 0;
+    sCommand.dummycycles         = TCFGF_DUMYCF(0);                             // 0 dummy cycles
+    sCommand.datamode            = TCFGF_DATAMODF(0x1);                         // 1 line
+    sCommand.nbdata              = 0;
+    sCommand.sioomode            = TCFGF_SIOOF(0);
+#endif
+
+    while((QSPI_CTL & QSPI_FLAG_BUSY) != 0U){
+    }
+    QSPI_TCFGF = sCommand.instructionmode | sCommand.instruction | sCommand.addressmode | \
+           sCommand.addresssize | sCommand.address | sCommand.alternatebytemode | sCommand.alternatebytes | \
+           sCommand.dummycycles | sCommand.datamode | sCommand.nbdata | sCommand.sioomode;
+}
+
+/*!
+    \brief      configure qspi flash to quad mode
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+static void qspi_flash_quad_enable_set(void)
+{
+    uint32_t id = 0;
+    uint8_t mode_s = 0;
+    uint16_t mode = 0;
+    qspi_command_struct sCommand;
+
+    qspi_flash_read_id(&id);
+
+    qspi_flash_write_enable();
+
+    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
+    sCommand.instruction         = 0;
+    sCommand.addressmode         = QSPI_ADDRESS_NONE;
+    sCommand.addresssize         = QSPI_ADDRESS_24_BITS;
+    sCommand.address             = 0;
+    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
+    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_8_BITS;
+    sCommand.alternatebytes      = 0;
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_1_LINE;
+    sCommand.nbdata              = 1;
+    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+
+    sCommand.instruction         = READ_STATUS_REG1_CMD;
+    qspi_command(&sCommand);
+    qspi_receive(&mode_s);
+
+    mode |= (uint16_t)mode_s;
+
+    sCommand.instruction         = READ_STATUS_REG_CMD;
+    qspi_command(&sCommand);
+    qspi_receive(&mode_s);
+
+    mode |= (uint16_t)mode_s << 8;
+
+    if (mode & 0x0200) {
+        /* quad mode, do nothing */
+    } else {
+        switch ((id & 0x00ff0000) >> 16) {
+        case 0x16:                                       //GD32Q32
+        case 0x17:                                       //GD32Q64
+        case 0x18:                                       //GD32Q128
+            mode = mode >> 8;
+            mode |= 0x02;
+            sCommand.instruction = WRITE_STATUS_REG_CMD;//write flash status[s15-s8]
+            qspi_command(&sCommand);
+            qspi_transmit((uint8_t *)&mode);
+            break;
+        case 0x14:                                       //GD32Q80
+        case 0x15:                                       //GD32Q16
+        case 0x19:                                       //GD32Q256
+            /* To fully support GD32Q256, user has to set bit8(ADS) of Status Registers
+                to enable 4-bytes Address Mode, which enabled by cmd 0xB7(the Enter 4-Byte
+                Address Mode command enables accessing the address length of 32-bit for
+                the memory area of higher density (larger than 128Mb), The device default
+                is in 24-bit address mode); and then change all qspi related operations's
+                address size from QSPI_ADDRESS_24_BITS to QSPI_ADDRESS_32_BITS. */
+        default:
+            mode |= (0x0200);
+            sCommand.instruction = WRITE_STATUS_REG1_CMD;//write flash status[s15-s0]
+            sCommand.nbdata      = 2;
+            qspi_command(&sCommand);
+            qspi_transmit((uint8_t *)&mode);
+            break;
+        }
+
+        qspi_flash_autopolling_ready();
+    }
+}
+
 /*!
     \brief      configure qspi flash
     \param[in]  clock_prescaler: prescaler of qspi clock
@@ -142,8 +276,6 @@ static void qspi_flash_autopolling_ready(void)
 void qspi_flash_config(uint32_t clock_prescaler)
 {
     qspi_init_struct Init;
-    qspi_command_struct sCommand;
-    uint8_t mode;
 
     // rcu_periph_clock_enable(RCU_GTZC);
     // tzgpc_tzspc_peripheral_attributes_config(TZGPC_PERIPH_QSPI_FLASHREG, TZGPC_TZSPC_PERIPH_SEC);
@@ -161,46 +293,8 @@ void qspi_flash_config(uint32_t clock_prescaler)
     Init.clockmode               = QSPI_CLOCK_MODE_0;
     qspi_init(&Init);
 
-    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
-    sCommand.instruction         = 0;
-    sCommand.addressmode         = QSPI_ADDRESS_NONE;
-    sCommand.addresssize         = QSPI_ADDRESS_24_BITS;
-    sCommand.address             = 0;
-    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
-    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_8_BITS;
-    sCommand.alternatebytes      = 0;
-    sCommand.dummycycles         = 0;
-    sCommand.datamode            = QSPI_DATA_NONE;
-    sCommand.nbdata              = 0;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
-    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
-
-    qspi_flash_write_enable();
-
-    sCommand.instruction         = READ_STATUS_REG_CMD;
-    sCommand.addressmode         = QSPI_ADDRESS_NONE;
-    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
-    sCommand.dummycycles         = 0;
-    sCommand.datamode            = QSPI_DATA_1_LINE;
-    sCommand.nbdata              = 1;
-    qspi_command(&sCommand);
-    qspi_receive(&mode);
-
-    if (mode & 0x02) {
-        /* quad mode, do nothing */
-    } else {
-        /* enable quad mode */
-        mode |= 0x02;
-        sCommand.instruction = WRITE_STATUS_REG_CMD;
-        sCommand.addressmode = QSPI_ADDRESS_NONE;
-        sCommand.address     = 0;
-        sCommand.datamode    = QSPI_DATA_1_LINE;
-        sCommand.nbdata      = 1;
-        sCommand.dummycycles = 0;
-        qspi_command(&sCommand);
-        qspi_transmit(&mode);
-        qspi_flash_autopolling_ready();
-    }
+    qspi_flash_quad_enable_set();
+    qspi_tcfg_fmc_set();
 }
 
 /*!
@@ -225,7 +319,6 @@ int32_t qspi_flash_sector_erase(uint32_t address)
     sCommand.dummycycles         = 0;
     sCommand.datamode            = QSPI_DATA_NONE;
     sCommand.nbdata              = 0;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
     qspi_command(&sCommand);
     qspi_flash_autopolling_ready();
@@ -255,10 +348,31 @@ int32_t qspi_flash_chip_erase(void)
     sCommand.dummycycles         = 0;
     sCommand.datamode            = QSPI_DATA_NONE;
     sCommand.nbdata              = 0;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
     qspi_command(&sCommand);
     qspi_flash_autopolling_ready();
+
+    return 0;
+}
+
+/*!
+    \brief      read qspi flash device id
+    \param[in]  None
+    \param[out] None
+    \retval     0
+*/
+int32_t qspi_flash_read_id(void *id)
+{
+    qspi_command_struct sCommand = {0};
+
+    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
+    sCommand.instruction         = CHIP_READ_ID_CMD;
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_1_LINE;
+    sCommand.nbdata              = 3;
+    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+    qspi_command(&sCommand);
+    qspi_receive(id);
 
     return 0;
 }
@@ -274,19 +388,53 @@ int32_t qspi_flash_read(uint32_t address, void *data, uint32_t size)
 {
     qspi_command_struct sCommand;
 
+#if ( QSPI_FLASH_MODE == QSPI_FLASH_4_LINES )
     sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
-    sCommand.instruction         = QUAD_OUT_FAST_READ_CMD;
+    sCommand.instruction         = QUAD_IO_FAST_READ_CMD;
+    sCommand.addressmode         = QSPI_ADDRESS_4_LINES;
+    sCommand.addresssize         = QSPI_ADDRESS_24_BITS;
+    sCommand.address             = address;
+    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_4_LINES;
+    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_8_BITS;
+    sCommand.alternatebytes      = 0;
+    sCommand.dummycycles         = 4;
+    sCommand.datamode            = QSPI_DATA_4_LINES;
+    sCommand.nbdata              = size;
+    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+#elif ( QSPI_FLASH_MODE == QSPI_FLASH_2_LINES )
+    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
+    sCommand.instruction         = DUAL_IO_FAST_READ_CMD;
+    sCommand.addressmode         = QSPI_ADDRESS_2_LINES;
+    sCommand.addresssize         = QSPI_ADDRESS_24_BITS;
+    sCommand.address             = address;
+    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_2_LINES;
+    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_8_BITS;
+    sCommand.alternatebytes      = 0;
+    /*
+        according to GD25Q16C datasheet, there are 4 alternate bits and 2 dummy cycles for 0xBB cmd,
+        but GD32W51x QSPI mode has alternate bits's limit to 8bits, so set sCommand.alternatebytessize
+        to 8, so alternate data[3:0]'s transfer costs 2 cycles on two lines transfer, so set
+        sCommand.dummycycles to 0(which not means there is no dummy cycles)
+    */
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_2_LINES;
+    sCommand.nbdata              = size;
+    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+#elif ( QSPI_FLASH_MODE == QSPI_FLASH_1_LINE )
+    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
+    sCommand.instruction         = READ_DATA_BYTE_CMD;
     sCommand.addressmode         = QSPI_ADDRESS_1_LINE;
     sCommand.addresssize         = QSPI_ADDRESS_24_BITS;
     sCommand.address             = address;
     sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
-    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_24_BITS;
+    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_8_BITS;
     sCommand.alternatebytes      = 0;
-    sCommand.dummycycles         = 8;
-    sCommand.datamode            = QSPI_DATA_4_LINES;
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_1_LINE;
     sCommand.nbdata              = size;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+#endif
+
     qspi_command(&sCommand);
     qspi_receive(data);
 
@@ -307,6 +455,8 @@ int32_t qspi_flash_page_program(uint32_t address, const uint8_t *data, uint32_t 
 
     /* Writing Sequence 4 Line------------------------------------------ */
     qspi_flash_write_enable();
+
+#if ( QSPI_FLASH_MODE == QSPI_FLASH_4_LINES )
     sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
     sCommand.instruction         = QUAD_IN_FAST_PROG_CMD;
     sCommand.addressmode         = QSPI_ADDRESS_1_LINE;
@@ -318,8 +468,21 @@ int32_t qspi_flash_page_program(uint32_t address, const uint8_t *data, uint32_t 
     sCommand.dummycycles         = 0;
     sCommand.datamode            = QSPI_DATA_4_LINES;
     sCommand.nbdata              = size;
-    // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+#elif ( QSPI_FLASH_MODE == QSPI_FLASH_2_LINES ) || ( QSPI_FLASH_MODE == QSPI_FLASH_1_LINE )
+    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
+    sCommand.instruction         = PAGE_PROG_CMD;
+    sCommand.addressmode         = QSPI_ADDRESS_1_LINE;
+    sCommand.addresssize         = QSPI_ADDRESS_24_BITS;
+    sCommand.address             = address;
+    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
+    sCommand.alternatebytessize  = QSPI_ALTERNATE_BYTES_8_BITS;
+    sCommand.alternatebytes      = 0;
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_1_LINE;
+    sCommand.nbdata              = size;
+    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
+#endif
     qspi_command(&sCommand);
     qspi_transmit((uint8_t *)data);
     qspi_flash_autopolling_ready();

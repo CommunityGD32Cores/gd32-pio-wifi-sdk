@@ -4,7 +4,7 @@ project(GD32W51X LANGUAGES C ASM)
 
 set(CONFIG_TZ_ENABLED              OFF           CACHE BOOL      "Whether to enable trustzone")
 set(CONFIG_OS                      "FREERTOS"    CACHE STRING    "Select which OS")
-set(CONFIG_WLANLIB_BUILDED         ON            CACHE BOOL      "Whether wlan lib builded")
+set(CONFIG_STATIC_LIB_BUILDED         ON            CACHE BOOL      "Whether static lib builded, like wlan, iperf3 lib")
 
 include(${CMAKE_TOOLCHAIN_FILE})
 toolchain_reload_compiler()

@@ -20,6 +20,9 @@
 #include "ethernetif.h"
 #include "debug_print.h"
 #include "wifi_netlink.h"
+#if LWIP_IPV6_DHCP6
+#include "lwip/dhcp6.h"
+#endif
 
 static struct netif wifi_netif;
 static uint8_t ip_static_mode = 0;
@@ -27,8 +30,15 @@ static uint8_t ip_static_mode = 0;
 void wifi_netif_open(void)
 {
     uint8_t *mac;
-
+#if LWIP_IPV6
+    netif_add(&wifi_netif, ip_2_ip4(IP_ADDR_ANY), ip_2_ip4(IP_ADDR_ANY), ip_2_ip4(IP_ADDR_ANY), NULL, &ethernetif_init, &tcpip_input);
+    netif_create_ip6_linklocal_address(&wifi_netif, 1);
+#if LWIP_IPV6_DHCP6
+    dhcp6_enable_stateless(&wifi_netif);
+#endif
+#else
     netif_add(&wifi_netif, IP_ADDR_ANY, IP_ADDR_ANY, IP_ADDR_ANY, NULL, &ethernetif_init, &tcpip_input);
+#endif
     mac = wifi_netif_get_hwaddr();
     DEBUGPRINT("WiFi MAC address: "MAC_FMT"\r\n",MAC_ARG(mac));
     netif_set_default(&wifi_netif);
@@ -45,7 +55,11 @@ void wifi_netif_close(void)
 
     ethernetif_deinit(ethernet_if);
     netifapi_dhcp_stop(&wifi_netif);
+#if LWIP_IPV6
+    netifapi_netif_set_addr(&wifi_netif, ip_2_ip4(IP_ADDR_ANY), ip_2_ip4(IP_ADDR_ANY), ip_2_ip4(IP_ADDR_ANY));
+#else
     netifapi_netif_set_addr(&wifi_netif, IP_ADDR_ANY, IP_ADDR_ANY, IP_ADDR_ANY);
+#endif
     netifapi_netif_remove(&wifi_netif);
     dhcp_cleanup(&wifi_netif);
 }
@@ -74,7 +88,20 @@ ip_addr_t *wifi_netif_get_ip(void)
     return &wifi_netif.ip_addr;
 }
 
-void wifi_netif_set_ip(ip_addr_t *ip, ip_addr_t *netmask, ip_addr_t *gw)
+#if LWIP_IPV6
+ip_addr_t *wifi_netif_get_ip6(uint8_t index)
+{
+    return &wifi_netif.ip6_addr[index];
+}
+
+void wifi_netif_set_ip6addr_invalid(void)
+{
+    wifi_netif.ip6_addr_state[1] = IP6_ADDR_INVALID;
+    ip6_addr_set_zero(&wifi_netif.ip6_addr[1].u_addr.ip6);
+}
+#endif
+
+void wifi_netif_set_ip(ip4_addr_t *ip, ip4_addr_t *netmask, ip4_addr_t *gw)
 {
     netifapi_netif_set_addr(&wifi_netif, ip, netmask, gw);
     wifi_ops_entry.wifi_set_ipaddr_func((uint8_t *)ip);
@@ -92,7 +119,11 @@ ip_addr_t *wifi_netif_get_netmask(void)
 
 void wifi_netif_set_addr(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw)
 {
+#if LWIP_IPV6
+    netifapi_netif_set_addr(&wifi_netif, ip_2_ip4(ip), ip_2_ip4(mask), ip_2_ip4(gw));
+#else
     netifapi_netif_set_addr(&wifi_netif, ip, mask, gw);
+#endif
 }
 
 void wifi_netif_set_up(void)
@@ -107,9 +138,14 @@ void wifi_netif_set_down(void)
 
 int32_t wifi_netif_is_ip_got(void)
 {
-    if (!ip_addr_isany(&wifi_netif.ip_addr) && ((netif_dhcp_data(&wifi_netif)->state == DHCP_STATE_BOUND) || wifi_netif_is_static_ip_mode()))
-        return TRUE;
-    else
+    if (!ip_addr_isany(&wifi_netif.ip_addr) && ((netif_dhcp_data(&wifi_netif)->state == DHCP_STATE_BOUND) || wifi_netif_is_static_ip_mode())) {
+#if LWIP_IPV6
+        if (ip6_addr_isany(&wifi_netif.ip6_addr[1].u_addr.ip6))
+            return FALSE;
+        else
+#endif
+            return TRUE;
+    } else
         return FALSE;
 }
 
@@ -148,7 +184,11 @@ void wifi_netif_stop_dhcp(void)
      }
     netifapi_dhcp_stop(&wifi_netif);
     netifapi_netif_set_down(&wifi_netif);
+#if LWIP_IPV6
+    netifapi_netif_set_addr(&wifi_netif, ip_2_ip4(IP_ADDR_ANY), ip_2_ip4(IP_ADDR_ANY), ip_2_ip4(IP_ADDR_ANY));
+#else
     netifapi_netif_set_addr(&wifi_netif, IP_ADDR_ANY, IP_ADDR_ANY, IP_ADDR_ANY);
+#endif
 }
 
 void wifi_netif_set_ip_mode(uint8_t ip_mode)

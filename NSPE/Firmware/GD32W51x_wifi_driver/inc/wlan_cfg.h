@@ -94,7 +94,6 @@ OF SUCH DAMAGE.
 #endif
 
 // #define CONFIG_RX_REORDER_SUPPORT
-// #define CONFIG_USE_40MHZ_BW
 #define CONFIG_PHY_STATUS_ENABLE
 // #define CONFIG_5G_BAND_ENABLE
 
@@ -124,9 +123,6 @@ OF SUCH DAMAGE.
   #ifndef CONFIG_RX_REORDER_SUPPORT
     #define CONFIG_RX_REORDER_SUPPORT
   #endif
-  #ifndef CONFIG_USE_40MHZ_BW
-    #define CONFIG_USE_40MHZ_BW
-  #endif
 #endif /* CONFIG_WIFI_HIGH_PERFORMANCE */
 
 // #define WIFI_LOGO
@@ -136,9 +132,6 @@ OF SUCH DAMAGE.
   #endif
   #ifndef CONFIG_RX_DEFRAG_SUPPORT
     #define CONFIG_RX_DEFRAG_SUPPORT
-  #endif
-  #ifndef CONFIG_USE_40MHZ_BW
-    #define CONFIG_USE_40MHZ_BW
   #endif
     #define CONFIG_20_40_BSS_COEX
 #endif /* WIFI_LOGO */

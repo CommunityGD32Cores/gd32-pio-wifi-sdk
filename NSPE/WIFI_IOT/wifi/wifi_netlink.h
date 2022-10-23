@@ -192,6 +192,8 @@ int wifi_netlink_auto_conn_set(uint8_t auto_conn_enable);
 uint8_t wifi_netlink_auto_conn_get(void);
 int wifi_netlink_joined_ap_store(void);
 int wifi_netlink_joined_ap_load(void);
+int wifi_netlink_bw_set(uint32_t bw);
+int wifi_netlink_bw_get(uint32_t *bw);
 
 
 /*============================ IMPLEMENTATION ================================*/

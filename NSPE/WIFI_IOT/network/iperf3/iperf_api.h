@@ -69,7 +69,9 @@ struct iperf_stream;
 #define ACCESS_DENIED 		(-1)
 #define SERVER_ERROR 		(-2)
 
+#ifndef INET6_ADDRSTRLEN
 #define INET6_ADDRSTRLEN 	46
+#endif
 
 #define get_cur_time_ms()	sys_current_time_get()
 

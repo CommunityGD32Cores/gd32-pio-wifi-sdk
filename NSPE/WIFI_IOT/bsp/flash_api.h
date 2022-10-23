@@ -60,6 +60,7 @@ OF SUCH DAMAGE.
 #define SECTOR_ERASE_CMD            0x20    // 0xD8
 #define HIGH_PERFORMANCE_CMD        0xA3
 #define CHIP_ERASE_CMD              0xC7
+#define CHIP_READ_ID_CMD            0x9F
 
 int is_flash_cache_enabled(void);
 int flash_cache_disable(void);
@@ -81,6 +82,7 @@ void flash_offset_mapping(uint32_t of_spage, uint32_t of_epage, uint32_t of_valu
 
 /* QSPI FLASH APIs */
 void qspi_flash_config(uint32_t clock_prescaler);
+int32_t qspi_flash_read_id(void *id);
 int32_t qspi_flash_sector_erase(uint32_t address);
 int32_t qspi_flash_read(uint32_t address, void *data, uint32_t size);
 int32_t qspi_flash_page_program(uint32_t address, const uint8_t *data, uint32_t size);

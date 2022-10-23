@@ -5,6 +5,12 @@
 #include "stdint.h"
 #define MEM_ALIGNMENT               4
 
+#ifdef CONFIG_IPV6_SUPPORT
+#define LWIP_IPV6                   1
+#define LWIP_IPV6_DHCP6             0
+#define LWIP_IPV6_MLD               0
+#endif
+
 #ifndef CONFIG_WIFI_HIGH_PERFORMANCE
 /*====================================================================*/
 /* MEM_SIZE: the size of the heap memory. If the application will send
@@ -34,7 +40,11 @@ a lot of data that needs to be copied, this should be set high. */
    segments. */
 #define MEMP_NUM_TCP_SEG            TCP_SND_QUEUELEN  // 16
 
+#ifdef CONFIG_IPV6_SUPPORT
+#define MEMP_NUM_SYS_TIMEOUT        11
+#else
 #define MEMP_NUM_SYS_TIMEOUT        8
+#endif
 
 #define MEMP_NUM_TCPIP_MSG_INPKT    16  // For CONFIG_RX_REORDER_SUPPORT
 /* ---------- Pbuf options ---------- */

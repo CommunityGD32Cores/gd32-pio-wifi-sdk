@@ -61,6 +61,9 @@
 #include "wlan_intf.h"
 #include "wrapper_os.h"
 #include "ethernetif.h"
+#if LWIP_IPV6
+#include "lwip/ethip6.h"
+#endif
 
 /* Define those to better describe your network interface. */
 #define IFNAME0 'w'
@@ -325,6 +328,9 @@ ethernetif_input(struct ethernetif *eth_if,  struct tcpip_packet_info *rx_packet
     /* IP or ARP packet? */
     case ETHTYPE_IP:
     case ETHTYPE_ARP:
+#if LWIP_IPV6
+    case ETHTYPE_IPV6:
+#endif
 #if PPPOE_SUPPORT
     /* PPPoE packet? */
     case ETHTYPE_PPPOEDISC:
@@ -391,6 +397,9 @@ ethernetif_init(struct netif *netif)
     * from it if you have to do some checks before sending (e.g. if link
     * is available...) */
     netif->output = etharp_output;
+#if LWIP_IPV6
+    netif->output_ip6 = ethip6_output;
+#endif
     netif->linkoutput = low_level_output;
 
     /* initialize the hardware */

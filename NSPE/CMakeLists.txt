@@ -23,7 +23,7 @@ target_add_scatter_file(${TARGET_EXE}
     )
 
 
-if (CONFIG_WLANLIB_BUILDED)
+if (CONFIG_STATIC_LIB_BUILDED)
 
     add_library(gd32w51x_wifi STATIC IMPORTED GLOBAL)
 
@@ -58,8 +58,6 @@ target_link_options(${TARGET_EXE}
 )
 
 add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
-    COMMAND ${TAGET_PROJECT_DIR}/nspe_afterbuild.bat NTZ SIP \"\" JLINK ${TAGET_PROJECT_DIR}/GCC/output/bin GCC \"\"
+    COMMAND ${TAGET_PROJECT_DIR}/nspe_afterbuild.bat ${TAGET_PROJECT_DIR}/GCC/output/bin GCC \"\"
     COMMENT "Building ${TARGET_EXE}"
 )
-
-

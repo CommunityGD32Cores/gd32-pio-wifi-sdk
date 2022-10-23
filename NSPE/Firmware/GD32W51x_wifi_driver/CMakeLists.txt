@@ -11,7 +11,7 @@ target_include_directories(gd32w51x_wifi_api
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/soc>
 )
 
-if (NOT CONFIG_WLANLIB_BUILDED)
+if (NOT CONFIG_STATIC_LIB_BUILDED)
     add_library(gd32w51x_wifi STATIC)
     file(GLOB_RECURSE SRC_WIFI_DRIVER  ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 

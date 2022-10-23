@@ -57,7 +57,13 @@ static void ping_prepare_echo(struct ping_info_t *ping_info, struct icmp_echo_hd
     size_t i;
     size_t data_len = len - sizeof(struct icmp_echo_hdr);
 
-    ICMPH_TYPE_SET(iecho, ICMP_ECHO);
+#if LWIP_IPV6
+    if (ping_info->ip_type == IPADDR_TYPE_V6)
+        ICMPH_TYPE_SET(iecho, ICMP6_TYPE_EREQ);
+    else
+#endif
+        ICMPH_TYPE_SET(iecho, ICMP_ECHO);
+
     ICMPH_CODE_SET(iecho, 0);
     iecho->chksum = 0;
     iecho->id     = PING_ID;
@@ -68,7 +74,10 @@ static void ping_prepare_echo(struct ping_info_t *ping_info, struct icmp_echo_hd
         ((char*)iecho)[sizeof(struct icmp_echo_hdr) + i] = (char)i;
     }
 
-    iecho->chksum = inet_chksum(iecho, len);
+#if LWIP_IPV6
+    if (ping_info->ip_type != IPADDR_TYPE_V6)
+#endif
+        iecho->chksum = inet_chksum(iecho, len);
 }
 
 /* Ping using the socket ip */
@@ -77,6 +86,10 @@ static err_t ping_send(struct ping_info_t *ping_info, int s, ip_addr_t *addr, si
     int err;
     struct icmp_echo_hdr *iecho;
     struct sockaddr_in to;
+#if LWIP_IPV6
+    struct sockaddr_in6 *to_ipv6;
+    struct sockaddr_storage sock_st;
+#endif
     size_t ping_size;
 
     if (size == 0) {
@@ -94,11 +107,26 @@ static err_t ping_send(struct ping_info_t *ping_info, int s, ip_addr_t *addr, si
 
     ping_prepare_echo(ping_info, iecho, (u16_t)ping_size);
 
+#if LWIP_IPV6
+    if (ping_info->ip_type == IPADDR_TYPE_V6) {
+        memset(&sock_st, 0, sizeof(struct sockaddr_storage));
+        to_ipv6 = (struct sockaddr_in6 *)&sock_st;
+        to_ipv6->sin6_family = AF_INET6;
+        inet6_addr_from_ip6addr(&to_ipv6->sin6_addr, &addr->u_addr.ip6);
+        err = lwip_sendto(s, iecho, ping_size, 0, (struct sockaddr*)&sock_st, sizeof(struct sockaddr_storage));
+    } else {
+        to.sin_len = sizeof(to);
+        to.sin_family = AF_INET;
+        to.sin_addr.s_addr = addr->u_addr.ip4.addr;
+        err = lwip_sendto(s, iecho, ping_size, 0, (struct sockaddr*)&to, sizeof(to));
+    }
+#else
     to.sin_len = sizeof(to);
     to.sin_family = AF_INET;
     to.sin_addr.s_addr = addr->addr;
-
     err = lwip_sendto(s, iecho, ping_size, 0, (struct sockaddr*)&to, sizeof(to));
+#endif
+
     sys_mfree(iecho);
 
     return (err ? ERR_OK : ERR_VAL);
@@ -108,39 +136,82 @@ static void ping_recv(struct ping_info_t *ping_info, int s)
 {
     uint32_t reply_time;
     int len;
-    struct sockaddr_in from;
+    struct sockaddr *from;
+    struct sockaddr_in from_ip4;
+#if LWIP_IPV6
+    struct sockaddr_in6 *from_ip6;
+    struct sockaddr_storage sock_st;
+    struct ip6_hdr *ip6hdr;
+#endif
     struct ip_hdr *iphdr;
     struct icmp_echo_hdr *iecho;
-    uint32_t fromlen = sizeof(struct sockaddr);
+    uint32_t ip_hdr_len;
+    uint32_t fromlen;
     uint32_t delay;
     //struct _ip_addr *addr;
     //static uint32_t ping_recv_count = 0;
     uint32_t start_time = 0;
     uint32_t recv_size;
-    if ((ping_info->ping_size + sizeof(struct icmp_echo_hdr) + sizeof(struct ip_hdr)) > BUF_SIZE)
-        recv_size = (ping_info->ping_size + sizeof(struct icmp_echo_hdr) + sizeof(struct ip_hdr));
+
+#if LWIP_IPV6
+    if (ping_info->ip_type == IPADDR_TYPE_V6) {
+        ip_hdr_len = sizeof(struct ip6_hdr);
+        memset(&sock_st, 0, sizeof(struct sockaddr_storage));
+        from_ip6 = (struct sockaddr_in6 *)&sock_st;
+        from = (struct sockaddr*)&sock_st;
+        fromlen = sizeof(struct sockaddr_storage);
+    } else
+#endif
+    {
+        ip_hdr_len = sizeof(struct ip_hdr);
+        from = (struct sockaddr*)&from_ip4;
+        fromlen = sizeof(struct sockaddr);
+    }
+
+    if ((ping_info->ping_size + sizeof(struct icmp_echo_hdr) + ip_hdr_len) > BUF_SIZE)
+        recv_size = (ping_info->ping_size + sizeof(struct icmp_echo_hdr) + ip_hdr_len);
     else
         recv_size = BUF_SIZE;
     start_time = sys_current_time_get();
-    while ((len = lwip_recvfrom(s, ping_info->reply_buf, recv_size, 0, (struct sockaddr*)&from, (socklen_t*)&fromlen)) > 0) {
-        if (len >= (sizeof(struct ip_hdr) + sizeof(struct icmp_echo_hdr))) {
+    while ((len = lwip_recvfrom(s, ping_info->reply_buf, recv_size, 0, from, (socklen_t*)&fromlen)) > 0) {
+        if (len >= (ip_hdr_len + sizeof(struct icmp_echo_hdr))) {
             //addr = (struct _ip_addr *)&(from.sin_addr);
             //LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("@@@ping: recv %d.%d.%d.%d, len = %d, count = %d\n",
             //             addr->addr0, addr->addr1, addr->addr2, addr->addr3, len, ++ping_recv_count));
             reply_time = sys_current_time_get();
             delay = reply_time - ping_info->ping_time;
 
-            iphdr = (struct ip_hdr *)ping_info->reply_buf;
-            iecho = (struct icmp_echo_hdr *)(ping_info->reply_buf+(IPH_HL(iphdr) * 4));
+#if LWIP_IPV6
+            if (ping_info->ip_type == IPADDR_TYPE_V6) {
+                ip6hdr = (struct ip6_hdr *)ping_info->reply_buf;
+                iecho = (struct icmp_echo_hdr *)(ping_info->reply_buf+IP6_HLEN);
+            } else
+#endif
+            {
+                iphdr = (struct ip_hdr *)ping_info->reply_buf;
+                iecho = (struct icmp_echo_hdr *)(ping_info->reply_buf+(IPH_HL(iphdr) * 4));
+            }
+
             if ((iecho->id == PING_ID) && (iecho->seqno == htons(ping_info->ping_seq_num))) {
 #if defined(CONFIG_ATCMD)
                 if (atcmd_mode_get())
                     AT_RSP("+%d\r\n", delay);
                 else
 #endif
-                    LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("[ping_test] %d bytes from %s: icmp_seq=%d time=%d ms\n\r",
-                        len - sizeof(struct ip_hdr) - sizeof(struct icmp_echo_hdr), inet_ntoa(from.sin_addr),
-                        htons(iecho->seqno), delay));
+                {
+#if LWIP_IPV6
+                    if (ping_info->ip_type == IPADDR_TYPE_V6) {
+                        LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("[ping_test] %d bytes from %s: icmp_seq=%d time=%d ms\n\r",
+                            len - sizeof(struct ip6_hdr) - sizeof(struct icmp_echo_hdr), inet6_ntoa(from_ip6->sin6_addr),
+                            htons(iecho->seqno), delay));
+                    } else
+#endif
+                    {
+                        LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("[ping_test] %d bytes from %s: icmp_seq=%d time=%d ms\n\r",
+                            len - sizeof(struct ip_hdr) - sizeof(struct icmp_echo_hdr), inet_ntoa(from_ip4.sin_addr),
+                            htons(iecho->seqno), delay));
+                    }
+                }
                 ping_info->ping_recv_count++;
                 if (delay > ping_info->ping_max_delay) ping_info->ping_max_delay = delay;
                 if (delay < ping_info->ping_min_delay) ping_info->ping_min_delay = delay;
@@ -193,6 +264,7 @@ err_t ping(struct ping_info_t *ping_info)
     //static uint32_t ping_send_count = 0;
     //uint16_t size_random; //add for random size ping test
     uint32_t recv_size;
+    uint32_t ip_hdr_len;
 
     ping_info->ping_seq_num = 0;
     ping_info->ping_max_delay = 0;
@@ -201,12 +273,25 @@ err_t ping(struct ping_info_t *ping_info)
     ping_info->ping_recv_count = 0;
     send_count = 0;
 
-    if (inet_aton(target, (struct in_addr*)&ping_target) == 0)
-        return ERR_VAL;
-    //addr = (struct _ip_addr*)&ping_target;
+#if LWIP_IPV6
+    ping_target.type = 0;
+    if (ping_info->ip_type == IPADDR_TYPE_V6) {
+        if (inet6_aton(target, &ping_target.u_addr.ip6) == 0)
+            return ERR_VAL;
+        ping_target.type = IPADDR_TYPE_V6;
+        ip_hdr_len = sizeof(struct ip6_hdr);
+    } else
+#endif
+    {
+        if (inet_aton(target, &ping_target) == 0)
+            return ERR_VAL;
+        ip_hdr_len = sizeof(struct ip_hdr);
+        //addr = (struct _ip_addr*)&ping_target;
+    }
 
-    if ((ping_info->ping_size + sizeof(struct icmp_echo_hdr)+ sizeof(struct ip_hdr)) > BUF_SIZE)
-        recv_size = (ping_info->ping_size + sizeof(struct icmp_echo_hdr)+ sizeof(struct ip_hdr));
+
+    if ((ping_info->ping_size + sizeof(struct icmp_echo_hdr)+ ip_hdr_len) > BUF_SIZE)
+        recv_size = (ping_info->ping_size + sizeof(struct icmp_echo_hdr)+ ip_hdr_len);
     else
         recv_size = BUF_SIZE;
     ping_info->reply_buf = sys_malloc(recv_size);
@@ -215,7 +300,15 @@ err_t ping(struct ping_info_t *ping_info)
         return ERR_MEM;
     }
 
-    if ((s = lwip_socket(AF_INET, SOCK_RAW, IP_PROTO_ICMP)) < 0) {
+#if LWIP_IPV6
+    if (ping_info->ip_type == IPADDR_TYPE_V6) {
+        s = lwip_socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+    } else
+#endif
+    {
+        s = lwip_socket(AF_INET, SOCK_RAW, IP_PROTO_ICMP);
+    }
+    if (s < 0) {
         LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("ping: create socket failled\n\r"));
         sys_mfree(ping_info->reply_buf);
         return ERR_MEM;
@@ -227,8 +320,15 @@ err_t ping(struct ping_info_t *ping_info)
     if (!atcmd_mode_get())
 #endif
     {
-        LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("[ping_test] PING %s %d bytes of data\n\r",
-            inet_ntoa(ping_target), size));
+#if LWIP_IPV6
+        if (ping_info->ip_type == IPADDR_TYPE_V6)
+            LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("[ping_test] PING %s %d bytes of data\n\r",
+                inet6_ntoa(ping_target), size));
+        else
+#endif
+            LWIP_DEBUGP(PING_DEBUG | LWIP_DBG_TRACE, ("[ping_test] PING %s %d bytes of data\n\r",
+                inet_ntoa(ping_target), size));
+
     }
 
     while (1) {
@@ -300,9 +400,22 @@ static int ping_parse_arguments(struct ping_info_t *ping_info, int argc, char **
     if (argc < 2) {
         goto Exit;
     } else {
-        ip_len = (strlen((const char *)argv[1]) < 16)? (strlen((const char *)argv[1]) + 1) : 16;
-        sys_memcpy(ping_info->ping_ip, (const char *)argv[1], ip_len);
-        arg_cnt ++;
+#if LWIP_IPV6
+        ping_info->ip_type = 0;
+        if (strcmp(argv[arg_cnt], "-6") == 0) {
+            if (argc <= (arg_cnt + 1))
+                goto Exit;
+            ip_len = (strlen((const char *)argv[arg_cnt + 1]) < 64)? (strlen((const char *)argv[arg_cnt + 1]) + 1) : 64;
+            sys_memcpy(ping_info->ping_ip, (const char *)argv[arg_cnt + 1], ip_len);
+            ping_info->ip_type = IPADDR_TYPE_V6;
+            arg_cnt += 2;
+        } else
+#endif
+        {
+            ip_len = (strlen((const char *)argv[arg_cnt]) < 16)? (strlen((const char *)argv[arg_cnt]) + 1) : 16;
+            sys_memcpy(ping_info->ping_ip, (const char *)argv[arg_cnt], ip_len);
+            arg_cnt ++;
+        }
     }
 
     ping_info->ping_cnt = 5;
@@ -358,6 +471,7 @@ Exit:
 Usage:
     DEBUGPRINT("\rUsage:\r\n");
     DEBUGPRINT("ping <target_ip | stop> [-n count] [-l size] [-i interval] [-t total time]\r\n");
+    DEBUGPRINT("    target_ip <ipv4_addr> or <-6 ipv6_addr>(if IPV6 support)\r\n");
     DEBUGPRINT("    stop ping stop\r\n");
     DEBUGPRINT("    -n   number of echo request to run(default 5)\r\n");
     DEBUGPRINT("    -l   ping size of single ping test(default 120B)\r\n");

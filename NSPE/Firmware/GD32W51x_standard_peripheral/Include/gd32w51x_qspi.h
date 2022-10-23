@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -197,18 +197,18 @@ OF SUCH DAMAGE.
 typedef struct
 {
     uint32_t prescaler;          /* Specifies the prescaler factor for generating clock based on the AHB clock.
-                                  This parameter can be a number between 0 and 255 */ 
+                                  This parameter can be a number between 0 and 255 */
     uint32_t fifothreshold;      /* Specifies the threshold number of bytes in the FIFO (used only in indirect mode)
                                   This parameter can be a value between 1 and 16 */
-    uint32_t sampleshift;        /* Specifies the Sample Shift. The data is sampled 1/2 clock cycle delay later to 
+    uint32_t sampleshift;        /* Specifies the Sample Shift. The data is sampled 1/2 clock cycle delay later to
                                   take in account external signal delays. (It should be QSPI_SAMPLE_SHIFTING_NONE in DDR mode) */
-    uint32_t flashsize;          /* Specifies the Flash Size. FlashSize+1 is effectively the number of address bits 
-                                  required to address the flash memory. The flash capacity can be up to 4GB 
-                                  (addressed using 32 bits) in indirect mode, but the addressable space in 
+    uint32_t flashsize;          /* Specifies the Flash Size. FlashSize+1 is effectively the number of address bits
+                                  required to address the flash memory. The flash capacity can be up to 4GB
+                                  (addressed using 32 bits) in indirect mode, but the addressable space in
                                   memory-mapped mode is limited to 256MB
                                   This parameter can be a number between 0 and 31 */
-    uint32_t chipselecthightime; /* Specifies the Chip Select High Time. ChipSelectHighTime+1 defines the minimum number 
-                                  of clock cycles which the chip select must remain high between commands. */   
+    uint32_t chipselecthightime; /* Specifies the Chip Select High Time. ChipSelectHighTime+1 defines the minimum number
+                                  of clock cycles which the chip select must remain high between commands. */
     uint32_t clockmode;          /* Specifies the Clock Mode. It indicates the level that clock takes between commands. */
 }qspi_init_struct;
 
@@ -230,7 +230,7 @@ typedef struct
     uint32_t alternatebytemode;  /* Specifies the Alternate Bytes Mode */
     uint32_t datamode;           /* Specifies the Data Mode (used for dummy cycles and data phases) */
     uint32_t nbdata;             /* Specifies the number of data to transfer. (This is the number of bytes)
-                                  This parameter can be any value between 0 and 0xFFFFFFFF (0 means undefined length 
+                                  This parameter can be any value between 0 and 0xFFFFFFFF (0 means undefined length
                                   until end of memory)*/
     uint32_t sioomode;           /* Specifies the send instruction only once mode */
 }qspi_command_struct;
@@ -240,7 +240,7 @@ typedef struct
 {
     uint32_t match;              /* Specifies the value to be compared with the masked status register to get a match.
                                   This parameter can be any value between 0 and 0xFFFFFFFF */
-    uint32_t mask;               /* Specifies the mask to be applied to the status bytes received. 
+    uint32_t mask;               /* Specifies the mask to be applied to the status bytes received.
                                   This parameter can be any value between 0 and 0xFFFFFFFF */
     uint32_t interval;           /* Specifies the number of clock cycles between two read during automatic polling phases.
                                   This parameter can be any value between 0 and 0xFFFF */
@@ -365,6 +365,26 @@ typedef struct
 #define QSPI_CS_HIGH_TIME_6_CYCLE_FMC     CTLF_CSHCF(5)                              /*!< QSPI CS stays high for at least 6 cycle in fmc mode */
 #define QSPI_CS_HIGH_TIME_7_CYCLE_FMC     CTLF_CSHCF(6)                              /*!< QSPI CS stays high for at least 7 cycle in fmc mode */
 #define QSPI_CS_HIGH_TIME_8_CYCLE_FMC     CTLF_CSHCF(7)                              /*!< QSPI CS stays high for at least 8 cycle in fmc mode */
+
+
+/* QSPI send instruction only once mode in FMC mode */
+#define TCFGF_SIOOF(regval)               (BIT(28) & ((uint32_t)(regval) << 28))
+/* QSPI data phase’s mode of operation in FMC mode */
+#define TCFGF_DATAMODF(regval)            (BITS(24,25) & ((uint32_t)(regval) << 24))
+/* QSPI number of dummy cycles in FMC mode */
+#define TCFGF_DUMYCF(regval)              (BITS(18,22) & ((uint32_t)(regval) << 18))
+/* QSPI alternate bytes size in FMC mode */
+#define TCFGF_ALTESZF(regval)             (BITS(16,17) & ((uint32_t)(regval) << 16))
+/* QSPI alternate bytes mode in FMC mode */
+#define TCFGF_ALTEMODF(regval)            (BITS(14,15) & ((uint32_t)(regval) << 14))
+/* QSPI address size in FMC mode */
+#define TCFGF_ADDRSZF(regval)             (BITS(12,13) & ((uint32_t)(regval) << 12))
+/* QSPI address phase mode of operation in FMC mode */
+#define TCFGF_ADDRMODF(regval)            (BITS(10,11) & ((uint32_t)(regval) << 10))
+/* QSPI instruction phase mode of operation in FMC mode */
+#define TCFGF_IMODF(regval)               (BITS(8,9) & ((uint32_t)(regval) << 8))
+/* QSPI command information to be send to the flash memory in FMC mode */
+#define TCFGF_INSTRUCTIONF(regval)        (BITS(0,7) & (uint32_t)(regval))
 
 /* function declarations */
 /* QSPI deinitialization and initialization functions */

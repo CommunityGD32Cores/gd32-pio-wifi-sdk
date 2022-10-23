@@ -168,7 +168,7 @@ SECTIONS
     . = ALIGN(4);
     PROVIDE( _heap_end = . );
     PROVIDE( Image$$ARM_LIB_STACKHEAP$$ZI$$Base = . );
-    . = __stack_size;
+    . += __stack_size;
     PROVIDE( Image$$ARM_LIB_STACKHEAP$$ZI$$Limit = . );
   } >RAM AT>RAM
 }

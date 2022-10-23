@@ -70,6 +70,8 @@ static int roaming_scan(struct wifi_scan_req *scan_req);
 static void wifi_roaming_task_func(void *p_arg);
 #endif
 
+extern uint32_t softap_find_ipaddr_by_macaddr(uint8_t *mac_addr);
+
 /*!
     \brief      initialize wifi netlink
     \param[in]  none
@@ -120,6 +122,7 @@ int wifi_netlink_status_get(void)
 
     if (wifi_netlink->ap_started) {
         uint8_t assoc_info[MAX_STATION_NUM * ETH_ALEN];
+        uint32_t sta_ipaddr[MAX_STATION_NUM];
         uint32_t client_num, i;
         DEBUGPRINT("WIFI Status: AP Started\r\n");
         DEBUGPRINT("==============================\r\n");
@@ -134,7 +137,8 @@ int wifi_netlink_status_get(void)
         }
         client_num = wifi_ops_entry.wifi_softap_get_assoc_info(assoc_info);
         for (i = 0; i < client_num; i++) {
-            DEBUGPRINT("CLIENT [%d]:    "MAC_FMT"\r\n", i, MAC_ARG(assoc_info + i * ETH_ALEN));
+            sta_ipaddr[i] = softap_find_ipaddr_by_macaddr(assoc_info + i * ETH_ALEN);
+            DEBUGPRINT("CLIENT[%d]:   "MAC_FMT"   "IP_FMT"\r\n", i, MAC_ARG(assoc_info + i * ETH_ALEN), IP_ARG(sta_ipaddr[i]));
         }
     } else {
         if (wifi_netlink->link_status >= WIFI_NETLINK_STATUS_LINKED) {
@@ -596,6 +600,9 @@ int wifi_netlink_disconnect_req(void)
         sys_memcpy(&disconnect_info.ssid, &wifi_netlink->connected_ap_info.ssid, sizeof(struct wifi_ssid));
 
         wifi_ops_entry.wifi_disconnect_req_func(&disconnect_info);
+#ifdef CONFIG_IPV6_SUPPORT
+        wifi_netif_set_ip6addr_invalid();
+#endif
 
         DEBUG_INFO("wifi netlink: disconnect with ap %s\r\n", &wifi_netlink->connected_ap_info.ssid.ssid);
 
@@ -664,7 +671,11 @@ int wifi_netlink_ipaddr_set(uint8_t *ipaddr)
 {
     wifi_ops_entry.wifi_set_ipaddr_func(ipaddr);
 
-    DEBUG_INFO("wifi netlink: Got IP "IP_FMT"\r\n", IP_ARG(*(uint32_t *)ipaddr));
+    DEBUG_INFO("wifi netlink: Got IP  "IP_FMT"\r\n", IP_ARG(*(uint32_t *)ipaddr));
+#ifdef CONFIG_IPV6_SUPPORT
+    ip6_addr_t *ip6_uniqe = (ip6_addr_t *)wifi_netif_get_ip6(1);
+    DEBUG_INFO("wifi netlink: Got IP6 [%s]\r\n", ip6addr_ntoa(ip6_uniqe));
+#endif
 
     p_wifi_netlink->link_status = WIFI_NETLINK_STATUS_LINKED_CONFIGED;
 
@@ -1087,8 +1098,14 @@ int wifi_netlink_joined_ap_store(void)
     } else {
         return -2;
     }
-
+#ifdef CONFIG_IPV6_SUPPORT
+    if (ip->type == IPADDR_TYPE_V6)
+        mbl_sys_status_set(SYS_IP_ADDR, LEN_SYS_IP_ADDR, (uint8_t *)&(ip->u_addr.ip6.addr));
+    else
+        mbl_sys_status_set(SYS_IP_ADDR, LEN_SYS_IP_ADDR, (uint8_t *)&(ip->u_addr.ip4.addr));
+#else
     mbl_sys_status_set(SYS_IP_ADDR, LEN_SYS_IP_ADDR, (uint8_t *)&(ip->addr));
+#endif
 
     return 0;
 #else
@@ -1147,9 +1164,21 @@ int wifi_netlink_joined_ap_load(void)
     DEBUG_INFO("Get pwd = %s\r\n", (char *)pwd_get);
 
     /* TODO: shorten dhcp time */
+#ifdef CONFIG_IPV6_SUPPORT
+    if (ip_get.type == IPADDR_TYPE_V6) {
+        IP6_ADDR(&ip_get.u_addr.ip6, 0, 0, 0, 0);
+        mbl_sys_status_get(SYS_IP_ADDR, LEN_SYS_IP_ADDR, (uint8_t *)&ip_get.u_addr.ip6.addr);
+        DEBUG_INFO("Get ipaddr = %s\r\n", ip6addr_ntoa(&ip_get.u_addr.ip6));
+    } else {
+        ip_get.u_addr.ip4.addr = 0;
+        mbl_sys_status_get(SYS_IP_ADDR, LEN_SYS_IP_ADDR, (uint8_t *)&ip_get.u_addr.ip4.addr);
+        DEBUG_INFO("Get ipaddr = "IP_FMT"\r\n", IP_ARG(ip_get.u_addr.ip4.addr));
+    }
+#else
     ip_get.addr = 0;
     mbl_sys_status_get(SYS_IP_ADDR, LEN_SYS_IP_ADDR, (uint8_t *)&ip_get.addr);
     DEBUG_INFO("Get ipaddr = "IP_FMT"\r\n", IP_ARG(ip_get.addr));
+#endif
 
     return 0;
 #else
@@ -1486,6 +1515,29 @@ int wifi_netlink_indicate_disconnect(struct wifi_disconnect_info *disc_info)
 #endif
 }
 
+/*!
+    \brief      get wifi bandwith
+    \param[in]  none
+    \param[out] bw : get supported bandwidth
+    \retval     0 if succeeded, -1 otherwise
+*/
+int wifi_netlink_bw_get(uint32_t *bw)
+{
+    return wifi_ops_entry.wifi_get_bw(bw);
+}
+
+/*!
+    \brief      set wifi bandwith
+    \param[in]  bw : set supported bandwidth
+    \param[out] none
+    \retval     0 if succeeded, -1 otherwise
+*/
+int wifi_netlink_bw_set(uint32_t bw)
+{
+    return wifi_ops_entry.wifi_set_bw(bw);
+}
+
+
 #ifdef CONFIG_WIFI_ROAMING_SUPPORT
 /*!
     \brief      terminate roaming task
@@ -1651,3 +1703,40 @@ Exit:
     sys_task_delete(NULL);
 }
 #endif
+
+/*!
+    \brief      callbak function for softap sta delete
+    \param[in]  mac_addr: the mac addr of delete sta
+    \param[out] none
+    \retval     0 if succeeded
+*/
+int wifi_netlink_indicate_softap_sta_del(uint8_t *mac_addr)
+{
+#ifdef CONFIG_SOFTAP_CALLBACK_ENABLED
+    uint32_t ip_addr;
+    ip_addr = softap_find_ipaddr_by_macaddr(mac_addr);
+    /* TODO */
+    printf("this is callback for softap sta delete\r\n");
+    printf("the mac addr of delete sta is "MAC_FMT"\r\n", MAC_ARG(mac_addr));
+    printf("the ip addr of delete sta is "IP_FMT"\r\n", IP_ARG(ip_addr));
+#endif
+    return 0;
+}
+
+/*!
+    \brief      callbak function for softap sta add
+    \param[in]  mac_addr: the mac addr of add sta
+    \param[in]  ip_addr: the ip addr(ipv4) of add sta
+    \param[out] none
+    \retval     0 if succeeded
+*/
+int wifi_netlink_indicate_softap_sta_add(uint8_t *mac_addr, uint32_t ip_addr)
+{
+#ifdef CONFIG_SOFTAP_CALLBACK_ENABLED
+    /* TODO */
+    printf("this is callback for softap sta add\r\n");
+    printf("the mac addr of add sta is "MAC_FMT"\r\n", MAC_ARG(mac_addr));
+    printf("the ip addr of add sta is "IP_FMT"\r\n", IP_ARG(ip_addr));
+#endif
+    return 0;
+}

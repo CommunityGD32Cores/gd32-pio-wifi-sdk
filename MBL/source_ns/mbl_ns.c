@@ -140,6 +140,7 @@ int main(void)
         flash_offset_mapping();
     }
 
+#ifdef CONFIG_IMAGE_VERIFICATION
     /* Read and check if image header is valid */
     flash_read(image_offset, (void *)&hdr, sizeof(struct image_header));
     ret = image_header_check(&hdr);
@@ -148,11 +149,12 @@ int main(void)
         sys_img_flag_set(boot_idx, IMG_FLAG_VERIFY_MASK, IMG_FLAG_VERIFY_FAIL);
         goto BootFailed;
     }
-
+#endif
     /* Update Image status and Running Image flag */
     ret = sys_img_flag_set(boot_idx, IMG_FLAG_VERIFY_MASK, IMG_FLAG_VERIFY_OK);
     ret |= sys_running_img_set(boot_idx);
 
+#ifdef CONFIG_IMAGE_VERIFICATION
     /* Update image version counter */
     version = (hdr.ver_major << 24) | (hdr.ver_minor << 16) | hdr.ver_rev;
     ret = sys_fw_version_set(IMG_TYPE_IMG, version);
@@ -163,7 +165,7 @@ int main(void)
         mbl_trace(MBL_ALWAYS, "Current image version is %d.%d.%d.\r\n",
                             hdr.ver_major, hdr.ver_minor, hdr.ver_rev);
     }
-
+#endif
     /* Read the MSP and Reset_Handler of the main image */
     flash_read((image_offset + IMAGE_HEADER_SIZE), arm_vector, 8);
     if (!is_valid_flash_addr(arm_vector[1])) {

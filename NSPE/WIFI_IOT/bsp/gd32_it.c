@@ -345,12 +345,44 @@ void USART1_IRQHandler(void)
 }
 
 /*!
+    \brief      this function handles USART2 exception
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void USART2_IRQHandler(void)
+{
+    sys_int_enter();                            /* Tell the OS that we are starting an ISR            */
+
+    log_uart_interrupt_handler();
+
+    sys_int_exit();                             /* Tell the OS that we are leaving the ISR            */
+}
+
+/*!
     \brief      this function handles EXTI5_9 exception
     \param[in]  none
     \param[out] none
     \retval     none
 */
 void EXTI5_9_IRQHandler(void)
+{
+#if CONFIG_PLATFORM == PLATFORM_ASIC_32W51X
+    deep_sleep_exit();
+
+    printf("WAKEUP For Console, Input Any Command or Press 'Enter' Key to Deep Sleep\r\n#\r\n");
+    usart_command_enable(LOG_UART,USART_CMD_RXFCMD);
+    sys_wakelock_acquire(LOCK_ID_USART);
+#endif
+}
+
+/*!
+    \brief      this function handles EXTI10_15 exception
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void EXTI10_15_IRQHandler(void)
 {
 #if CONFIG_PLATFORM == PLATFORM_ASIC_32W51X
     deep_sleep_exit();

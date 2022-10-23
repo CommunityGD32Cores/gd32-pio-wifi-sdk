@@ -59,6 +59,7 @@ struct wifi_indicate_intf {
     int (*indicate_disconnect)(struct wifi_disconnect_info *disc_info);
     int (*indicate_connect)(struct wifi_connect_result *connect_result);
     int (*indicate_scan_result)(WIFI_SCAN_RESULT_E *result);
+    int (*indicate_softap_sta_del)(uint8_t *mac_addr);
 };
 
 /**
@@ -90,6 +91,8 @@ struct wifi_ops_entry {
     int32_t (*wifi_softap_get_assoc_info)(uint8_t *info);
     int32_t (*wifi_dump_driver_threads)(void);
     int32_t (*wifi_set_task_priority)(int32_t rx_prio, int32_t tx_prio, int32_t ev_prio, int32_t ps_prio);
+    int32_t (*wifi_set_bw)(uint32_t bw);
+    int32_t (*wifi_get_bw)(uint32_t *bw);
 };
 
 /*============================ GLOBAL VARIABLES ==============================*/
@@ -141,12 +144,18 @@ void wifi_indicate_disconnect(ADAPTER *Adapter, WIFI_DISCON_REASON_E disc_reason
 
 void wifi_indicate_scan_complete(ADAPTER *Adapter);
 
+int32_t wifi_set_bw(uint32_t bw);
+
+int32_t wifi_get_bw(uint32_t *bw);
+
 /* Import from WiFi Netlink */
 extern int wifi_netlink_indicate_connect(struct wifi_connect_result *connect_result);
 
 extern int wifi_netlink_scan_result_notify(WIFI_SCAN_RESULT_E *result);
 
 extern int wifi_netlink_indicate_disconnect(struct wifi_disconnect_info *disc_info);
+
+extern int wifi_netlink_indicate_softap_sta_del(uint8_t *mac_addr);
 
 /*============================ IMPLEMENTATION ================================*/
 static inline int is_zero_ether_addr(const uint8_t *a)

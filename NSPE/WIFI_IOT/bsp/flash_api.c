@@ -354,6 +354,82 @@ static void qspi_flash_autopolling_ready(void)
     qspi_autopolling(&sCommand, &sConfig);
 }
 
+/*!
+    \brief      configure qspi flash to quad mode
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+static void qspi_flash_set_quad(void)
+{
+    uint32_t id = 0;
+    uint8_t mode_s = 0;
+    uint16_t mode = 0;
+    qspi_command_struct sCommand;
+
+    qspi_flash_read_id(&id);
+
+    qspi_flash_write_enable();
+
+    sCommand.instruction        = READ_STATUS_REG1_CMD;
+    sCommand.addressmode         = QSPI_ADDRESS_NONE;
+    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_1_LINE;
+    sCommand.nbdata              = 1;
+    qspi_command(&sCommand);
+    qspi_receive(&mode_s);
+
+    mode |= (uint16_t)mode_s;
+
+    sCommand.instruction        = READ_STATUS_REG_CMD;
+    sCommand.addressmode         = QSPI_ADDRESS_NONE;
+    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
+    sCommand.dummycycles         = 0;
+    sCommand.datamode            = QSPI_DATA_1_LINE;
+    sCommand.nbdata              = 1;
+    qspi_command(&sCommand);
+    qspi_receive(&mode_s);
+
+    mode |= (uint16_t)mode_s << 8;
+
+    if (mode & 0x0200) {
+        /* quad mode, do nothing */
+    } else {
+        switch ((id & 0x00ff0000) >> 16) {
+        case 0x16:                                       //GD32Q32
+        case 0x17:                                       //GD32Q64
+        case 0x18:                                       //GD32Q128
+            mode = mode >> 8;
+            mode |= 0x02;
+            sCommand.instruction = WRITE_STATUS_REG_CMD;//write flash status[s15-s8]
+            sCommand.addressmode = QSPI_ADDRESS_NONE;
+            sCommand.address     = 0;
+            sCommand.datamode    = QSPI_DATA_1_LINE;
+            sCommand.nbdata      = 1;
+            sCommand.dummycycles = 0;
+            qspi_command(&sCommand);
+            qspi_transmit((uint8_t *)&mode);
+            break;
+        case 0x14:                                       //GD32Q80
+        case 0x15:                                       //GD32Q16
+        case 0x19:                                       //GD32Q256
+        default:
+            mode |= (0x0200);
+            sCommand.instruction = WRITE_STATUS_REG1_CMD;//write flash status[s15-s0]
+            sCommand.addressmode = QSPI_ADDRESS_NONE;
+            sCommand.address     = 0;
+            sCommand.datamode    = QSPI_DATA_1_LINE;
+            sCommand.nbdata      = 2;
+            sCommand.dummycycles = 0;
+            qspi_command(&sCommand);
+            qspi_transmit((uint8_t *)&mode);
+            break;
+        }
+
+        qspi_flash_autopolling_ready();
+    }
+}
 
 /*!
     \brief      configure qspi flash
@@ -365,7 +441,6 @@ void qspi_flash_config(uint32_t clock_prescaler)
 {
     qspi_init_struct Init;
     qspi_command_struct sCommand;
-    uint8_t mode;
 
     // rcu_periph_clock_enable(RCU_GTZC);
     // tzgpc_tzspc_peripheral_attributes_config(TZGPC_PERIPH_QSPI_FLASHREG, TZGPC_TZSPC_PERIPH_SEC);
@@ -397,32 +472,30 @@ void qspi_flash_config(uint32_t clock_prescaler)
     // sCommand.DdrMode             = QSPI_DDR_MODE_DISABLE;
     sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
 
-    qspi_flash_write_enable();
+    qspi_flash_set_quad();
 
-    sCommand.instruction         = READ_STATUS_REG_CMD;
-    sCommand.addressmode         = QSPI_ADDRESS_NONE;
-    sCommand.alternatebytemode   = QSPI_ALTERNATE_BYTES_NONE;
+}
+
+/*!
+    \brief      read qspi flash device id
+    \param[in]  None
+    \param[out] None
+    \retval     0
+*/
+int32_t qspi_flash_read_id(void *id)
+{
+    qspi_command_struct sCommand = {0};
+
+    sCommand.instructionmode     = QSPI_INSTRUCTION_1_LINE;
+    sCommand.instruction         = CHIP_READ_ID_CMD;
     sCommand.dummycycles         = 0;
     sCommand.datamode            = QSPI_DATA_1_LINE;
-    sCommand.nbdata              = 1;
+    sCommand.nbdata              = 3;
+    sCommand.sioomode            = QSPI_SIOO_INST_EVERY_CMD;
     qspi_command(&sCommand);
-    qspi_receive(&mode);
+    qspi_receive(id);
 
-    if (mode & 0x02) {
-        /* quad mode, do nothing */
-    } else {
-        /* enable quad mode */
-        mode |= 0x02;
-        sCommand.instruction = WRITE_STATUS_REG_CMD;
-        sCommand.addressmode = QSPI_ADDRESS_NONE;
-        sCommand.address     = 0;
-        sCommand.datamode    = QSPI_DATA_1_LINE;
-        sCommand.nbdata      = 1;
-        sCommand.dummycycles = 0;
-        qspi_command(&sCommand);
-        qspi_transmit(&mode);
-        qspi_flash_autopolling_ready();
-    }
+    return 0;
 }
 
 /*!

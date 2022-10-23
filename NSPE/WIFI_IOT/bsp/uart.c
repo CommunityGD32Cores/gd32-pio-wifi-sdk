@@ -92,15 +92,15 @@ int _write(int fd, char *str, int len)
 */
 void usart_config(uint32_t usart_periph)
 {
-    rcu_periph_clock_enable(RCU_GPIOA);
     if (usart_periph == USART0) {
         rcu_periph_clock_enable(RCU_USART0);
+        rcu_periph_clock_enable(RCU_GPIOA);
         gpio_af_set(GPIOA, GPIO_AF_7, GPIO_PIN_9);
-        gpio_af_set(GPIOA, GPIO_AF_7, GPIO_PIN_10);
+        gpio_af_set(GPIOA, GPIO_AF_7, GPIO_PIN_15);
         gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_9);
         gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_9);
-        gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_10);
-        gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_10);
+        gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_15);
+        gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_15);
     } else if (usart_periph == USART1) {
         rcu_periph_clock_enable(RCU_USART1);
         rcu_periph_clock_enable(RCU_GPIOA);
@@ -111,6 +111,15 @@ void usart_config(uint32_t usart_periph)
         gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_15);
         gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_8);
         gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_8);
+    } else if (usart_periph == USART2) {
+        rcu_periph_clock_enable(RCU_USART2);
+        rcu_periph_clock_enable(RCU_GPIOB);
+        gpio_af_set(GPIOB, GPIO_AF_7, GPIO_PIN_10);
+        gpio_af_set(GPIOB, GPIO_AF_7, GPIO_PIN_11);
+        gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_10);
+        gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_10);
+        gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_11);
+        gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_11);
     }
 
     usart_deinit(usart_periph);
@@ -246,13 +255,6 @@ void log_uart_interrupt_handler(void) SECTION_RAM_CODE
     char ch;
     os_task_t *receiver_tcb;
     WIFI_MESSAGE_TYPE_E msg_type;
-
-    //if ((RESET != usart_interrupt_flag_get(LOG_UART, USART_FLAG_ORERR)) ||
-    //    (RESET != usart_interrupt_flag_get(LOG_UART, USART_FLAG_NERR)) ||
-    //    (RESET != usart_interrupt_flag_get(LOG_UART, USART_FLAG_FERR)) ||
-    //    (RESET != usart_interrupt_flag_get(LOG_UART, USART_FLAG_PERR))) {
-    //
-    //}
 
     if ((RESET != usart_interrupt_flag_get(LOG_UART, USART_INT_FLAG_RBNE)) &&
         (RESET != usart_flag_get(LOG_UART, USART_FLAG_RBNE))) {

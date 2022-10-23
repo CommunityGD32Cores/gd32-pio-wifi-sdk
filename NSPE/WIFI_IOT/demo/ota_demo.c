@@ -44,14 +44,14 @@ OF SUCH DAMAGE.
 #include "mbl_api.h"
 #endif
 
-#define HTTP_GET_MAX_LEN          256
+#define HTTP_GET_MAX_LEN          1024 //256
 #define RECBUFFER_LEN             1516
 #define INVALID_SOCKET            (-1)
 
-#define DOWNLOAD_URL    "http://192.168.18.20/static/releases/otatest/"
+#define DOWNLOAD_URL    "http://192.168.110.24/"
 #define PORT            80
 #define TERM            "\r\n"
-#define ENDING          "\r\n"
+#define ENDING          "\r\n\r\n"
 
 /*!
     \brief      initialize http socket
@@ -117,7 +117,7 @@ int32_t http_rsp_code(uint8_t *httpbuf)
 
     memset(re_code, 0, sizeof(re_code));
 
-    p_start = strstr((char *)httpbuf, "HTTP/1.1");
+    p_start = strstr((char *)httpbuf, "HTTP/1.");
     if (NULL == p_start) {
         return -1;
     }
@@ -253,7 +253,7 @@ exit:
       \arg        -3: malloc http host space fail
       \arg        0: send get http responses image information succee
 */
-static int32_t http_req_image(int32_t sid, char *url, char *host, char *bin)
+static int32_t http_req_image(int32_t sid, char *url, char *host, uint16_t port, char *bin)
 {
     char *getBuf = NULL;
     int32_t totalLen = 0;
@@ -269,11 +269,12 @@ static int32_t http_req_image(int32_t sid, char *url, char *host, char *bin)
         ret = -2;
         goto exit;
     }
-    memset(getBuf, 0, HTTP_GET_MAX_LEN);
-    snprintf(getBuf, HTTP_GET_MAX_LEN, "%s %s%s %s%s%s%s%s%s%s",
+
+    snprintf(getBuf, HTTP_GET_MAX_LEN, "%s %s%s %s%s%s%s:%d%s%s%s",
                                         "GET", url, bin, "HTTP/1.1", TERM,
-                                        "Host:", host, TERM,
-                                        "Content-Type: application/text", ENDING);
+                                        "Host:", host, port, TERM,
+                                        "Connection: keep-alive\r\n", ENDING);
+
 
     printf("Send: %s", getBuf);
     totalLen = strlen(getBuf);
@@ -347,11 +348,17 @@ static int32_t http_rsp_image(int32_t sid, uint32_t running_idx)
     offset = 0;
     buf = recvbuf + hdr_len;
     recv_len -= hdr_len;
+    if (recv_len < 0) {
+        ret = -4;
+        goto Exit;
+    }
     do {
-        // printf("Write to 0x%x with len %d\r\n", offset, recv_len);
-        if (mbl_flash_write((new_img_addr + offset), buf, recv_len) < 0) {
-            ret = -4;
-            goto Exit;
+        if (recv_len > 0) {
+            // printf("Write to 0x%x with len %d\r\n", offset, recv_len);
+            if (mbl_flash_write((new_img_addr + offset), buf, recv_len) < 0) {
+                ret = -5;
+                goto Exit;
+            }
         }
         offset += recv_len;
         recv_len = body_len - offset;
@@ -362,7 +369,7 @@ static int32_t http_rsp_image(int32_t sid, uint32_t running_idx)
         }
         recv_len = recv(sid, recvbuf, recv_len, 0);
         if (recv_len <= 0) {
-            ret = -5;
+            ret = -6;
             goto Exit;
         }
         buf = recvbuf;
@@ -413,7 +420,7 @@ void ota_demo_task(void *param)
         goto Exit;
     }
 
-    res = http_req_image(http_socketid, url, host, bin_name);
+    res = http_req_image(http_socketid, url, host, PORT, bin_name);
     if (0 == res) {
         res = http_rsp_image(http_socketid, running_idx);
         if (res < 0) {
@@ -457,6 +464,9 @@ Exit:
 */
 int32_t ota_demo(char *bin_name)
 {
+    /* Test with Python3 HTTP Server: (copy the ota bin file to the following cmd running directory)
+       # python -m http.server 80 --bind 192.168.110.24
+    */
     void *handle;
     char *param = sys_malloc(strlen(bin_name) + 1);
     if (param == NULL) {

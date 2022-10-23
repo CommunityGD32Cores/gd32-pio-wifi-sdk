@@ -9,7 +9,11 @@ void wifi_netif_close(void);
 uint8_t wifi_netif_set_hwaddr(uint8_t *mac_addr);
 uint8_t *wifi_netif_get_hwaddr(void);
 ip_addr_t *wifi_netif_get_ip(void);
-void wifi_netif_set_ip(ip_addr_t *ip, ip_addr_t *netmask, ip_addr_t *gw);
+#if LWIP_IPV6
+ip_addr_t *wifi_netif_get_ip6(uint8_t index);
+void wifi_netif_set_ip6addr_invalid(void);
+#endif
+void wifi_netif_set_ip(ip4_addr_t *ip, ip4_addr_t *netmask, ip4_addr_t *gw);
 ip_addr_t *wifi_netif_get_gw(void);
 ip_addr_t *wifi_netif_get_netmask(void);
 void wifi_netif_set_addr(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw);

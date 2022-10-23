@@ -69,8 +69,8 @@ static uint8_t ap_dhcpd_started = 0;
 static void wifi_mgmt_dhcp_polling(void *eloop_data, void *user_ctx);
 static void wifi_mgmt_link_status_polling(void *eloop_data, void *user_ctx);
 static void wifi_mgmt_connect_retry(void *eloop_data, void *user_ctx);
-#ifdef CONFIG_MP_SUPPORT
-extern void mp_mode_config(void);
+#ifdef CONFIG_RF_TEST_SUPPORT
+#include "cmd_rf_test.h"
 #endif
 
 /*============================ IMPLEMENTATION ================================*/
@@ -748,9 +748,15 @@ void wifi_management_ap_start(char *ssid, char *passwd, uint32_t channel, uint32
 
     wifi_netlink_ap_start(ssid, passwd, channel, hidden);
 
+#ifdef CONFIG_IPV6_SUPPORT
+    CONFIG_IP4_ADDR(&ipaddr.u_addr.ip4);
+    CONFIG_IP4_ADDR_NM(&netmask.u_addr.ip4);
+    CONFIG_IP4_ADDR_GW(&gw.u_addr.ip4);
+#else
     CONFIG_IP4_ADDR(&ipaddr);
     CONFIG_IP4_ADDR_NM(&netmask);
     CONFIG_IP4_ADDR_GW(&gw);
+#endif
 
     wifi_netif_set_addr(&ipaddr, &netmask, &gw);
 
@@ -802,7 +808,7 @@ void wifi_management_init(void)
 {
     void *handle;
 
-#ifndef CONFIG_MP_SUPPORT
+#ifndef CONFIG_RF_TEST_SUPPORT
     printf("System clock is %d\r\n", SystemCoreClock);
 #endif
 
@@ -814,7 +820,7 @@ void wifi_management_init(void)
     wifi_wakelock_acquire();
     wifi_netlink_dev_open();
 
-#ifdef CONFIG_MP_SUPPORT
+#ifdef CONFIG_RF_TEST_SUPPORT
     mp_mode_config();
 #endif
 

@@ -32,10 +32,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
+#include "platform_def.h"
 #include "gd32w51x.h"
 #include "mbl_trace.h"
 
-#define LOG_UART USART1
 
 /*!
     \brief      send byte to usart
@@ -103,6 +103,16 @@ void uart_config(uint32_t usart_periph)
         gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_15);
         gpio_mode_set(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_8);
         gpio_output_options_set(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_8);
+    } else if (usart_periph == USART2) {
+        rcu_periph_clock_enable(RCU_USART2);
+        rcu_periph_clock_enable(RCU_GPIOB);
+
+        gpio_af_set(GPIOB, GPIO_AF_7, GPIO_PIN_10);
+        gpio_af_set(GPIOB, GPIO_AF_7, GPIO_PIN_11);
+        gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_10);
+        gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_10);
+        gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_PIN_11);
+        gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_25MHZ, GPIO_PIN_11);
     } else {
         return;
     }
@@ -124,7 +134,7 @@ void uart_config(uint32_t usart_periph)
 */
 void log_uart_init(void)
 {
-    uart_config(USART1);
+    uart_config(LOG_UART);
 }
 
 /*!
@@ -135,5 +145,5 @@ void log_uart_init(void)
 */
 void log_uart_idle_wait(void)
 {
-    while (RESET == usart_flag_get(USART1, USART_FLAG_TC));
+    while (RESET == usart_flag_get(LOG_UART, USART_FLAG_TC));
 }

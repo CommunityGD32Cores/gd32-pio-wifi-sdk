@@ -690,7 +690,7 @@
             <archiveVersion>1</archiveVersion>
             <data>
                 <prebuild>$PROJ_DIR$\mbl_prebuild.bat TZ $PROJ_DIR$ "$TOOLKIT_DIR$"</prebuild>
-                <postbuild>$PROJ_DIR$\..\mbl_afterbuild.bat SIP "" DAPLINK $TARGET_DIR$ $TARGET_BNAME$ IAR "$TOOLKIT_DIR$"</postbuild>
+                <postbuild>$PROJ_DIR$\..\mbl_afterbuild_tz.bat SIP "" DAPLINK $TARGET_DIR$ $TARGET_BNAME$ IAR "$TOOLKIT_DIR$"</postbuild>
             </data>
         </settings>
         <settings>
@@ -810,7 +810,7 @@
                 </option>
                 <option>
                     <name>IlinkUseExtraOptions</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkExtraOptions</name>

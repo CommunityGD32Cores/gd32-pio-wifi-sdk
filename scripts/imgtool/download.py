@@ -66,13 +66,13 @@ def download_firmware_daplink(files, algo):
     elif algo == 'GD32W51x_Q' or algo == 'GD32W51x_Q_S':
         target = 'gd32w51x_qspi'
 
-    p = subprocess.Popen(VENV + '\\Scripts\\activate.bat && pyocd cmd ' + f' --probe 0 --target {target}', shell=True, stdin=subprocess.PIPE)
+    p = subprocess.Popen(VENV + '\\Scripts\\activate.bat && pyocd cmd ' + f' --target {target}', shell=True, stdin=subprocess.PIPE)
     p.communicate(input=b'ww 0xE000EDD0 2\nexit\n')
 
     if target == 'gd32w51x':
-        subprocess.run(VENV + '\\Scripts\\activate.bat && pyocd flash --disable-keep-unwritten ' + ' '.join(files) + f' --probe 0 --target {target}', shell=True, check=True)
+        subprocess.run(VENV + '\\Scripts\\activate.bat && pyocd flash --disable-keep-unwritten ' + ' '.join(files) + f' --target {target}', shell=True, check=True)
     else:
-        subprocess.run(VENV + '\\Scripts\\activate.bat && pyocd flash --disable-keep-unwritten --disable-smart-flash ' + ' '.join(files) + f' --probe 0 --target {target}', shell=True, check=True)
+        subprocess.run(VENV + '\\Scripts\\activate.bat && pyocd flash --disable-keep-unwritten --disable-smart-flash ' + ' '.join(files) + f' --target {target}', shell=True, check=True)
 
 def verify_firmware_jlink(files, algo):
     if not files:

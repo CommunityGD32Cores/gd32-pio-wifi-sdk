@@ -48,11 +48,34 @@ OF SUCH DAMAGE.
 #define CONFIG_PLATFORM_FPGA
 #endif
 
+#define PLATFORM_BOARD_32W515T_START    0
+#define PLATFORM_BOARD_32W515P_EVAL     1
+#ifdef CONFIG_PLATFORM_ASIC
+#define CONFIG_BOARD            PLATFORM_BOARD_32W515T_START
+#endif
+
+#define XIP_FLASH_SIP   0
+#define XIP_FLASH_EXT   1
+#define CONFIG_XIP_FLASH        XIP_FLASH_SIP
+
+#ifndef CONFIG_XIP_FLASH
+#error "CONFIG_XIP_FLASH must be defined!"
+#elif (CONFIG_XIP_FLASH == XIP_FLASH_EXT)
+#define QSPI_FLASH_1_LINE        0
+#define QSPI_FLASH_2_LINES       1
+#define QSPI_FLASH_4_LINES       2
+#define QSPI_FLASH_MODE          QSPI_FLASH_4_LINES
+#endif
+
 #define CRYSTAL_26M             0
 #define CRYSTAL_40M             1
 #define PLATFORM_CRYSTAL        CRYSTAL_40M
 
+#if defined(CONFIG_BOARD) && (CONFIG_BOARD == PLATFORM_BOARD_32W515P_EVAL)
+#define LOG_UART USART2
+#else
 #define LOG_UART USART1
+#endif
 
 #ifdef CONFIG_PLATFORM_FPGA
 #define RFAD_SPI SPI0

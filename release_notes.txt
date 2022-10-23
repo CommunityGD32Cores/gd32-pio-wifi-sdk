@@ -1,5 +1,18 @@
 ==========================================
 Release Notes
 ==========================================
+V1.0.2 (2022-03-18)
+1. Simplify development environment setup.
+   Remove dependency on Python and remove automatic download after compilation.
+2. Support LWIP IPV6 for STA mode.
+3. Add new UART command to enable bandwidth 40M support.
+4. Fine tune RF and update RF control parameters.
+
+==========================================
+V1.0.1 (2022-01-20)
+1. Add UART configuration for GD32W515P-EVAL board.
+2. Support more types of GD QSPI FLASH chips.
+
+==========================================
 V1.0.0 (2021-11-30)
 1. First release.

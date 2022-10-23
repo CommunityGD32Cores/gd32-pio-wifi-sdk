@@ -113,14 +113,14 @@ static void smart_led_init(int value)
     /* enable the LED GPIO clock */
     rcu_periph_clock_enable(RCU_GPIOB);
     /* configure LED GPIO pin */
-    gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO_PIN_0);
-    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_166MHZ, GPIO_PIN_0);
+    gpio_mode_set(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO_PIN_11);
+    gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_166MHZ, GPIO_PIN_11);
 
     /* turn on/off LED */
     if (value)
-        gpio_bit_set(GPIOB, GPIO_PIN_0);
+        gpio_bit_set(GPIOB, GPIO_PIN_11);
     else
-        gpio_bit_reset(GPIOB, GPIO_PIN_0);
+        gpio_bit_reset(GPIOB, GPIO_PIN_11);
 
 }
 static int smart_led_set(int devid, const char *request, int request_len)
@@ -143,9 +143,9 @@ static int smart_led_set(int devid, const char *request, int request_len)
     printf("%s(): value = %d\r\n", __func__, value);
 
     if (value)
-        gpio_bit_set(GPIOB, GPIO_PIN_0);
+        gpio_bit_set(GPIOB, GPIO_PIN_11);
     else
-        gpio_bit_reset(GPIOB, GPIO_PIN_0);
+        gpio_bit_reset(GPIOB, GPIO_PIN_11);
 
     return 0;
 }

@@ -56,5 +56,6 @@ uint8_t rf_efuse_totale_space_get(void);
 uint8_t *rf_efuse_map_get(void);
 rf_efuse_status_t rf_efuse_map_reload(void);
 uint32_t rf_efuse_reg_read(void);
+uint32_t rf_efuse_type_reg_read(void);
 
 #endif

@@ -62,5 +62,7 @@ LR_IROM1 LR_IROM1_ADDR LR_IROM1_SIZE  {    ; load region size_region
         soc_rx.o(i.soc_rx_tasklet)
         soc_tx.o(i.soc_send_xframe)
 #endif
+        //user code run in sram, for example:
+        //user_xxx.o(+RO)
     }
 }

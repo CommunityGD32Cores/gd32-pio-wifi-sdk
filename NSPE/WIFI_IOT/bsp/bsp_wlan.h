@@ -52,10 +52,13 @@ OF SUCH DAMAGE.
 #define RTC_CLOCK_SOURCE_HXTAL_DIV_RTCDIV
 #endif
 
-#define GPIOX_PIN8_EXTI_LINE            EXTI_8
 #define WLAN_WAKEUP_EXTI_LINE           EXTI_20
 #define RTC_WAKEUP_EXTI_LINE            EXTI_24
-#define LOG_USART_RX_PIN_EXTI_LINE      GPIOX_PIN8_EXTI_LINE
+#if defined(CONFIG_BOARD) && (CONFIG_BOARD == PLATFORM_BOARD_32W515P_EVAL)
+#define LOG_USART_RX_PIN_EXTI_LINE      EXTI_11
+#else
+#define LOG_USART_RX_PIN_EXTI_LINE      EXTI_8
+#endif
 
 /*============================ MACRO FUNCTIONS ===============================*/
 /*============================ TYPES =========================================*/

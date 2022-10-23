@@ -32,6 +32,18 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
+#if defined(CONFIG_BOARD) && (CONFIG_BOARD == PLATFORM_BOARD_32W515P_EVAL)
+#define LOG_UART_IRQn           USART2_IRQn
+#define UART_RXPIN_EXTI_IRQn    EXTI10_15_IRQn
+#define UART_RXPIN_EXTI_PORT    EXTI_SOURCE_GPIOB
+#define UART_RXPIN_EXTI_PIN     EXTI_SOURCE_PIN11
+#else
+#define LOG_UART_IRQn           USART1_IRQn
+#define UART_RXPIN_EXTI_IRQn    EXTI5_9_IRQn
+#define UART_RXPIN_EXTI_PORT    EXTI_SOURCE_GPIOA
+#define UART_RXPIN_EXTI_PIN     EXTI_SOURCE_PIN8
+#endif
+
 #if CONFIG_PLATFORM == PLATFORM_FPGA_3210X
 #define BufferSize          8
 #define AD_SPI_CS_LOW()     gpio_bit_reset(GPIOA, GPIO_PIN_12)
@@ -419,14 +431,14 @@ void nvic_config(void)
     nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
 
     *NVIC_CCR = *NVIC_CCR | 0x200; // STKALIGN
-    nvic_irq_enable(USART1_IRQn, 7, 0);
-
+    nvic_irq_enable(LOG_UART_IRQn, 7, 0);
     nvic_irq_enable(WLAN_Rx_IRQn, 8, 0);
     nvic_irq_enable(WLAN_Tx_IRQn, 8, 0);
     nvic_irq_enable(WLAN_Cmn_IRQn, 8, 0);
 #if CONFIG_PLATFORM == PLATFORM_ASIC_32W51X
     nvic_irq_enable(WLAN_WKUP_IRQn, 6, 0);
     nvic_irq_enable(RTC_WKUP_IRQn, 6, 0);
+    nvic_irq_enable(UART_RXPIN_EXTI_IRQn, 6, 0);
 #endif
 }
 
@@ -663,9 +675,9 @@ static void rtc_32k_config(void)
 */
 static void usart_rxpin_exti_config()
 {
+    rcu_periph_clock_enable(RCU_SYSCFG);
     /* connect EXTI line to usart rx pin */
-    syscfg_exti_line_config(EXTI_SOURCE_GPIOA, EXTI_SOURCE_PIN8);
-    nvic_irq_enable(EXTI5_9_IRQn, 2U, 0U);
+    syscfg_exti_line_config(UART_RXPIN_EXTI_PORT, UART_RXPIN_EXTI_PIN);
 }
 
 /*!

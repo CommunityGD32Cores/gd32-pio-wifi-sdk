@@ -49,6 +49,7 @@ OF SUCH DAMAGE.
 
 #define WIFI_BASE                       WIFI11N_BASE
 #define RF_THERMAL_REG                  (FMC_BASE + 0x108U)
+#define TYPE_REG                        (FMC_BASE + 0x104U)
 
 
 /*============================ MACRO FUNCTIONS ===============================*/

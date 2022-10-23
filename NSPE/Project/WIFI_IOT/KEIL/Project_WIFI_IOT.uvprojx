@@ -14,16 +14,16 @@
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>ARMCM33_DSP_FP_TZ</Device>
-          <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.8.0</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x20200000,0x00020000) IROM(0x00000000,0x00200000) IROM2(0x00200000,0x00200000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
+          <Device>GD32W515PIQ6</Device>
+          <Vendor>GigaDevice</Vendor>
+          <PackID>GigaDevice.GD32W51x_DFP.1.0.2</PackID>
+          <PackURL>http://gd32mcu.com/data/documents/pack/</PackURL>
+          <Cpu>IRAM(0x20000000,0x70000) IRAM2(0x30000000,0x70000) IROM(0x08000000,0x0200000) IROM2(0x0C000000,0x0200000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2V8M(-S0 -C0 -P0 -FD20000000 -FC1000)</FlashDriverDll>
+          <FlashDriverDll>UL2V8M(-S0 -C0 -P0 -FD20000000 -FC1000 -FN2 -FF0GD32W515_NS -FS08000000 -FL02000 -FF1GD32W515_S -FS1C000000 -FL12000 -FP0($$Device:GD32W515PIQ6$Flash\GD32W515_NS.FLM) -FP1($$Device:GD32W515PIQ6$Flash\GD32W515_S.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:ARMCM33_DSP_FP_TZ$Device\ARM\ARMCM33\Include\ARMCM33_DSP_FP_TZ.h</RegisterFile>
+          <RegisterFile>$$Device:GD32W515PIQ6$Device\Include\gd32w51x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -33,7 +33,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:ARMCM33_DSP_FP_TZ$Device\ARM\SVD\ARMCM33.svd</SFDFile>
+          <SFDFile>$$Device:GD32W515PIQ6$SVD\GD32W515Px.svd</SFDFile>
           <bCustSvd>1</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -82,14 +82,14 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>..\nspe_afterbuild.bat NTZ SIP "" JLINK $L KEIL $K</UserProg1Name>
-            <UserProg2Name>..\nspe_afterbuild.bat TZ QSPI 100f0e0d0c0b0a090807060504030201 DAPLINK $L KEIL $K</UserProg2Name>
+            <UserProg1Name>..\nspe_afterbuild.bat $L KEIL $K</UserProg1Name>
+            <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
             <nStopA1X>0</nStopA1X>
             <nStopA2X>0</nStopA2X>
           </AfterMake>
-          <SelectedForBatchBuild>0</SelectedForBatchBuild>
+          <SelectedForBatchBuild>1</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
         </TargetCommonOption>
         <CommonProperty>
@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2V8M.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -188,7 +188,7 @@
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
             <useUlib>1</useUlib>
-            <EndSel>1</EndSel>
+            <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
             <RoSelD>4</RoSelD>
@@ -244,11 +244,11 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x70000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
-                <StartAddress>0x0</StartAddress>
+                <StartAddress>0x8000000</StartAddress>
                 <Size>0x200000</Size>
               </IROM>
               <XRAM>
@@ -273,12 +273,12 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x0</StartAddress>
+                <StartAddress>0x8000000</StartAddress>
                 <Size>0x200000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
-                <StartAddress>0x200000</StartAddress>
+                <StartAddress>0xc000000</StartAddress>
                 <Size>0x200000</Size>
               </OCR_RVCT5>
               <OCR_RVCT6>
@@ -299,12 +299,12 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x70000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x20200000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x30000000</StartAddress>
+                <Size>0x70000</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -784,6 +784,11 @@
               <FileType>4</FileType>
               <FilePath>..\..\..\WIFI_IOT\lib\KEIL\wlan.lib</FilePath>
             </File>
+            <File>
+              <FileName>rftest.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\WIFI_IOT\lib\KEIL\rftest.lib</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1003,6 +1008,46 @@
               <FileName>ping.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\apps\ping\ping.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ip6.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip6_addr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ip6_addr.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip6_frag.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ip6_frag.c</FilePath>
+            </File>
+            <File>
+              <FileName>mld6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\mld6.c</FilePath>
+            </File>
+            <File>
+              <FileName>nd6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\nd6.c</FilePath>
+            </File>
+            <File>
+              <FileName>icmp6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\icmp6.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhcp6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\dhcp6.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethip6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ethip6.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2383,6 +2428,11 @@
               <FileType>4</FileType>
               <FilePath>..\..\..\WIFI_IOT\lib\KEIL\wlan.lib</FilePath>
             </File>
+            <File>
+              <FileName>rftest.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\WIFI_IOT\lib\KEIL\rftest.lib</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2602,6 +2652,46 @@
               <FileName>ping.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\apps\ping\ping.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ip6.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip6_addr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ip6_addr.c</FilePath>
+            </File>
+            <File>
+              <FileName>ip6_frag.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ip6_frag.c</FilePath>
+            </File>
+            <File>
+              <FileName>mld6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\mld6.c</FilePath>
+            </File>
+            <File>
+              <FileName>nd6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\nd6.c</FilePath>
+            </File>
+            <File>
+              <FileName>icmp6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\icmp6.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhcp6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\dhcp6.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethip6.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\WIFI_IOT\network\lwip-2.1.2\src\core\ipv6\ethip6.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3020,8 +3110,8 @@
   <RTE>
     <apis/>
     <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.1.1" condition="ARMv6_7_8-M Device">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.3.0"/>
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.5.0" condition="ARMv6_7_8-M Device">
+        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
         <targetInfos>
           <targetInfo name="Project_Freertos"/>
           <targetInfo name="Project_Rtthread"/>

@@ -3,6 +3,16 @@ cmake_minimum_required(VERSION 3.15)
 
 add_library(app)
 
+if (CONFIG_IPERF_TEST)
+    if (CONFIG_STATIC_LIB_BUILDED)
+        add_library(iperf3 STATIC IMPORTED GLOBAL)
+
+        set_target_properties(iperf3
+            PROPERTIES IMPORTED_LOCATION
+            ${PROJECT_SOURCE_DIR}/NSPE/WIFI_IOT/lib/GCC/libiperf3.a)
+    endif()
+endif()
+
 target_sources(app
     PRIVATE
         atcmd.c
@@ -34,6 +44,7 @@ target_link_libraries(app
     cmsis_api
     $<$<BOOL:${CONFIG_ALICLOUD_SUPPORT}>:alicloud>
     $<$<BOOL:${CONFIG_IPERF_TEST}>:iperf3>
+    $<$<BOOL:${CONFIG_IPERF_TEST}>:iperf3_api>
     $<$<BOOL:${CONFIG_FATFS_SUPPORT}>:fatfs>
     )
 

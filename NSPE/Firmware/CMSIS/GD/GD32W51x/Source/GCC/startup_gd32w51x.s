@@ -125,7 +125,7 @@ Infinite_Loop:
 
 
 __Vectors:
-                .word     Image$$ARM_LIB_STACKHEAP$$ZI$$Base                      /* Top of Stack */
+                .word     Image$$ARM_LIB_STACKHEAP$$ZI$$Limit                      /* Top of Stack */
                 .word     Reset_Handler                     /* Reset Handler */
                 .word     NMI_Handler                       /* NMI Handler */
                 .word     HardFault_Handler                 /* Hard Fault Handler */
