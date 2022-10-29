@@ -3,7 +3,9 @@
 
 #include "lwip/ip_addr.h"
 
+#ifndef PING_TASK_STACK_SIZE
 #define PING_TASK_STACK_SIZE                   256
+#endif
 #define PING_TASK_PRIO                         16
 
 struct ping_info_t {
