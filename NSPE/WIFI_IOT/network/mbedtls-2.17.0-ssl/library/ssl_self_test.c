@@ -84,14 +84,16 @@ int ssl_self_test( void )
 #include "mbedtls/ecp.h"
 #include "mbedtls/ecjpake.h"
 #include "mbedtls/timing.h"
+#include "mbedtls/memory_buffer_alloc.h"
 
+/* only do MD5 tests for now */
 void ssl_self_test(void *arg)
 {
 #if defined(MBEDTLS_SELF_TEST)
 
     int v, suites_tested = 0, suites_failed = 0;
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C) && defined(MBEDTLS_SELF_TEST)
-    unsigned char buf[1000000];
+    unsigned char buf[512]; // was previously 1 megabyte, insane, we don't have that much RAM
 #endif
     void *pointer;
 
@@ -117,7 +119,7 @@ void ssl_self_test(void *arg)
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
     mbedtls_memory_buffer_alloc_init( buf, sizeof(buf) );
 #endif
-
+/*
 #if defined(MBEDTLS_MD2_C)
     if( mbedtls_md2_self_test( v )  != 0 )
     {
@@ -133,7 +135,7 @@ void ssl_self_test(void *arg)
     }
     suites_tested++;
 #endif
-
+*/
 #if defined(MBEDTLS_MD5_C)
     if( mbedtls_md5_self_test( v ) != 0 )
     {
@@ -141,7 +143,7 @@ void ssl_self_test(void *arg)
     }
     suites_tested++;
 #endif
-
+/*
 #if defined(MBEDTLS_RIPEMD160_C)
     if( mbedtls_ripemd160_self_test( v ) != 0 )
     {
@@ -298,7 +300,7 @@ void ssl_self_test(void *arg)
     suites_tested++;
 #endif
 #endif
-
+*/
 #if defined(MBEDTLS_ECJPAKE_C)
 //    if( mbedtls_ecjpake_self_test( v ) != 0 )
 //    {
@@ -306,7 +308,7 @@ void ssl_self_test(void *arg)
 //    }
 //    suites_tested++;
 #endif
-
+/*
 #if defined(MBEDTLS_DHM_C)
     if( mbedtls_dhm_self_test( v ) != 0 )
     {
@@ -335,7 +337,7 @@ void ssl_self_test(void *arg)
     }
     suites_tested++;
 #endif
-
+*/
 /* Slow tests last */
 
 #if defined(MBEDTLS_TIMING_C)
@@ -347,7 +349,7 @@ void ssl_self_test(void *arg)
     suites_tested++;
 */
 #endif
-
+/*
     if( v != 0 )
     {
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C) && defined(MBEDTLS_MEMORY_DEBUG)
@@ -363,7 +365,7 @@ void ssl_self_test(void *arg)
     }
     suites_tested++;
 #endif
-
+    */
 #else
     mbedtls_printf( " MBEDTLS_SELF_TEST not defined.\r\n" );
 #endif
