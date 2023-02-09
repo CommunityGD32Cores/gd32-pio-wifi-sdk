@@ -76,7 +76,7 @@ OF SUCH DAMAGE.
 #define FMC_OFRG                        REG32(FMC + 0x00000080U)                         /*!< FMC offset region register */
 #define FMC_OFVR                        REG32(FMC + 0x00000084U)                         /*!< FMC offset value register */
 /* secure registers */
-#define FMC_DMPCTL                      REG32(FMC + 0x0000008CU)                         /*!< FMC DMPcontrol register */
+#define FMC_DMPCTL                      REG32(FMC + 0x0000008CU)                         /*!< FMC DMP control register */
 /* when TZEN = 1, this register can be read by secure and non-secure access and it is write-protected against non-secure write access when the flash is secure */
 #define FMC_PRIVCFG                     REG32(FMC + 0x00000090U)                         /*!< FMC privilege configuration register */
 /* non-secure register */
@@ -256,6 +256,7 @@ typedef enum
 #define NODEC_INDEX3                    ((uint32_t)0x00000003U)                          /*!< FMC_NODEC3 register index */
 
 /* FMC flags */
+#define OB_FLAG_NSPC                    ((uint32_t)0x00000000U)                          /*!< flash security protection level 0 state */
 #define OB_FLAG_SPC1                    FMC_OBSTAT_SPC                                   /*!< flash security protection level 0.5 state */
 #define OB_FLAG_SPC0_5                  FMC_OBSTAT_SPC_P5                                /*!< flash security protection level 1 state */
 
@@ -303,6 +304,7 @@ typedef enum
 #define FMC_TIMEOUT_COUNT              ((uint32_t)0x01000000U)                           /*!< FMC timeout count value */
 
 /* function declarations */
+#ifndef GD32W515P0
 /* FMC main memory programming functions */
 /* unlock the main FMC operation */
 void fmc_unlock(void);
@@ -316,11 +318,8 @@ fmc_state_enum fmc_mass_erase(void);
 fmc_state_enum fmc_word_program(uint32_t address, uint32_t data);
 /* FMC program continuously at the corresponding address */
 fmc_state_enum fmc_continuous_program(uint32_t address, uint32_t data[], uint32_t size);
+#endif /* GD32W515PI and GD32W515TX */
 
-/* enable trustzone */
-void trustzone_enable(void);
-/* disable trustzone */
-void trustzone_disable(void);
 /* enable SRAM1 reset automatically function */
 void sram1_reset_enable(void);
 /* disable SRAM1 reset automatically function */
@@ -335,52 +334,63 @@ void fmc_privilege_disable(void);
 void ob_unlock(void);
 /* lock the option bytes operation */
 void ob_lock(void);
+
+#ifndef GD32W515P0
 /* send option bytes modification start command */
 void ob_start(void);
 /* reload option bytes */
 void ob_reload(void);
 /* configure the option bytes security protection */
 fmc_state_enum ob_security_protection_config(uint8_t ob_spc);
+/* enable trustzone */
+fmc_state_enum ob_trustzone_enable(void);
+/* disable trustzone */
+ErrStatus ob_trustzone_disable(void);
 /* program option bytes USER */
 fmc_state_enum ob_user_write(uint16_t ob_user);
-/* get the value of option bytes write protection */
-FlagStatus ob_write_protection_get(void);
-/* get option bytes security protection state */
-FlagStatus ob_security_protection_flag_get(uint32_t spc_state);
-/* get option bytes trustzone state */
-FlagStatus ob_trustzone_state_get(void);
-/* get the state of MCU memory structure is FMC mode or QSPI mode */
-FlagStatus ob_memory_mode_state_get(void);
-/* get the state of whether the option byte exist or not */
-FlagStatus ob_exist_state_get(void);
-/* get the value of option bytes USER */
-uint16_t ob_user_get(void);
-
-/* FMC read offset function */
-/* configure offset region */
-void fmc_offset_region_config(uint32_t of_spage, uint32_t of_epage);
-/* configure offset value */
-void fmc_offset_value_config(uint32_t of_value);
-/* configure NO-RTDEC pages */
-void fmc_no_rtdec_config(uint32_t nodec_spage, uint32_t nodec_epage, uint32_t nodec_register_index);
-
 /* configure write protection pages */
-void ob_write_protection_config(uint32_t wrp_spage, uint32_t wrp_epage, uint32_t wrp_register_index);
+fmc_state_enum ob_write_protection_config(uint32_t wrp_spage, uint32_t wrp_epage, uint32_t wrp_register_index);
+/* configure secure mark pages */
+void ob_secmark_config(uint32_t secm_spage, uint32_t secm_epage, uint32_t secm_register_index);
 #if defined(__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3)
 /* enable DMP region access right */
 void ob_dmp_access_enable(uint32_t dmp_register_index);
 /* disable DMP region access right */
 void ob_dmp_access_disable(uint32_t dmp_register_index);
 #endif /* defined(__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3) */
-/* configure secure mark pages */
-void ob_secmark_config(uint32_t secm_spage, uint32_t secm_epage, uint32_t secm_register_index);
 /* configure DMP secure pages */
 ErrStatus ob_dmp_config(uint32_t dmp_epage, uint32_t dmp_register_index);
 /* enable DMP function */
-void ob_dmp_enable(uint32_t dmp_register_index);
+fmc_state_enum ob_dmp_enable(uint32_t dmp_register_index);
 /* disable DMP function */
-void ob_dmp_disable(uint32_t dmp_register_index);
+fmc_state_enum ob_dmp_disable(uint32_t dmp_register_index);
+/* configure NO-RTDEC pages */
+void fmc_no_rtdec_config(uint32_t nodec_spage, uint32_t nodec_epage, uint32_t nodec_register_index);
+#endif /* GD32W515PI and GD32W515TX */
 
+/* FMC read offset function */
+/* configure offset region */
+void fmc_offset_region_config(uint32_t of_spage, uint32_t of_epage);
+/* configure offset value */
+void fmc_offset_value_config(uint32_t of_value);
+
+#ifndef GD32W515P0
+/* get option bytes write protection state, only applies to get the status of write/erase protection setting by EFUSE */
+FlagStatus ob_write_protection_get(void);
+/* get the value of option bytes USER */
+uint16_t ob_user_get(void);
+#endif /* GD32W515PI and GD32W515TX */
+
+/* get option bytes security protection state */
+FlagStatus ob_security_protection_flag_get(uint32_t spc_state);
+/* get trustzone state */
+FlagStatus ob_trustzone_state_get(void);
+/* get the state of MCU memory structure is FMC mode or QSPI mode */
+FlagStatus ob_memory_mode_state_get(void);
+/* get the state of whether the option byte exist or not */
+FlagStatus ob_exist_state_get(void);
+
+#ifndef GD32W515P0
 /* FMC interrupts and flags management functions */
 /* get FMC flag status */
 FlagStatus fmc_flag_get(uint32_t flag);
@@ -394,5 +404,6 @@ void fmc_interrupt_disable(uint32_t interrupt);
 FlagStatus fmc_interrupt_flag_get(uint32_t flag);
 /* clear FMC interrupt flag */
 void fmc_interrupt_flag_clear(uint32_t flag);
+#endif /* GD32W515PI and GD32W515TX */
 
 #endif /* GD32W51X_FMC_H */

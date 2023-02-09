@@ -10,27 +10,27 @@
 
     All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -98,7 +98,7 @@ void hpdf_channel_struct_para_init(hpdf_channel_parameter_struct* init_struct)
     init_struct->malfunction_monitor    = MM_DISABLE;
     init_struct->calibration_offset     = 0;
     init_struct->right_bit_shift        = 0U;
-    init_struct->channel_multiplexer    = SERIAL_INPUT; 
+    init_struct->channel_multiplexer    = SERIAL_INPUT;
     init_struct->channel_pin_select     = CHPINSEL_CURRENT;
     init_struct->ck_loss_detector       = CLK_LOSS_DISABLE;
     init_struct->data_packing_mode      = DPM_STANDARD_MODE;
@@ -245,7 +245,7 @@ void hpdf_channel_init(hpdf_channel_enum channelx, hpdf_channel_parameter_struct
     HPDF_CHxCFG0(channelx) = reg;
     /* configure the HPDF_CH0CFG1 */
     if(init_struct->tm_filter_oversample > 0U){
-        init_struct->tm_filter_oversample = init_struct->tm_filter_oversample - 1U;    
+        init_struct->tm_filter_oversample = init_struct->tm_filter_oversample - 1U;
     }
     reg = HPDF_CHxCFG1(channelx);
     reg &= ~(HPDF_CHxCFG1_TMSFO | HPDF_CHxCFG1_TMFOR | HPDF_CHxCFG1_MMBSD | HPDF_CHxCFG1_MMCT);
@@ -278,10 +278,10 @@ void hpdf_filter_init(hpdf_filter_enum filtery, hpdf_filter_parameter_struct* in
     HPDF_FLTyCTL1(filtery) = reg;
     /* configure the HPDF_FLT0SFCTL*/
     if(init_struct->sinc_oversample > 0U){
-        init_struct->sinc_oversample = init_struct->sinc_oversample - 1U;    
+        init_struct->sinc_oversample = init_struct->sinc_oversample - 1U;
     }
     if(init_struct->integrator_oversample > 0U){
-        init_struct->integrator_oversample = init_struct->integrator_oversample - 1U;    
+        init_struct->integrator_oversample = init_struct->integrator_oversample - 1U;
     }
     reg = HPDF_FLTySFCFG(filtery);
     reg &= ~(HPDF_FLTySFCFG_SFO | HPDF_FLTySFCFG_SFOR | HPDF_FLTySFCFG_IOR);
@@ -336,7 +336,7 @@ void hpdf_ic_init(hpdf_filter_enum filtery, hpdf_ic_parameter_struct* init_struc
     HPDF_FLTyCTL0(filtery) = reg;
     /* configure the HPDF_FLT0IGCS */
     reg = HPDF_FLTyIGCS(filtery);
-    reg &= ~HPDF_FLTyIGCS_IGCSEL; 
+    reg &= ~HPDF_FLTyIGCS_IGCSEL;
     reg |= init_struct->ic_channel_group;
     HPDF_FLTyIGCS(filtery) = reg;
 }
@@ -455,10 +455,10 @@ void hpdf_channel_disable(hpdf_channel_enum channelx)
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[in]  clock_source: SPI clock source
                 only one parameter can be selected which is shown as below:
-    \arg          EXTERNAL_CKIN: external input clock 
-    \arg          INTERNAL_CKOUT: internal CKOUT clock 
+    \arg          EXTERNAL_CKIN: external input clock
+    \arg          INTERNAL_CKOUT: internal CKOUT clock
     \arg          HALF_CKOUT_FALLING_EDGE: internal CKOUT clock, sampling point on each second CKOUT falling edge
-    \arg          HALF_CKOUT_RISING_EDGE: internal CKOUT clock, sampling point on each second CKOUT rising edge.
+    \arg          HALF_CKOUT_RISING_EDGE: internal CKOUT clock, sampling point on each second CKOUT rising edge
     \param[out] none
     \retval     none
 */
@@ -479,7 +479,7 @@ void hpdf_spi_clock_source_config(hpdf_channel_enum channelx, uint32_t clock_sou
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[in]  type: serial interface type
                 only one parameter can be selected which is shown as below:
-    \arg          SPI_RISING_EDGE: SPI interface, sample data on rising edge 
+    \arg          SPI_RISING_EDGE: SPI interface, sample data on rising edge
     \arg          SPI_FALLING_EDGE: SPI interface, sample data on rising edge
     \arg          MANCHESTER_CODE0: Manchester coded input: rising edge = logic 0, falling edge = logic 1
     \arg          MANCHESTER_CODE1: Manchester coded input: rising edge = logic 1, falling edge = logic 0
@@ -492,14 +492,14 @@ void hpdf_serial_interface_type_config(hpdf_channel_enum channelx, uint32_t type
     reg = HPDF_CHxCTL(channelx);
     /* make sure the CHEN=0 */
     if(RESET == (reg & HPDF_CHxCTL_CHEN)){
-        reg &= ~HPDF_CHxCTL_SITYP; 
+        reg &= ~HPDF_CHxCTL_SITYP;
         reg |= type;
         HPDF_CHxCTL(channelx) = reg;
     }
 }
 
 /*!
-    \brief      disable malfunction monitor 
+    \brief      disable malfunction monitor
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[out] none
     \retval     none
@@ -509,7 +509,7 @@ void hpdf_malfunction_monitor_disable(hpdf_channel_enum channelx)
     HPDF_CHxCTL(channelx) &= ~HPDF_CHxCTL_MMEN;
 }
 /*!
-    \brief      enable malfunction monitor 
+    \brief      enable malfunction monitor
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[out] none
     \retval     none
@@ -520,7 +520,7 @@ void hpdf_malfunction_monitor_enable(hpdf_channel_enum channelx)
 }
 
 /*!
-    \brief      disable clock loss detector 
+    \brief      disable clock loss detector
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[out] none
     \retval     none
@@ -531,7 +531,7 @@ void hpdf_clock_loss_disable(hpdf_channel_enum channelx)
 }
 
 /*!
-    \brief      enable clock loss detector 
+    \brief      enable clock loss detector
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[out] none
     \retval     none
@@ -574,8 +574,8 @@ void hpdf_channel_pin_redirection_enable(hpdf_channel_enum channelx)
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[in]  data_source: input data source
                 only one parameter can be selected which is shown as below:
-    \arg          SERIAL_INPUT: Input data source is taken from serial inputs 
-    \arg          INTERNAL_INPUT: Input data source is taken from internal HPDF_CHxPDI register
+    \arg          SERIAL_INPUT: input data source is taken from serial inputs
+    \arg          INTERNAL_INPUT: input data source is taken from internal HPDF_CHxPDI register
     \param[out] none
     \retval     none
 */
@@ -595,11 +595,11 @@ void hpdf_channel_multiplexer_config(hpdf_channel_enum channelx, uint32_t data_s
 /*!
     \brief      configure data packing mode
     \param[in]  channelx: CHANNELx(x=0,1)
-    \param[in]  mode: data packing mode
+    \param[in]  mode: parallel data packing mode
                 only one parameter can be selected which is shown as below:
-    \arg          DPM_STANDARD_MODE : Standard mode
-    \arg          DPM_INTERLEAVED_MODE: Interleaved mode
-    \arg          DPM_DUAL_MODE: Dual mode
+    \arg          DPM_STANDARD_MODE : standard mode
+    \arg          DPM_INTERLEAVED_MODE: interleaved mode
+    \arg          DPM_DUAL_MODE: dual mode
     \param[out] none
     \retval     none
 */
@@ -638,7 +638,7 @@ void hpdf_data_right_bit_shift_config(hpdf_channel_enum channelx, uint8_t right_
 /*!
     \brief      configure calibration offset
     \param[in]  channelx: CHANNELx(x=0,1)
-    \param[in]  offset: 24-bit calibration offset,must be in (-8388608~8388607)
+    \param[in]  offset: 24-bit calibration offset, must be in (-8388608~8388607)
     \param[out] none
     \retval     none
 */
@@ -657,10 +657,10 @@ void hpdf_calibration_offset_config(hpdf_channel_enum channelx, int32_t offset)
     \param[in]  channelx: CHANNELx(x=0,1)
     \param[in]  break_signal: malfunction monitor break signal distribution
                   only one parameter can be selected which is shown as below:
-    \arg          NO_MM_BREAK: Break signal is not distributed to malfunction monitor on channel
-    \arg          MM_BREAK0: Break signal 0 is distributed to malfunction monitor on channel
-    \arg          MM_BREAK1: Break signal 1 is distributed to malfunction monitor on channel
-    \arg          MM_BREAK0_1: Break signal 0 and 1 is distributed to malfunction monitor on channel
+    \arg          NO_MM_BREAK: break signal is not distributed to malfunction monitor on channel
+    \arg          MM_BREAK0: break signal 0 is distributed to malfunction monitor on channel
+    \arg          MM_BREAK1: break signal 1 is distributed to malfunction monitor on channel
+    \arg          MM_BREAK0_1: break signal 0 and 1 is distributed to malfunction monitor on channel
     \param[out] none
     \retval     none
 */
@@ -670,7 +670,7 @@ void hpdf_malfunction_break_signal_config(hpdf_channel_enum channelx, uint32_t b
     reg = HPDF_CHxCFG1(channelx);
     reg &= ~HPDF_CHxCFG1_MMBSD;
     /* configure the break signal */
-    reg |= break_signal; 
+    reg |= break_signal;
     HPDF_CHxCFG1(channelx) = reg;
 }
 
@@ -694,7 +694,7 @@ void hpdf_malfunction_counter_config(hpdf_channel_enum channelx, uint8_t thresho
 /*!
     \brief      write the parallel data on standard mode of data packing
     \param[in]  channelx: CHANNELx(x=0,1)
-    \param[in]  data: the parallel data 
+    \param[in]  data: the parallel data
     \param[out] none
     \retval     none
 */
@@ -716,7 +716,7 @@ void hpdf_write_parallel_data_standard_mode(hpdf_channel_enum channelx, int16_t 
 /*!
     \brief      write the parallel data on interleaved mode of data packing
     \param[in]  channelx: CHANNELx(x=0,1)
-    \param[in]  data: the parallel data 
+    \param[in]  data: the parallel data
     \param[out] none
     \retval     none
 */
@@ -736,9 +736,9 @@ void hpdf_write_parallel_data_interleaved_mode(hpdf_channel_enum channelx, int32
 }
 
 /*!
-    \brief      write the parallel data on dual mode of data packing  
+    \brief      write the parallel data on dual mode of data packing
     \param[in]  channelx: CHANNELy(y=0)
-    \param[in]  data: the parallel data 
+    \param[in]  data: the parallel data
     \param[out] none
     \retval     none
 */
@@ -760,7 +760,7 @@ void hpdf_write_parallel_data_dual_mode(hpdf_channel_enum channelx, int32_t data
 /*!
     \brief      update the number of pulses to skip
     \param[in]  channelx: CHANNELy(y=0)
-    \param[in]  number: the number of serial input samples that will be skipped.
+    \param[in]  number: the number of serial input samples that will be skipped
     \param[out] none
     \retval     none
 */
@@ -828,7 +828,7 @@ void hpdf_filter_disable(hpdf_filter_enum filtery)
 void hpdf_filter_config(hpdf_filter_enum filtery, uint32_t order, uint16_t oversample)
 {
     uint32_t reg;
-    
+
     if(oversample > 0U){
         oversample = oversample - 1U;
     }
@@ -852,7 +852,7 @@ void hpdf_filter_config(hpdf_filter_enum filtery, uint32_t order, uint16_t overs
 void hpdf_integrator_oversample(hpdf_filter_enum filtery, uint8_t oversample)
 {
     uint32_t reg;
-    
+
     if(oversample > 0U){
         oversample = oversample - 1U;
     }
@@ -882,7 +882,7 @@ void hpdf_integrator_oversample(hpdf_filter_enum filtery, uint8_t oversample)
 void hpdf_threshold_monitor_filter_config(hpdf_channel_enum channelx, uint32_t order, uint8_t oversample)
 {
     uint32_t reg;
-    
+
     if(oversample > 0U){
         oversample = oversample - 1U;
     }
@@ -910,7 +910,7 @@ int16_t hpdf_threshold_monitor_filter_read_data(hpdf_channel_enum channelx)
 }
 
 /*!
-    \brief      disable threshold monitor fast mode 
+    \brief      disable threshold monitor fast mode
     \param[in]  filtery: HPDF_FLTy(y=0,1)
     \param[out] none
     \retval     none
@@ -990,7 +990,7 @@ void hpdf_threshold_monitor_low_threshold(hpdf_filter_enum filtery, int32_t valu
 /*!
     \brief      configure threshold monitor high threshold event break signal
     \param[in]  filtery: FLTy(y=0,1)
-    \param[in]   break_signal: the HPDF break signal
+    \param[in]   break_signal: HPDF break signal
                  only one parameter can be selected which is shown as below:
     \arg          NO_TM_HT_BREAK: break signal is not distributed to an threshold monitor high threshold event
     \arg          TM_HT_BREAK0: break signal 0 is distributed to an threshold monitor high threshold event
@@ -1056,18 +1056,17 @@ void hpdf_extremes_monitor_channel(hpdf_filter_enum filtery, uint32_t channel)
 /*!
     \brief      get the extremes monitor maximum value
     \param[in]  filtery: FLTy(y=0,1)
-    \param[out] maximum: the extremes monitor maximum value
-    \param[out] channel: the maximum value come from which channel
+    \param[out] none
     \retval     the maximum value
 */
 int32_t hpdf_extremes_monitor_maximum_get(hpdf_filter_enum filtery)
 {
     uint32_t val;
     /* get the maximum value */
-    val = HPDF_FLTyEMMAX(filtery) >> FLTyEMMAX_MAXVAL_OFFSET;   
+    val = HPDF_FLTyEMMAX(filtery) >> FLTyEMMAX_MAXVAL_OFFSET;
     /* get the sign of vlaue */
     if(val & 0x00800000U){
-        val |= 0xFF000000U; 
+        val |= 0xFF000000U;
     }
     return (int32_t)val;
 }
@@ -1075,8 +1074,7 @@ int32_t hpdf_extremes_monitor_maximum_get(hpdf_filter_enum filtery)
 /*!
     \brief      get the extremes monitor minimum value
     \param[in]  filtery: FLTy(y=0,1)
-    \param[out] minimum: the extremes monitor minimum value
-    \param[out] channel: the minimum value come from which channel
+    \param[out] none
     \retval     the minimum value
 */
 int32_t hpdf_extremes_monitor_minimum_get(hpdf_filter_enum filtery)
@@ -1086,9 +1084,9 @@ int32_t hpdf_extremes_monitor_minimum_get(hpdf_filter_enum filtery)
     val = HPDF_FLTyEMMIN(filtery) >> FLTyEMMIN_MINVAL_OFFSET;
     /* get the sign of vlaue */
     if(val & 0x00800000U){
-        val |= 0xFF000000U; 
+        val |= 0xFF000000U;
     }
-    return (int32_t)val; 
+    return (int32_t)val;
 }
 
 /*!
@@ -1103,7 +1101,7 @@ void hpdf_rc_continuous_disable(hpdf_filter_enum filtery)
 }
 
 /*!
-    \brief      enable regular conversions continuous mode 
+    \brief      enable regular conversions continuous mode
     \param[in]  filtery: FLTy(y=0,1)
     \param[out] none
     \retval     none
@@ -1125,7 +1123,7 @@ void hpdf_rc_start_by_software(hpdf_filter_enum filtery)
 }
 
 /*!
-    \brief      disable regular conversion synchronously 
+    \brief      disable regular conversion synchronously
     \param[in]  filtery: FLTy(y=0,1)
     \param[out] none
     \retval     none
@@ -1159,12 +1157,12 @@ void hpdf_rc_syn_enable(hpdf_filter_enum filtery)
 void hpdf_rc_dma_disable(hpdf_filter_enum filtery)
 {
     if(RESET == (HPDF_FLTyCTL0(filtery) & HPDF_FLTyCTL0_FLTEN)){
-       HPDF_FLTyCTL0(filtery) &= ~HPDF_FLTyCTL0_RCDMAEN; 
+       HPDF_FLTyCTL0(filtery) &= ~HPDF_FLTyCTL0_RCDMAEN;
     }
 }
 
 /*!
-    \brief      enable regular conversion DMA channel 
+    \brief      enable regular conversion DMA channel
     \param[in]  filtery: FLTy(y=0,1)
     \param[out] none
     \retval     none
@@ -1172,7 +1170,7 @@ void hpdf_rc_dma_disable(hpdf_filter_enum filtery)
 void hpdf_rc_dma_enable(hpdf_filter_enum filtery)
 {
     if(RESET == (HPDF_FLTyCTL0(filtery) & HPDF_FLTyCTL0_FLTEN)){
-       HPDF_FLTyCTL0(filtery) |= HPDF_FLTyCTL0_RCDMAEN; 
+       HPDF_FLTyCTL0(filtery) |= HPDF_FLTyCTL0_RCDMAEN;
     }
 }
 
@@ -1231,16 +1229,16 @@ int32_t hpdf_rc_data_get(hpdf_filter_enum filtery)
 {
     uint32_t val;
     /* get the signed data */
-    val = HPDF_FLTyRDATA(filtery) >> FLTyRDATAT_RDATA_OFFSET;   
+    val = HPDF_FLTyRDATA(filtery) >> FLTyRDATAT_RDATA_OFFSET;
     /* get the sign of vlaue */
     if(val & 0x00800000U){
-        val |= 0xFF000000U; 
+        val |= 0xFF000000U;
     }
-    return (int32_t)val; 
+    return (int32_t)val;
 }
 
 /*!
-    \brief      get the channel of regular group channel most recently converted 
+    \brief      get the channel of regular group channel most recently converted
     \param[in]  filtery: FLTy(y=0,1)
     \param[out] none
     \retval     the channel
@@ -1265,7 +1263,7 @@ void hpdf_ic_start_by_software(hpdf_filter_enum filtery)
 }
 
 /*!
-    \brief      disable inserted conversion synchronously 
+    \brief      disable inserted conversion synchronously
     \param[in]  filtery: FLTy(y=0,1)
     \param[out] none
     \retval     none
@@ -1278,7 +1276,7 @@ void hpdf_ic_syn_disable(hpdf_filter_enum filtery)
 }
 
 /*!
-    \brief      enable inserted conversion synchronously 
+    \brief      enable inserted conversion synchronously
     \param[in]  filtery: FLTy(y=0,1)
     \param[out] none
     \retval     none
@@ -1360,13 +1358,13 @@ void hpdf_ic_trigger_signal_disbale(hpdf_filter_enum filtery)
     \param[in]  filtery: FLTy(y=0,1)
     \param[in]  trigger: inserted conversions trigger signal
                 only one parameter can be selected which is shown as below:
-    \arg          HPDF_ITRG0: TIM1_TRGO is selected to start inserted conversion
-    \arg          HPDF_ITRG1: TIM2_TRGO is selected to start inserted conversion
-    \arg          HPDF_ITRG2: TIM3_TRGO is selected to start inserted conversion
-    \arg          HPDF_ITRG3: TIM4_TRG) is selected to start inserted conversion
+    \arg          HPDF_ITRG0: TIMER1_TRGO is selected to start inserted conversion
+    \arg          HPDF_ITRG1: TIMER2_TRGO is selected to start inserted conversion
+    \arg          HPDF_ITRG2: TIMER3_TRGO is selected to start inserted conversion
+    \arg          HPDF_ITRG3: TIMER4_TRGO is selected to start inserted conversion
     \arg          HPDF_ITRG24: EXTI11 is selected to start inserted conversion
     \arg          HPDF_ITRG25: EXTI15 is selected to start inserted conversion
-    \arg          HPDF_ITRG26: TIM5_TRGO is selected to start inserted conversion
+    \arg          HPDF_ITRG26: TIMER5_TRGO is selected to start inserted conversion
     \param[in]  trigger_edge: inserted conversions trigger edge
                 only one parameter can be selected which is shown as below:
     \arg          TRG_DISABLE: disable trigger siganl
@@ -1423,17 +1421,17 @@ int32_t hpdf_ic_data_get(hpdf_filter_enum filtery)
     /* get the sign of vlaue */
     /* get the sign of vlaue */
     if(val & 0x00800000U){
-        val |= 0xFF000000U; 
+        val |= 0xFF000000U;
     }
-    /* get the signed data */   
-    return (int32_t)val; 
+    /* get the signed data */
+    return (int32_t)val;
 }
 
 /*!
-    \brief      get the channel of inserted group channel most recently converted 
+    \brief      get the channel of inserted group channel most recently converted
     \param[in]  filtery: HPDF_FLTy(y=0,1)
     \param[out] none
-    \retval     the channe
+    \retval     the channel
 */
 uint8_t hpdf_ic_channel_get(hpdf_filter_enum filtery)
 {
@@ -1445,7 +1443,7 @@ uint8_t hpdf_ic_channel_get(hpdf_filter_enum filtery)
 
 /*!
     \brief      get the HPDF flags
-    \param[in]  hpdf_fltx: FLTy(y=0,1)
+    \param[in]  filtery: FLTy(y=0,1)
     \param[in]  flag: HPDF flags, refer to hpdf_flag_enum
                 only one parameter can be selected which is shown as below:
       \arg        HPDF_FLAG_FLTy_ICEF: FLTy inserted conversion end flag
@@ -1459,7 +1457,7 @@ uint8_t hpdf_ic_channel_get(hpdf_filter_enum filtery)
       \arg        HPDF_FLAG_FLT0_CKLF1: clock signal is lost on channel 1 flag
       \arg        HPDF_FLAG_FLT0_MMF0: malfunction event occurred on channel 0 flag
       \arg        HPDF_FLAG_FLT0_MMF1: malfunction occurred on channel 1 flag
-      \arg        HPDF_FLAG_FLTy_RCHPDT: FLTy inserted channel most recently converted 
+      \arg        HPDF_FLAG_FLTy_RCHPDT: FLTy inserted channel most recently converted
       \arg        HPDF_FLAG_FLTy_LTF0: threshold monitor low threshold flag on channel 0 flag
       \arg        HPDF_FLAG_FLTy_LTF1: threshold monitor low threshold flag on channel 1 flag
       \arg        HPDF_FLAG_FLTy_HTF0: threshold monitor high threshold flag on channel 0 flag
@@ -1510,14 +1508,14 @@ FlagStatus hpdf_flag_get(hpdf_filter_enum filtery, hpdf_flag_enum flag)
 void hpdf_flag_clear(hpdf_filter_enum filtery, hpdf_flag_enum flag)
 {
     uint32_t val;
-    
+
     /* get the flag position */
     val = BIT(HPDF_BIT_POS(flag));
     /* make sure the range of flag position */
     val = (uint8_t)(((val >= BIT(HPDF_BIT_POS(HPDF_FLAG_FLTy_LTF0))) && (val <= BIT(HPDF_BIT_POS(HPDF_FLAG_FLTy_HTF1)))) ? SET : RESET);
     if(HPDF_FLAG_FLTy_TMEOF == flag){
         /* clear the threshold monitor flag */
-        HPDF_FLTyTMFC(filtery)|= (HPDF_FLTyTMFC_HTFC | HPDF_FLTyTMFC_LTFC); 
+        HPDF_FLTyTMFC(filtery)|= (HPDF_FLTyTMFC_HTFC | HPDF_FLTyTMFC_LTFC);
     }else{
         switch (val){
         case SET:
@@ -1533,7 +1531,7 @@ void hpdf_flag_clear(hpdf_filter_enum filtery, hpdf_flag_enum flag)
             }
             break;
         case RESET:
-            /* clear the flag by HPDF_FLTyINTC register */ 
+            /* clear the flag by HPDF_FLTyINTC register */
             HPDF_FLTyINTC(filtery) |= BIT(HPDF_BIT_POS(flag));
             break;
         default :
@@ -1618,7 +1616,7 @@ FlagStatus hpdf_interrupt_flag_get(hpdf_filter_enum filtery, hpdf_interrput_flag
         if(flagstatus && int_enable){
             return SET;
         }else{
-            return RESET; 
+            return RESET;
         }
     }else{
         /* get the interrupt enable bit status */
@@ -1628,13 +1626,13 @@ FlagStatus hpdf_interrupt_flag_get(hpdf_filter_enum filtery, hpdf_interrput_flag
         if(flagstatus && int_enable){
             return SET;
         }else{
-            return RESET; 
+            return RESET;
         }
     }
 }
 
 /*!
-    \brief      get the HPDF interrupt flags
+    \brief      clear the HPDF interrupt flags
     \param[in]  hpdf_fltx: FLTy(y=0,1)
     \param[in]  interrupt: HPDF flags, refer to hpdf_interrput_enum
                 only one parameter can be selected which is shown as below:
@@ -1648,7 +1646,7 @@ FlagStatus hpdf_interrupt_flag_get(hpdf_filter_enum filtery, hpdf_interrput_flag
       \arg        HPDF_INT_FLAG_FLT0_MMF0: malfunction event occurred on channel0 interrupt flag
       \arg        HPDF_INT_FLAG_FLT0_MMF1: malfunction event occurred on channel1 interrupt flag
     \param[out] none
-    \retval     FlagStatus: SET or RESET
+    \retval     none
 */
 void hpdf_interrupt_flag_clear(hpdf_filter_enum filtery, hpdf_interrput_flag_enum int_flag)
 {
@@ -1659,6 +1657,6 @@ void hpdf_interrupt_flag_clear(hpdf_filter_enum filtery, hpdf_interrput_flag_enu
         /* read the regular conversion data */
         HPDF_FLTyRDATA(filtery);
     }else{
-        HPDF_FLTyINTC(filtery) |= BIT(HPDF_BIT_POS2(int_flag)); 
+        HPDF_FLTyINTC(filtery) |= BIT(HPDF_BIT_POS2(int_flag));
     }
 }

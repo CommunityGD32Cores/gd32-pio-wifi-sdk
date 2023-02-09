@@ -85,7 +85,7 @@ __vector_table
         DCD     DMA0_Channel6_IRQHandler            ; 33:DMA0 Channel6
         DCD     DMA0_Channel7_IRQHandler            ; 34:DMA0 Channel7
         DCD     ADC_IRQHandler                      ; 35:ADC
-        DCD     TAMP_STAMP_S_IRQHandler             ; 36:RTC tamper security interrupt
+        DCD     TAMPER_STAMP_S_IRQHandler           ; 36:RTC Tamper and TimeStamp Events Security Interrupt
         DCD     RTC_WKUP_S_IRQHandler               ; 37:RTC wakeup security interrupt
         DCD     RTC_Alarm_S_IRQHandler              ; 38:RTC Alarm security interrupt
         DCD     EXTI5_9_IRQHandler                  ; 39:EXTI5 to EXTI9
@@ -107,7 +107,7 @@ __vector_table
         DCD     USART2_IRQHandler                   ; 55:USART2
         DCD     EXTI10_15_IRQHandler                ; 56:EXTI10 to EXTI15
         DCD     RTC_Alarm_IRQHandler                ; 57:RTC Alarm
-        DCD     PVM_IRQHandler                      ; 58:EXTI[18](PVMO)
+        DCD     VLVDF_IRQHandler                    ; 58:VDDA Low Voltage Detector
         DCD     0                                   ; 59:Reserved
         DCD     TIMER15_IRQHandler                  ; 60:TIMER15
         DCD     TIMER16_IRQHandler                  ; 61:TIMER16
@@ -123,7 +123,7 @@ __vector_table
         DCD     0                                   ; 71:Reserved
         DCD     DMA1_Channel0_IRQHandler            ; 72:DMA1 Channel0
         DCD     DMA1_Channel1_IRQHandler            ; 73:DMA1 Channel1
-        DCD     DMA1_Channel2_IRQHandler            ; 74:DMA1 Channel2
+        DCD     DMA1_Channel2_IRQHandler            ; 74:DMA1 Chan1nel2
         DCD     DMA1_Channel3_IRQHandler            ; 75:DMA1 Channel3
         DCD     DMA1_Channel4_IRQHandler            ; 76:DMA1 Channel4
         DCD     DMA1_Channel5_IRQHandler            ; 77:DMA1 Channel5
@@ -143,7 +143,7 @@ __vector_table
         DCD     0                                   ; 91:Reserved
         DCD     USBFS_WKUP_IRQHandler               ; 92:USBFS_WKUP
         DCD     0                                   ; 93:Reserved
-        DCD     DCI_IRHandler                       ; 94:DCI
+        DCD     DCI_IRQHandler                      ; 94:DCI
         DCD     CAU_IRQHandler                      ; 95:CAU
         DCD     HAU_TRNG_IRQHandler                 ; 96:HAU and TRNG
         DCD     FPU_IRQHandler                      ; 97:FPU
@@ -160,7 +160,7 @@ __vector_table
         DCD     WLAN_Tx_IRQHandler                  ; 108:WIFI11N global interrupt1
         DCD     WLAN_Cmn_IRQHandler                 ; 109:WIFI11N global interrupt2
         DCD     EFUSE_IRQHandler                    ; 110:EFUSE
-        DCD     QSPI_IRQHandler                     ; 111:QUADSPI1
+        DCD     QSPI_IRQHandler                     ; 111:QUADSPI
         DCD     PKCAU_IRQHandler                    ; 112:PKCAU
         DCD     TSI_IRQHandler                      ; 113:TSI
         DCD     ICACHE_IRQHandler                   ; 114:ICACHE
@@ -335,10 +335,10 @@ DMA0_Channel7_IRQHandler
 ADC_IRQHandler
         B ADC_IRQHandler
 
-        PUBWEAK TAMP_STAMP_S_IRQHandler
+        PUBWEAK TAMPER_STAMP_S_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
-TAMP_STAMP_S_IRQHandler
-        B TAMP_STAMP_S_IRQHandler
+TAMPER_STAMP_S_IRQHandler
+        B TAMPER_STAMP_S_IRQHandler
 
         PUBWEAK RTC_WKUP_S_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
@@ -445,10 +445,10 @@ EXTI10_15_IRQHandler
 RTC_Alarm_IRQHandler
         B RTC_Alarm_IRQHandler
 
-        PUBWEAK PVM_IRQHandler
+        PUBWEAK VLVDF_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
-PVM_IRQHandler
-        B PVM_IRQHandler
+VLVDF_IRQHandler
+        B VLVDF_IRQHandler
 
         PUBWEAK TIMER15_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
@@ -555,10 +555,10 @@ USBFS_IRQHandler
 USBFS_WKUP_IRQHandler
         B USBFS_WKUP_IRQHandler
 
-        PUBWEAK DCI_IRHandler
+        PUBWEAK DCI_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
-DCI_IRHandler
-        B DCI_IRHandler
+DCI_IRQHandler
+        B DCI_IRQHandler
 
         PUBWEAK CAU_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)

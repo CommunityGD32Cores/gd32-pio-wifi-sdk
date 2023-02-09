@@ -127,7 +127,7 @@ void adc_config(void)
 uint16_t adc_channel_sample(uint8_t channel)
 {
     /* ADC regular channel config */
-    adc_regular_channel_config(0U, channel, ADC_SAMPLETIME_15);
+    adc_regular_channel_config(0U, channel, ADC_SAMPLETIME_14POINT5);
     /* ADC software trigger enable */
     adc_software_trigger_enable(ADC_REGULAR_CHANNEL);
 

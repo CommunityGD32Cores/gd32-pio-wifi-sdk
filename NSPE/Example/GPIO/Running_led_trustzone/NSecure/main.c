@@ -35,7 +35,9 @@ OF SUCH DAMAGE.
 #include "gd32w51x.h"
 #include "systick.h"
 
+uint32_t SystemCoreClock;
 extern void led_nonsecure_cfg(void);
+extern uint32_t secure_systemclockget(void);
 
 /*!
     \brief      main function
@@ -47,6 +49,7 @@ int main(void)
 {
     /* call NSC function configure LED pin to non-secure */
     led_nonsecure_cfg();
+    SystemCoreClock = secure_systemclockget();
 
     /* configure systick */
     systick_config();

@@ -39,7 +39,7 @@ if "%TOOLKIT%" == "GCC" (
 copy %OUTPUT_PATH%\..\nspe.bin  %OUTPUT_IMAGE_PATH%\image-ota.bin
 
 :: concatenate mbl-ns.bin and nspe.bin
-%SREC_CAT% %OUTPUT_IMAGE_PATH%\mbl-ns.bin -Binary -offset 0 %OUTPUT_PATH%\..\nspe.bin -Binary -offset 0xa000 -fill 0xFF 0x7FFC 0xA000 -o %OUTPUT_IMAGE_PATH%\image-all.bin -Binary 
+%SREC_CAT% %OUTPUT_IMAGE_PATH%\mbl-ns.bin -Binary -offset 0 %OUTPUT_PATH%\..\nspe.bin -Binary -offset 0xa000 -fill 0xFF 0x7FFC 0xA000 -o %OUTPUT_IMAGE_PATH%\image-all.bin -Binary
 :: Convert to HEX file
 if exist %OUTPUT_IMAGE_PATH%\image-all.bin %SREC_CAT% %OUTPUT_IMAGE_PATH%\image-all.bin -Binary -offset 0x0C000000 -o %OUTPUT_IMAGE_PATH%\image-all.hex -Intel
 

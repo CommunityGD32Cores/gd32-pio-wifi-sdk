@@ -154,7 +154,7 @@ void adc_config(void)
     adc_channel_length_config(ADC_REGULAR_CHANNEL, 1U);
  
     /* ADC regular channel config */
-    adc_regular_channel_config(0U, BOARD_ADC_CHANNEL, ADC_SAMPLETIME_56);
+    adc_regular_channel_config(0U, BOARD_ADC_CHANNEL, ADC_SAMPLETIME_55POINT5);
     adc_external_trigger_config(ADC_REGULAR_CHANNEL, EXTERNAL_TRIGGER_DISABLE);
     
     /* enable ADC interface */

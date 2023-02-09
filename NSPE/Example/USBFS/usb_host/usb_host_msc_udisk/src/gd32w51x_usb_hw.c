@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -44,7 +44,7 @@ OF SUCH DAMAGE.
 #define HOST_OVRCURR_EXTI_LINE                  EXTI_LINE1
 #define HOST_OVRCURR_IRQn                       EXTI1_IRQn
 
-#define HOST_POWERSW_PORT_RCC                   RCU_GPIOC   
+#define HOST_POWERSW_PORT_RCC                   RCU_GPIOC
 #define HOST_POWERSW_PORT                       GPIOC
 #define HOST_POWERSW_VBUS                       GPIO_PIN_4
 
@@ -129,10 +129,10 @@ void usb_vbus_drive (uint8_t state)
 {
     if (0U == state) {
         /* disable is needed on output of the power switch */
-        gpio_bit_reset(HOST_POWERSW_PORT, HOST_POWERSW_VBUS);
+        gpio_bit_set(HOST_POWERSW_PORT, HOST_POWERSW_VBUS);
     } else {
         /* enable the power switch by driving the enable low */
-        gpio_bit_set(HOST_POWERSW_PORT, HOST_POWERSW_VBUS);
+        gpio_bit_reset(HOST_POWERSW_PORT, HOST_POWERSW_VBUS);
     }
 }
 
@@ -147,13 +147,13 @@ void usb_vbus_config (void)
     rcu_periph_clock_enable(HOST_POWERSW_PORT_RCC);
 
     gpio_mode_set(HOST_POWERSW_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, HOST_POWERSW_VBUS);
-    gpio_output_options_set(HOST_POWERSW_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_166MHZ, HOST_POWERSW_VBUS);
+    gpio_output_options_set(HOST_POWERSW_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_166MHZ, HOST_POWERSW_VBUS);
 
     /* by default, disable is needed on output of the power switch */
-    gpio_bit_set(HOST_POWERSW_PORT, HOST_POWERSW_VBUS);
+    usb_vbus_drive(0U);
 
     /* delay is need for stabilizing the VBUS low in reset condition,
-     * when VBUS=1 and reset-button is pressed by user 
+     * when VBUS=1 and reset-button is pressed by user
      */
     usb_mdelay (200U);
 }
@@ -218,7 +218,7 @@ void usb_timer_irq (void)
 
 /*!
     \brief      delay routine based on TIM2
-    \param[in]  ntime: delay Time 
+    \param[in]  ntime: delay Time
     \param[in]  unit: delay Time unit = milliseconds / microseconds
     \param[out] none
     \retval     none

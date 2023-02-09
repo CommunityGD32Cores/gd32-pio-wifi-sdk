@@ -152,14 +152,14 @@ void adc_config(void)
     adc_discontinuous_mode_config(ADC_REGULAR_CHANNEL, 3U);
 
     /* ADC regular channel config */
-    adc_regular_channel_config(0U, ADC_CHANNEL_0, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(1U, ADC_CHANNEL_1, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(2U, ADC_CHANNEL_2, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(3U, ADC_CHANNEL_3, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(4U, ADC_CHANNEL_4, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(5U, ADC_CHANNEL_5, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(6U, ADC_CHANNEL_6, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(7U, ADC_CHANNEL_7, ADC_SAMPLETIME_56);
+    adc_regular_channel_config(0U, ADC_CHANNEL_0, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(1U, ADC_CHANNEL_1, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(2U, ADC_CHANNEL_2, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(3U, ADC_CHANNEL_3, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(4U, ADC_CHANNEL_4, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(5U, ADC_CHANNEL_5, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(6U, ADC_CHANNEL_6, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(7U, ADC_CHANNEL_7, ADC_SAMPLETIME_55POINT5);
 
     /* ADC external trigger config */
     adc_external_trigger_config(ADC_REGULAR_CHANNEL, EXTERNAL_TRIGGER_DISABLE);

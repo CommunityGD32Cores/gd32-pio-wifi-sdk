@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -54,7 +54,7 @@ OF SUCH DAMAGE.
 //   <o> When SAU is disabled, the atrributes of all memory
 //     <0=>  Secure
 //     <1=>  Non-Secure
-//   <i> Set the value of ALLNS bit in SAU->CTRL register  
+//   <i> Set the value of ALLNS bit in SAU->CTRL register
 //   <i> When all Memory is Non-Secure (ALLNS is 1), IDAU can override memory map configuration.
 */
 #define SAU_INIT_CTRL_ALLNS    1
@@ -293,7 +293,7 @@ OF SUCH DAMAGE.
 //   <o> Deep Sleep can be enabled by
 //     <0=>Secure and Non-Secure state
 //     <1=>Secure state only
-//   <i> Set the value of DEEPSLEEPS bit in SCB->CSR register 
+//   <i> Set the value of DEEPSLEEPS bit in SCB->CSR register
 */
 #define SCB_CSR_DEEPSLEEPS_VAL      0
 
@@ -350,7 +350,7 @@ OF SUCH DAMAGE.
 // <o>Clear on return (CLRONRET) accessibility
 //     <0=> Secure and Non-Secure state
 //     <1=> Secure state only
-//   <i> Set the value of CLRONRETS bits in FPU->FPCCR register bit 
+//   <i> Set the value of CLRONRETS bits in FPU->FPCCR register bit
 */
 #define FPU_FPCCR_CLRONRETS_VAL     0
 
@@ -433,7 +433,7 @@ OF SUCH DAMAGE.
 //   <o.7>  USART2_IRQn         <0=> Secure <1=> Non-Secure
 //   <o.8>  EXTI10_15_IRQn      <0=> Secure <1=> Non-Secure
 //   <o.9>  RTC_Alarm_IRQn      <0=> Secure <1=> Non-Secure
-//   <o.10> PVM_IRQn            <0=> Secure <1=> Non-Secure
+//   <o.10> VLVDF_IRQn            <0=> Secure <1=> Non-Secure
 //   <o.12> TIMER15_IRQn        <0=> Secure <1=> Non-Secure
 //   <o.13> TIMER16_IRQn        <0=> Secure <1=> Non-Secure
 //   <o.17> SDIO_IRQn           <0=> Secure <1=> Non-Secure

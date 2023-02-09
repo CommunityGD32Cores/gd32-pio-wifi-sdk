@@ -1,34 +1,34 @@
 /*!
     \file    gd32w51x_dci.c
     \brief   DCI driver
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -63,7 +63,7 @@ void dci_struct_para_init(dci_parameter_struct* init_struct)
     if(NULL == init_struct){
         DCI_WRONG_HANDLE
     }
-    
+
     /* set the DCI parameter struct with the default values */
     init_struct->capture_mode = DCI_CAPTURE_MODE_CONTINUOUS;
     init_struct->clock_polarity = DCI_CK_POLARITY_FALLING;
@@ -104,18 +104,18 @@ void dci_init(dci_parameter_struct* dci_struct)
 }
 
 /*!
-    \brief      enable DCI function 
+    \brief      enable DCI function
     \param[in]  none
     \param[out] none
     \retval     none
 */
 void dci_enable(void)
 {
-    DCI_CTL |= DCI_CTL_DCIEN;    
+    DCI_CTL |= DCI_CTL_DCIEN;
 }
 
 /*!
-    \brief      disable DCI function 
+    \brief      disable DCI function
     \param[in]  none
     \param[out] none
     \retval     none
@@ -126,7 +126,7 @@ void dci_disable(void)
 }
 
 /*!
-    \brief      enable DCI capture 
+    \brief      enable DCI capture
     \param[in]  none
     \param[out] none
     \retval     none
@@ -137,7 +137,7 @@ void dci_capture_enable(void)
 }
 
 /*!
-    \brief      disable DCI capture 
+    \brief      disable DCI capture
     \param[in]  none
     \param[out] none
     \retval     none
@@ -148,7 +148,7 @@ void dci_capture_disable(void)
 }
 
 /*!
-    \brief      enable DCI jpeg mode 
+    \brief      enable DCI jpeg mode
     \param[in]  none
     \param[out] none
     \retval     none
@@ -159,7 +159,7 @@ void dci_jpeg_enable(void)
 }
 
 /*!
-    \brief      disable DCI jpeg mode 
+    \brief      disable DCI jpeg mode
     \param[in]  none
     \param[out] none
     \retval     none
@@ -192,7 +192,7 @@ void dci_crop_window_disable(void)
 }
 
 /*!
-    \brief      configure DCI cropping window 
+    \brief      configure DCI cropping window
     \param[in]  start_x: window horizontal start position
     \param[in]  start_y: window vertical start position
     \param[in]  size_width: window horizontal size
@@ -283,7 +283,7 @@ uint32_t dci_data_read(void)
 FlagStatus dci_flag_get(uint32_t flag)
 {
     uint32_t stat = 0U;
-    
+
     if(0U != (flag & BIT(31))){
         /* get flag status from DCI_STAT1 register */
         stat = DCI_STAT1;
@@ -291,7 +291,7 @@ FlagStatus dci_flag_get(uint32_t flag)
         /* get flag status from DCI_STAT0 register */
         stat = DCI_STAT0;
     }
-    
+
     if(flag & stat){
         return SET;
     }else{
@@ -304,7 +304,7 @@ FlagStatus dci_flag_get(uint32_t flag)
     \param[in]  interrupt: DCI interrupts
       \arg         DCI_INT_EF: end of frame interrupt
       \arg         DCI_INT_OVR: FIFO overrun interrupt
-      \arg         DCI_INT_ESE: embedded synchronous error interrupt 
+      \arg         DCI_INT_ESE: embedded synchronous error interrupt
       \arg         DCI_INT_VSYNC: vertical synchronous interrupt
       \arg         DCI_INT_EL: end of line interrupt
     \param[out] none
@@ -320,7 +320,7 @@ void dci_interrupt_enable(uint32_t interrupt)
     \param[in]  interrupt: DCI interrupts
       \arg         DCI_INT_EF: end of frame interrupt
       \arg         DCI_INT_OVR: FIFO overrun interrupt
-      \arg         DCI_INT_ESE: embedded synchronous error interrupt 
+      \arg         DCI_INT_ESE: embedded synchronous error interrupt
       \arg         DCI_INT_VSYNC: vertical synchronous interrupt
       \arg         DCI_INT_EL: end of line interrupt
     \param[out] none
@@ -336,7 +336,7 @@ void dci_interrupt_disable(uint32_t interrupt)
     \param[in]  int_flag: DCI interrupt flags
       \arg         DCI_INT_EF: end of frame interrupt
       \arg         DCI_INT_OVR: FIFO overrun interrupt
-      \arg         DCI_INT_ESE: embedded synchronous error interrupt 
+      \arg         DCI_INT_ESE: embedded synchronous error interrupt
       \arg         DCI_INT_VSYNC: vertical synchronous interrupt
       \arg         DCI_INT_EL: end of line interrupt
     \param[out] none
@@ -352,7 +352,7 @@ void dci_interrupt_flag_clear(uint32_t int_flag)
     \param[in]  int_flag: DCI interrupt flags
       \arg         DCI_INT_FLAG_EF: end of frame interrupt flag
       \arg         DCI_INT_FLAG_OVR: FIFO overrun interrupt flag
-      \arg         DCI_INT_FLAG_ESE: embedded synchronous error interrupt flag 
+      \arg         DCI_INT_FLAG_ESE: embedded synchronous error interrupt flag
       \arg         DCI_INT_FLAG_VSYNC: vertical synchronous interrupt flag
       \arg         DCI_INT_FLAG_EL: end of line interrupt flag
     \param[out] none

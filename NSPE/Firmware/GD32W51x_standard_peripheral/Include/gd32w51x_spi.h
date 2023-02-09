@@ -1,6 +1,6 @@
 /*!
-    \file  gd32w51x_spi.h
-    \brief QSPI driver
+    \file    gd32w51x_spi.h
+    \brief   definitions for the SPI
 
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
@@ -9,27 +9,27 @@
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -43,27 +43,27 @@ OF SUCH DAMAGE.
 #define I2S1_ADD                        I2S_ADD_BASE
 
 /* SPI registers definitions */
-#define SPI_CTL0(spix)                  REG32((spix) + 0x00U)                   /*!< SPI control register 0 */
-#define SPI_CTL1(spix)                  REG32((spix) + 0x04U)                   /*!< SPI control register 1*/
-#define SPI_STAT(spix)                  REG32((spix) + 0x08U)                   /*!< SPI status register */
-#define SPI_DATA(spix)                  REG32((spix) + 0x0CU)                   /*!< SPI data register */
-#define SPI_CRCPOLY(spix)               REG32((spix) + 0x10U)                   /*!< SPI CRC polynomial register */
-#define SPI_RCRC(spix)                  REG32((spix) + 0x14U)                   /*!< SPI receive CRC register */
-#define SPI_TCRC(spix)                  REG32((spix) + 0x18U)                   /*!< SPI transmit CRC register */
-#define SPI_I2SCTL(spix)                REG32((spix) + 0x1CU)                   /*!< SPI I2S control register */
-#define SPI_I2SPSC(spix)                REG32((spix) + 0x20U)                   /*!< SPI I2S clock prescaler register */
-#define SPI_QCTL(spix)                  REG32((spix) + 0x80U)                   /*!< SPI quad mode control register(only SPI0) */
+#define SPI_CTL0(spix)                  REG32((spix) + 0x00000000U)             /*!< SPI control register 0 */
+#define SPI_CTL1(spix)                  REG32((spix) + 0x00000004U)             /*!< SPI control register 1*/
+#define SPI_STAT(spix)                  REG32((spix) + 0x00000008U)             /*!< SPI status register */
+#define SPI_DATA(spix)                  REG32((spix) + 0x0000000CU)             /*!< SPI data register */
+#define SPI_CRCPOLY(spix)               REG32((spix) + 0x00000010U)             /*!< SPI CRC polynomial register */
+#define SPI_RCRC(spix)                  REG32((spix) + 0x00000014U)             /*!< SPI receive CRC register */
+#define SPI_TCRC(spix)                  REG32((spix) + 0x00000018U)             /*!< SPI transmit CRC register */
+#define SPI_I2SCTL(spix)                REG32((spix) + 0x0000001CU)             /*!< SPI I2S control register */
+#define SPI_I2SPSC(spix)                REG32((spix) + 0x00000020U)             /*!< SPI I2S clock prescaler register */
+#define SPI_QCTL(spix)                  REG32((spix) + 0x00000080U)             /*!< SPI quad mode control register(only SPI0) */
 
 /* I2S_ADD registers definitions */
-#define I2S_ADD_CTL0(i2sx_add)          REG32((i2sx_add) + 0x00U)               /*!< I2S_ADD control register 0 */
-#define I2S_ADD_CTL1(i2sx_add)          REG32((i2sx_add) + 0x04U)               /*!< I2S_ADD control register 1*/
-#define I2S_ADD_STAT(i2sx_add)          REG32((i2sx_add) + 0x08U)               /*!< I2S_ADD status register */
-#define I2S_ADD_DATA(i2sx_add)          REG32((i2sx_add) + 0x0CU)               /*!< I2S_ADD data register */
-#define I2S_ADD_CRCPOLY(i2sx_add)       REG32((i2sx_add) + 0x10U)               /*!< I2S_ADD CRC polynomial register */
-#define I2S_ADD_RCRC(i2sx_add)          REG32((i2sx_add) + 0x14U)               /*!< I2S_ADD receive CRC register */
-#define I2S_ADD_TCRC(i2sx_add)          REG32((i2sx_add) + 0x18U)               /*!< I2S_ADD transmit CRC register */
-#define I2S_ADD_I2SCTL(i2sx_add)        REG32((i2sx_add) + 0x1CU)               /*!< I2S_ADD I2S control register */
-#define I2S_ADD_I2SPSC(i2sx_add)        REG32((i2sx_add) + 0x20U)               /*!< I2S_ADD I2S clock prescaler register */
+#define I2S_ADD_CTL0(i2sx_add)          REG32((i2sx_add) + 0x00000000U)         /*!< I2S_ADD control register 0 */
+#define I2S_ADD_CTL1(i2sx_add)          REG32((i2sx_add) + 0x00000004U)         /*!< I2S_ADD control register 1*/
+#define I2S_ADD_STAT(i2sx_add)          REG32((i2sx_add) + 0x00000008U)         /*!< I2S_ADD status register */
+#define I2S_ADD_DATA(i2sx_add)          REG32((i2sx_add) + 0x0000000CU)         /*!< I2S_ADD data register */
+#define I2S_ADD_CRCPOLY(i2sx_add)       REG32((i2sx_add) + 0x00000010U)         /*!< I2S_ADD CRC polynomial register */
+#define I2S_ADD_RCRC(i2sx_add)          REG32((i2sx_add) + 0x00000014U)         /*!< I2S_ADD receive CRC register */
+#define I2S_ADD_TCRC(i2sx_add)          REG32((i2sx_add) + 0x00000018U)         /*!< I2S_ADD transmit CRC register */
+#define I2S_ADD_I2SCTL(i2sx_add)        REG32((i2sx_add) + 0x0000001CU)         /*!< I2S_ADD I2S control register */
+#define I2S_ADD_I2SPSC(i2sx_add)        REG32((i2sx_add) + 0x00000020U)         /*!< I2S_ADD I2S clock prescaler register */
 
 /* bits definitions */
 /* SPI_CTL0 */
@@ -137,7 +137,7 @@ OF SUCH DAMAGE.
 /* constants definitions */
 /* SPI and I2S parameter struct definitions */
 typedef struct
-{   
+{
     uint32_t device_mode;                                                       /*!< SPI master or slave */
     uint32_t trans_mode;                                                        /*!< SPI transtype */
     uint32_t frame_size;                                                        /*!< SPI frame size */
@@ -231,7 +231,7 @@ typedef struct
 #define I2S_CKPL_LOW                    ((uint32_t)0x00000000U)                 /*!< I2S clock polarity low level */
 #define I2S_CKPL_HIGH                   SPI_I2SCTL_CKPL                         /*!< I2S clock polarity high level */
 
-/* SPI DMA constants definitions */                                    
+/* SPI DMA constants definitions */
 #define SPI_DMA_TRANSMIT                ((uint8_t)0x00U)                        /*!< SPI transmit data use DMA */
 #define SPI_DMA_RECEIVE                 ((uint8_t)0x01U)                        /*!< SPI receive data use DMA */
 
@@ -253,7 +253,7 @@ typedef struct
 #define I2S_INT_FLAG_TXURERR            ((uint8_t)0x05U)                        /*!< underrun error interrupt flag */
 #define SPI_I2S_INT_FLAG_FERR           ((uint8_t)0x06U)                        /*!< format error interrupt flag */
 
-/* SPI/I2S flag definitions */                                                  
+/* SPI/I2S flag definitions */
 #define SPI_FLAG_RBNE                   SPI_STAT_RBNE                           /*!< receive buffer not empty flag */
 #define SPI_FLAG_TBE                    SPI_STAT_TBE                            /*!< transmit buffer empty flag */
 #define SPI_FLAG_CRCERR                 SPI_STAT_CRCERR                         /*!< CRC error flag */
@@ -286,8 +286,8 @@ void spi_disable(uint32_t spi_periph);
 void i2s_init(uint32_t spi_periph, uint32_t i2s_mode, uint32_t i2s_standard, uint32_t i2s_ckpl);
 /* configure I2S prescaler */
 void i2s_psc_config(uint32_t spi_periph, uint32_t i2s_audiosample, uint32_t i2s_frameformat, uint32_t i2s_mckout);
-/* configure I2S input clock prescaler */
-void i2s1_ckin_psc_config(uint32_t input_clock, uint32_t i2s_audiosample, uint32_t i2s_frameformat, uint32_t i2s_mckout);
+/* configure I2S1 input clock prescaler */
+void i2s_ckin_psc_config(uint32_t input_clock, uint32_t i2s_audiosample, uint32_t i2s_frameformat, uint32_t i2s_mckout);
 /* enable I2S */
 void i2s_enable(uint32_t spi_periph);
 /* disable I2S */
@@ -344,17 +344,17 @@ void i2s_full_duplex_mode_config(uint32_t i2s_add_periph,uint32_t i2s_mode,uint3
 
 /* quad wire SPI functions */
 /* enable quad wire SPI */
-void spi_quad_enable(uint32_t spi_periph);
+void qspi_enable(uint32_t spi_periph);
 /* disable quad wire SPI */
-void spi_quad_disable(uint32_t spi_periph);
+void qspi_disable(uint32_t spi_periph);
 /* enable quad wire SPI write */
-void spi_quad_write_enable(uint32_t spi_periph);
+void qspi_write_enable(uint32_t spi_periph);
 /* enable quad wire SPI read */
-void spi_quad_read_enable(uint32_t spi_periph);
+void qspi_read_enable(uint32_t spi_periph);
 /* enable quad wire SPI_IO2 and SPI_IO3 pin output */
-void spi_quad_io23_output_enable(uint32_t spi_periph);
+void qspi_io23_output_enable(uint32_t spi_periph);
 /* disable quad wire SPI_IO2 and SPI_IO3 pin output */
-void spi_quad_io23_output_disable(uint32_t spi_periph);
+void qspi_io23_output_disable(uint32_t spi_periph);
 
 /* flag and interrupt functions */
 /* enable SPI and I2S interrupt */

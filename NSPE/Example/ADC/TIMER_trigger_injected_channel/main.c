@@ -162,10 +162,10 @@ void adc_config(void)
     adc_channel_length_config(ADC_INSERTED_CHANNEL, 4U);
 
     /* ADC inserted channel config */
-    adc_inserted_channel_config(0U, ADC_CHANNEL_0, ADC_SAMPLETIME_56);
-    adc_inserted_channel_config(1U, ADC_CHANNEL_1, ADC_SAMPLETIME_56);
-    adc_inserted_channel_config(2U, ADC_CHANNEL_2, ADC_SAMPLETIME_56);
-    adc_inserted_channel_config(3U, ADC_CHANNEL_3, ADC_SAMPLETIME_56);
+    adc_inserted_channel_config(0U, ADC_CHANNEL_0, ADC_SAMPLETIME_55POINT5);
+    adc_inserted_channel_config(1U, ADC_CHANNEL_1, ADC_SAMPLETIME_55POINT5);
+    adc_inserted_channel_config(2U, ADC_CHANNEL_2, ADC_SAMPLETIME_55POINT5);
+    adc_inserted_channel_config(3U, ADC_CHANNEL_3, ADC_SAMPLETIME_55POINT5);
 
     /* clear the ADC flag */
     adc_interrupt_flag_clear(ADC_INT_FLAG_EOC);

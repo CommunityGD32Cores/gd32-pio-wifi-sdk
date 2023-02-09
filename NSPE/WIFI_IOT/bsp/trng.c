@@ -38,7 +38,7 @@ OF SUCH DAMAGE.
 #include "bsp_inc.h"
 #include "debug_print.h"
 #include "trng.h"
-#include "mbedtls/md5.h"
+#include "mbedtls\md5.h"
 
 unsigned char btrng_seed = 1;
 static unsigned int randPool;   /* Pool of randomness. */
@@ -49,7 +49,7 @@ static uint32_t trng_initialized = 0;
     \brief       check whether TRNG is ready
     \param[in]   none
     \param[out]  none
-    \retval      0: TRNG is ready 1: TRNG is not ready
+    \retval      1: TRNG is ready 0: TRNG is not ready
 */
 int trng_ready_check(void)
 {

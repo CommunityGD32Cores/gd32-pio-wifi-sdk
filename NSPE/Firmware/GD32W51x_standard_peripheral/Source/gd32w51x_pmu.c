@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -72,7 +72,7 @@ void pmu_lvd_select(uint32_t lvdt_n)
     /* set LVDT bits according to lvdt_n */
     PMU_CTL0 |= lvdt_n;
     /* enable LVD */
-    PMU_CTL0 |= PMU_CTL0_LVDEN;    
+    PMU_CTL0 |= PMU_CTL0_LVDEN;
 }
 
 /*!
@@ -137,7 +137,7 @@ void pmu_to_sleepmode(uint8_t sleepmodecmd)
 {
     /* clear sleepdeep bit of Cortex-M33 system control register */
     SCB->SCR &= ~((uint32_t)SCB_SCR_SLEEPDEEP_Msk);
-    
+
     /* select WFI or WFE command to enter sleep mode */
     if(WFI_CMD == sleepmodecmd){
         __WFI();
@@ -152,7 +152,7 @@ void pmu_to_sleepmode(uint8_t sleepmodecmd)
                 only one parameter can be selected which is shown as below:
       \arg        PMU_LDO_NORMAL: LDO normal work when PMU enter deepsleep mode
       \arg        PMU_LDO_LOWPOWER: LDO work at low power mode when PMU enter deepsleep mode
-    \param[in]  lowdrive: 
+    \param[in]  lowdrive:
                 only one parameter can be selected which is shown as below:
       \arg        PMU_LOWDRIVER_DISABLE: Low-driver mode disable in deep-sleep mode
       \arg        PMU_LOWDRIVER_ENABLE: Low-driver mode enable in deep-sleep mode
@@ -164,13 +164,13 @@ void pmu_to_sleepmode(uint8_t sleepmodecmd)
     \retval     none
 */
 void pmu_to_deepsleepmode(uint32_t ldo,uint32_t lowdrive,uint8_t deepsleepmodecmd)
-{   
+{
     /* clear stbmod and ldolp bits and low drive bits */
     PMU_CTL0 &= ~((uint32_t)(PMU_CTL0_STBMOD | PMU_CTL0_LDOLP | PMU_CTL0_LDEN | PMU_CTL0_LDNP | PMU_CTL0_LDLP));
-    
+
     /* set ldolp bit according to pmu_ldo */
     PMU_CTL0 |= ldo;
-    
+
     /* low drive mode config in deep-sleep mode */
     if(PMU_LOWDRIVER_ENABLE == lowdrive){
         if(PMU_LDO_NORMAL == ldo){
@@ -179,10 +179,10 @@ void pmu_to_deepsleepmode(uint32_t ldo,uint32_t lowdrive,uint8_t deepsleepmodecm
             PMU_CTL0 |= (uint32_t)(PMU_CTL0_LDEN | PMU_CTL0_LDLP);
         }
     }
-    
+
     /* set sleepdeep bit of Cortex-M33 system control register */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    
+
     /* select WFI or WFE command to enter deepsleep mode */
     if(WFI_CMD == deepsleepmodecmd){
         __WFI();
@@ -190,30 +190,38 @@ void pmu_to_deepsleepmode(uint32_t ldo,uint32_t lowdrive,uint8_t deepsleepmodecm
         __SEV();
         __WFE();
         __WFE();
-    }    
+    }
     /* reset sleepdeep bit of Cortex-M33 system control register */
     SCB->SCR &= ~((uint32_t)SCB_SCR_SLEEPDEEP_Msk);
 }
 
 /*!
     \brief      PMU work at standby mode
-    \param[in]  none
+    \param[in]  standbymodecmd:
+                only one parameter can be selected which is shown as below:
+      \arg        WFI_CMD: use WFI command
+      \arg        WFE_CMD: use WFE command
     \param[out] none
     \retval     none
 */
-void pmu_to_standbymode(void)
+void pmu_to_standbymode(uint8_t standbymodecmd)
 {
     /* set sleepdeep bit of Cortex-M33 system control register */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
     /* set stbmod bit */
     PMU_CTL0 |= PMU_CTL0_STBMOD;
-        
+
     /* reset wakeup flag */
     PMU_CTL0 |= PMU_CTL0_WURST;
-    
-    /* enter standby mode */
-    __WFI();
+
+    /* select WFI or WFE command to enter standby mode */
+    if(WFI_CMD == standbymodecmd){
+        __WFI();
+    }else{
+        __WFE();
+        __WFE();
+    }
 }
 
 /*!
@@ -294,7 +302,7 @@ void pmu_wifi_power_disable(void)
 
 /*!
     \brief      WIFI SRAM control
-    \param[in]  wifi_sram: 
+    \param[in]  wifi_sram:
                 one or more parameters can be selected which are shown as below:
       \arg        PMU_WIFI_SLEEP: WIFI go to sleep
       \arg        PMU_WIFI_WAKE: WIFI wakeup
@@ -314,7 +322,7 @@ void pmu_wifi_sram_control(uint32_t wifi_sram)
 
 /*!
     \brief      RF sequence force open/close
-    \param[in]  force: 
+    \param[in]  force:
                 only one parameter can be selected which is shown as below:
       \arg        PMU_RF_FORCE_OPEN: Software force start, open RF power
       \arg        PMU_RF_FORCE_CLOSE: Software force close, close RF power
@@ -328,7 +336,7 @@ void pmu_rf_force_enable(uint32_t force)
 
 /*!
     \brief      disable RF sequence open/close force
-    \param[in]  force: 
+    \param[in]  force:
                 only one parameter can be selected which is shown as below:
       \arg        PMU_RF_FORCE_OPEN: Software force start, open RF power
       \arg        PMU_RF_FORCE_CLOSE: Software force close, close RF power
@@ -342,7 +350,7 @@ void pmu_rf_force_disable(uint32_t force)
 
 /*!
     \brief      RF sequence configuration
-    \param[in]  mode: 
+    \param[in]  mode:
                 only one parameter can be selected which is shown as below:
       \arg        PMU_RF_SOFTWARE: RF software sequence enable
       \arg        PMU_RF_HARDWARE: RF hardware sequence enable
@@ -357,7 +365,7 @@ void pmu_rf_sequence_config(uint32_t mode)
 
 /*!
     \brief      enable the security attribution
-    \param[in]  security: 
+    \param[in]  security:
                 one or more parameters can be selected which are shown as below:
       \arg        PMU_SEC_WAKEUP_PIN0: WKUP pin 0 security
       \arg        PMU_SEC_WAKEUP_PIN1: WKUP pin 1 security
@@ -377,7 +385,7 @@ void pmu_security_enable(uint32_t security)
 }
 /*!
     \brief      disable the security attribution
-    \param[in]  security: 
+    \param[in]  security:
                 one or more parameters can be selected which are shown as below:
       \arg        PMU_SEC_WAKEUP_PIN0: WKUP pin 0 security
       \arg        PMU_SEC_WAKEUP_PIN1: WKUP pin 1 security
@@ -440,7 +448,7 @@ void pmu_flag_reset(uint32_t flag_reset)
       \arg        PMU_FLAG_LVD: VDD low voltage flag
       \arg        PMU_FLAG_VLVD: VDDA low voltage flag
       \arg        PMU_FLAG_LDOVSRF: LDO voltage select ready flag
-      \arg        PMU_FLAG_LDRF: low-driver mode ready flag 
+      \arg        PMU_FLAG_LDRF: low-driver mode ready flag
       \arg        PMU_FLAG_WIFI_SLEEP: WIFI is in sleep state
       \arg        PMU_FLAG_WIFI_ACTIVE: WIFI is in active state
       \arg        PMU_FLAG_SRAM1_SLEEP: SRAM1 is in sleep state
@@ -461,13 +469,13 @@ FlagStatus pmu_flag_get(uint32_t pmu_flag)
             return SET;
         }else{
             return RESET;
-        }        
+        }
     }else{
         /* get flag status in PMU_CS0 */
         if(PMU_CS0 & pmu_flag){
             return SET;
         }else{
             return RESET;
-        }    
+        }
     }
 }

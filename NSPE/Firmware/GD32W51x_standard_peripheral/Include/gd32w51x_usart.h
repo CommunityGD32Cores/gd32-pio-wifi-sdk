@@ -1,34 +1,34 @@
 /*!
     \file  gd32w51x_usart.h
     \brief definitions for the USART
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -244,7 +244,7 @@ typedef enum{
     /* flags in RFCS register */
     USART_FLAG_RFFINT = USART_REGIDX_BIT(USART_RFCS_REG_OFFSET, 15U),      /*!< receive FIFO full interrupt flag */
     USART_FLAG_RFF = USART_REGIDX_BIT(USART_RFCS_REG_OFFSET, 11U),         /*!< receive FIFO full flag */
-    USART_FLAG_RFE = USART_REGIDX_BIT(USART_RFCS_REG_OFFSET, 10U),         /*!< receive FIFO empty flag */
+    USART_FLAG_RFE = USART_REGIDX_BIT(USART_RFCS_REG_OFFSET, 10U)          /*!< receive FIFO empty flag */
 }usart_flag_enum;
 
 /* USART interrupt flags */
@@ -269,7 +269,7 @@ typedef enum
     USART_INT_FLAG_ERR_ORERR = USART_REGIDX_BIT2(USART_CTL2_REG_OFFSET, 0U, USART_STAT_REG_OFFSET, 3U),  /*!< error interrupt and overrun error */
     USART_INT_FLAG_ERR_FERR = USART_REGIDX_BIT2(USART_CTL2_REG_OFFSET, 0U, USART_STAT_REG_OFFSET, 1U),   /*!< error interrupt and frame error flag */
     /* interrupt flags in RFCS register */
-    USART_INT_FLAG_RFF = USART_REGIDX_BIT2(USART_RFCS_REG_OFFSET, 9U, USART_RFCS_REG_OFFSET, 15U),       /*!< receive FIFO full interrupt and flag */
+    USART_INT_FLAG_RFF = USART_REGIDX_BIT2(USART_RFCS_REG_OFFSET, 9U, USART_RFCS_REG_OFFSET, 15U)        /*!< receive FIFO full interrupt and flag */
 }usart_interrupt_flag_enum;
 
 /* USART interrupt enable or disable */
@@ -291,23 +291,23 @@ typedef enum
     USART_INT_CTS = USART_REGIDX_BIT(USART_CTL2_REG_OFFSET, 10U),        /*!< CTS interrupt */
     USART_INT_ERR = USART_REGIDX_BIT(USART_CTL2_REG_OFFSET, 0U),         /*!< error interrupt */
     /* interrupt in RFCS register */
-    USART_INT_RFF = USART_REGIDX_BIT(USART_RFCS_REG_OFFSET, 9U),         /*!< receive FIFO full interrupt */
+    USART_INT_RFF = USART_REGIDX_BIT(USART_RFCS_REG_OFFSET, 9U)          /*!< receive FIFO full interrupt */
 }usart_interrupt_enum;
 
 /* USART invert configure */
 typedef enum {
     /* data bit level inversion */
-    USART_DINV_ENABLE,                                               /*!< data bit level inversion */
+    USART_DINV_ENABLE = 0,                                           /*!< data bit level inversion */
     USART_DINV_DISABLE,                                              /*!< data bit level not inversion */
     /* TX pin level inversion */
-    USART_TXPIN_ENABLE,                                              /*!< TX pin level inversion */               
+    USART_TXPIN_ENABLE,                                              /*!< TX pin level inversion */
     USART_TXPIN_DISABLE,                                             /*!< TX pin level not inversion */
     /* RX pin level inversion */
     USART_RXPIN_ENABLE,                                              /*!< RX pin level inversion */
     USART_RXPIN_DISABLE,                                             /*!< RX pin level not inversion */
     /* swap TX/RX pins */
-    USART_SWAP_ENABLE,                                               /*!< swap TX/RX pins */                
-    USART_SWAP_DISABLE,                                              /*!< not swap TX/RX pins */
+    USART_SWAP_ENABLE,                                               /*!< swap TX/RX pins */
+    USART_SWAP_DISABLE                                               /*!< not swap TX/RX pins */
 }usart_invert_enum;
 
 /* USART receiver configure */
@@ -586,6 +586,9 @@ void usart_receive_fifo_disable(uint32_t usart_periph);
 /* read receive FIFO counter number */
 uint8_t usart_receive_fifo_counter_number(uint32_t usart_periph);
 
+/* enable USART command */
+void usart_command_enable(uint32_t usart_periph, uint32_t cmdtype);
+
 /* flag & interrupt functions */
 /* get flag in STAT/RFCS register */
 FlagStatus usart_flag_get(uint32_t usart_periph, usart_flag_enum flag);
@@ -595,8 +598,6 @@ void usart_flag_clear(uint32_t usart_periph, usart_flag_enum flag);
 void usart_interrupt_enable(uint32_t usart_periph, usart_interrupt_enum interrupt);
 /* disable USART interrupt */
 void usart_interrupt_disable(uint32_t usart_periph, usart_interrupt_enum interrupt);
-/* enable USART command */
-void usart_command_enable(uint32_t usart_periph, uint32_t cmdtype);
 /* get USART interrupt and flag status */
 FlagStatus usart_interrupt_flag_get(uint32_t usart_periph, usart_interrupt_flag_enum int_flag);
 /* clear USART interrupt flag */

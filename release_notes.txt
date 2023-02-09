@@ -1,6 +1,12 @@
 ==========================================
 Release Notes
 ==========================================
+V1.0.3 (2022-11-30)
+1. Update Firmware_library.
+2. Improve robustness of AP mode.
+3. Add new UART command:switch_image.
+
+==========================================
 V1.0.2 (2022-03-18)
 1. Simplify development environment setup.
    Remove dependency on Python and remove automatic download after compilation.

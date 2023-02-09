@@ -1,34 +1,34 @@
 /*!
     \file    gd32w51x_exti.h
     \brief   definitions for the EXTI
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -44,7 +44,7 @@ OF SUCH DAMAGE.
 #define EXTI_INTEN                   REG32(EXTI + 0x00000000U) /*!< interrupt enable register */
 #define EXTI_EVEN                    REG32(EXTI + 0x00000004U) /*!< event enable register */
 #define EXTI_RTEN                    REG32(EXTI + 0x00000008U) /*!< rising edge trigger enable register */
-#define EXTI_FTEN                    REG32(EXTI + 0x0000000CU) /*!< falling trigger enable register */
+#define EXTI_FTEN                    REG32(EXTI + 0x0000000CU) /*!< falling edge trigger enable register */
 #define EXTI_SWIEV                   REG32(EXTI + 0x00000010U) /*!< software interrupt event register */
 #define EXTI_PD                      REG32(EXTI + 0x00000014U) /*!< pending register */
 #define EXTI_SECCFG                  REG32(EXTI + 0x00000018U) /*!< security configuration register */
@@ -269,7 +269,7 @@ OF SUCH DAMAGE.
 #define EXTI_SECCFG_SEC27               BIT(27)                /*!< security configuration from line 27 */
 #define EXTI_SECCFG_SEC28               BIT(28)                /*!< security configuration from line 28 */
 
-/* EXTI_PRIVCFG */                                         
+/* EXTI_PRIVCFG */
 #define EXTI_PRIVCFG_PRIV0              BIT(0)                 /*!< privilege configuration from line 0 */
 #define EXTI_PRIVCFG_PRIV1              BIT(1)                 /*!< privilege configuration from line 1 */
 #define EXTI_PRIVCFG_PRIV2              BIT(2)                 /*!< privilege configuration from line 2 */
@@ -327,7 +327,7 @@ typedef enum
     EXTI_17     = BIT(17),                                     /*!< EXTI line 17 */
     EXTI_18     = BIT(18),                                     /*!< EXTI line 18 */
     EXTI_19     = BIT(19),                                     /*!< EXTI line 19 */
-    EXTI_20     = BIT(20),                                     /*!< EXTI line 20 */    
+    EXTI_20     = BIT(20),                                     /*!< EXTI line 20 */
     EXTI_21     = BIT(21),                                     /*!< EXTI line 21 */
     EXTI_22     = BIT(22),                                     /*!< EXTI line 22 */
     EXTI_23     = BIT(23),                                     /*!< EXTI line 23 */
@@ -347,16 +347,16 @@ typedef enum
 
 /* interrupt trigger mode */
 typedef enum
-{ 
+{
     EXTI_TRIG_RISING = 0,                                      /*!< EXTI rising edge trigger */
     EXTI_TRIG_FALLING,                                         /*!< EXTI falling edge trigger */
     EXTI_TRIG_BOTH,                                            /*!< EXTI rising and falling edge trigger */
-    EXTI_TRIG_NONE                                             /*!< without rising edge or falling edge trigger */
+    EXTI_TRIG_NONE                                             /*!< EXTI without rising edge or falling edge trigger */
 }exti_trig_type_enum;
 
 /* function declarations */
 /* interrupt and event configuration functions */
-/* deinitialize the EXTI */
+/* deinitialize the EXTI, reset the value of all EXTI registers into initial values */
 void exti_deinit(void);
 /* initialize the EXTI, enable the configuration of EXTI initialize */
 void exti_init(exti_line_enum linex, exti_mode_enum mode, exti_trig_type_enum trig_type);
@@ -386,13 +386,13 @@ void exti_lock_enable(void);
 void exti_software_interrupt_enable(exti_line_enum linex);
 /* disable EXTI software interrupt event */
 void exti_software_interrupt_disable(exti_line_enum linex);
-/* get EXTI lines pending flag */
+/* get EXTI line x pending flag */
 FlagStatus exti_flag_get(exti_line_enum linex);
-/* clear EXTI lines pending flag */
+/* clear EXTI line x pending flag */
 void exti_flag_clear(exti_line_enum linex);
-/* get EXTI lines flag when the interrupt flag is set */
+/* get EXTI line x flag when the interrupt flag is set */
 FlagStatus exti_interrupt_flag_get(exti_line_enum linex);
-/* clear EXTI lines pending flag */
+/* clear EXTI line x pending flag */
 void exti_interrupt_flag_clear(exti_line_enum linex);
 
 #endif /* GD32W51X_EXTI_H */

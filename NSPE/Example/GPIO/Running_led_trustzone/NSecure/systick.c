@@ -36,6 +36,7 @@ OF SUCH DAMAGE.
 #include "systick.h"
 
 volatile static uint32_t delay;
+extern uint32_t SystemCoreClock;
 
 /*!
     \brief      configure systick

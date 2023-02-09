@@ -1,34 +1,34 @@
 /*!
     \file    gd32w51x_adc.h
     \brief   definitions for the ADC
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -87,7 +87,7 @@ OF SUCH DAMAGE.
 #define ADC_CTL0_DISNUM                 BITS(13, 15)                      /*!< discontinuous mode channel count */
 #define ADC_CTL0_IWDEN                  BIT(22)                           /*!< analog watchdog enable on inserted channels */
 #define ADC_CTL0_RWDEN                  BIT(23)                           /*!< analog watchdog enable on regular channels */
-#define ADC_CTL0_ROVFIE                 BIT(26)                           /*!< interrupt enable for ROVF */ 
+#define ADC_CTL0_ROVFIE                 BIT(26)                           /*!< interrupt enable for ROVF */
 
 /* ADC_CTL1 */
 #define ADC_CTL1_ADCON                  BIT(0)                            /*!< ADC converter on */
@@ -205,15 +205,15 @@ OF SUCH DAMAGE.
 #define ADC_EXTTRIG_INSERTED_EXTI_15    CTL1_ETSIC(15)                              /*!< external interrupt line 15 */
 
 /* ADC channel sample time */
-#define SAMPTX_SPT(regval)              (BITS(0, 2) & ((uint32_t)(regval) << 0))     /*!< write value to ADC_SAMPTX_SPT bit field */
-#define ADC_SAMPLETIME_2                SAMPTX_SPT(0)                               /*!< 2 sampling cycles */
-#define ADC_SAMPLETIME_15               SAMPTX_SPT(1)                               /*!< 15 sampling cycles */
-#define ADC_SAMPLETIME_28               SAMPTX_SPT(2)                               /*!< 28 sampling cycles */
-#define ADC_SAMPLETIME_56               SAMPTX_SPT(3)                               /*!< 56 sampling cycles */
-#define ADC_SAMPLETIME_84               SAMPTX_SPT(4)                               /*!< 84 sampling cycles */
-#define ADC_SAMPLETIME_112              SAMPTX_SPT(5)                               /*!< 112 sampling cycles */
-#define ADC_SAMPLETIME_144              SAMPTX_SPT(6)                               /*!< 144 sampling cycles */
-#define ADC_SAMPLETIME_480              SAMPTX_SPT(7)                               /*!< 480 sampling cycles */
+#define SAMPTX_SPT(regval)              (BITS(0, 2) & ((uint32_t)(regval) << 0))    /*!< write value to ADC_SAMPTX_SPT bit field */
+#define ADC_SAMPLETIME_1POINT5          SAMPTX_SPT(0)                               /*!< 1.5 sampling cycles */
+#define ADC_SAMPLETIME_14POINT5         SAMPTX_SPT(1)                               /*!< 14.5 sampling cycles */
+#define ADC_SAMPLETIME_27POINT5         SAMPTX_SPT(2)                               /*!< 27.5 sampling cycles */
+#define ADC_SAMPLETIME_55POINT5         SAMPTX_SPT(3)                               /*!< 55.5 sampling cycles */
+#define ADC_SAMPLETIME_83POINT5         SAMPTX_SPT(4)                               /*!< 83.5 sampling cycles */
+#define ADC_SAMPLETIME_111POINT5        SAMPTX_SPT(5)                               /*!< 111.5 sampling cycles */
+#define ADC_SAMPLETIME_143POINT5        SAMPTX_SPT(6)                               /*!< 143.5 sampling cycles */
+#define ADC_SAMPLETIME_479POINT5        SAMPTX_SPT(7)                               /*!< 479.5 sampling cycles */
 
 /* ADC_IOFFX register value */
 #define IOFFX_IOFF(regval)              (BITS(0, 11) & ((uint32_t)(regval) << 0))   /*!< write value to ADC_IOFFX_IOFF bit field */

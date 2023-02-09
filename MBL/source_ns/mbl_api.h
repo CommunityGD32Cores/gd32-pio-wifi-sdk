@@ -55,6 +55,7 @@ struct mbl_api_t {
     int (*sys_fw_version_set)(uint32_t type, uint32_t version);
     int (*sys_trng_seed_set)(uint8_t val);
     int (*flash_indirect_read)(uint32_t offset, void *data, int len);
+    int (*flash_verify_read)(uint32_t offset, void *data, int len);
     int (*flash_fast_write)(uint32_t offset, const void *data, int len);
     int (*flash_erase)(uint32_t offset, int len);
 };
@@ -72,6 +73,7 @@ struct mbl_api_t {
 #define mbl_sys_fw_version_set(a, b)        mbl_dummy_func(__func__, "mbl_sys_fw_version_set")
 #define mbl_sys_trng_seed_set(a)            mbl_dummy_func(__func__, "mbl_sys_trng_seed_set")
 #define mbl_flash_indirect_read(a, b, c)    mbl_dummy_func(__func__, "mbl_flash_indirect_read")
+#define mbl_flash_verify_read(a, b, c)      mbl_dummy_func(__func__, "mbl_flash_verify_read")
 #define mbl_flash_write(a, b, c)            mbl_dummy_func(__func__, "mbl_flash_write")
 #define mbl_flash_erase(a, b)               mbl_dummy_func(__func__, "mbl_flash_erase")
 static __INLINE int mbl_dummy_func(const char *caller, const char *func)
@@ -93,6 +95,7 @@ extern struct mbl_api_t *p_mbl_api;
 #define mbl_sys_fw_version_set              p_mbl_api->sys_fw_version_set
 #define mbl_sys_trng_seed_set               p_mbl_api->sys_trng_seed_set
 #define mbl_flash_indirect_read             p_mbl_api->flash_indirect_read
+#define mbl_flash_verify_read               p_mbl_api->flash_verify_read
 #define mbl_flash_write                     p_mbl_api->flash_fast_write
 #define mbl_flash_erase                     p_mbl_api->flash_erase
 #endif  /*(RE_IMG_0_NSPE_OFFSET == 0) */

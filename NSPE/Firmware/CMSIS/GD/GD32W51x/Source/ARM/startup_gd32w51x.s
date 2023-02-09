@@ -4,10 +4,8 @@
 ;
 ;    \version 2021-10-30, V1.0.0, firmware for GD32W51x
 ;*/
-
 ;/*
 ;    Copyright (c) 2021, GigaDevice Semiconductor Inc.
-
 ;
 ;    Redistribution and use in source and binary forms, with or without modification,
 ;are permitted provided that the following conditions are met:
@@ -102,9 +100,9 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     DMA0_Channel6_IRQHandler          ; 33:DMA0 Channel6
                 DCD     DMA0_Channel7_IRQHandler          ; 34:DMA0 Channel7
                 DCD     ADC_IRQHandler                    ; 35:ADC
-                DCD     TAMP_STAMP_S_IRQHandler           ; 36:RTC tamper security interrupt
-                DCD     RTC_WKUP_S_IRQHandler             ; 37:RTC wakeup security interrupt
-                DCD     RTC_Alarm_S_IRQHandler            ; 38:RTC Alarm security interrupt
+                DCD     TAMPER_STAMP_S_IRQHandler         ; 36:RTC Tamper and TimeStamp Events Security Interrupt
+                DCD     RTC_WKUP_S_IRQHandler             ; 37:RTC Wakeup Security Interrupt
+                DCD     RTC_Alarm_S_IRQHandler            ; 38:RTC Alarm Security Interrupt
                 DCD     EXTI5_9_IRQHandler                ; 39:EXTI5 to EXTI9
                 DCD     TIMER0_BRK_IRQHandler             ; 40:TIMER0 Break
                 DCD     TIMER0_UP_IRQHandler              ; 41:TIMER0 Update
@@ -124,7 +122,7 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     USART2_IRQHandler                 ; 55:USART2
                 DCD     EXTI10_15_IRQHandler              ; 56:EXTI10 to EXTI15
                 DCD     RTC_Alarm_IRQHandler              ; 57:RTC Alarm
-                DCD     PVM_IRQHandler                    ; 58:EXTI[18](PVMO)
+                DCD     VLVDF_IRQHandler                  ; 58:VDDA Low Voltage Detector
                 DCD     0                                 ; 59:Reserved
                 DCD     TIMER15_IRQHandler                ; 60:TIMER15
                 DCD     TIMER16_IRQHandler                ; 61:TIMER16
@@ -160,7 +158,7 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     0                                 ; 91:Reserved
                 DCD     USBFS_WKUP_IRQHandler             ; 92:USBFS_WKUP
                 DCD     0                                 ; 93:Reserved
-                DCD     DCI_IRHandler                     ; 94:DCI
+                DCD     DCI_IRQHandler                    ; 94:DCI
                 DCD     CAU_IRQHandler                    ; 95:CAU
                 DCD     HAU_TRNG_IRQHandler               ; 96:HAU and TRNG
                 DCD     FPU_IRQHandler                    ; 97:FPU
@@ -177,7 +175,7 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     WLAN_Tx_IRQHandler                ; 108:WIFI11N global interrupt1
                 DCD     WLAN_Cmn_IRQHandler               ; 109:WIFI11N global interrupt2
                 DCD     EFUSE_IRQHandler                  ; 110:EFUSE
-                DCD     QSPI_IRQHandler                   ; 111:QUADSPI1
+                DCD     QSPI_IRQHandler                   ; 111:QUADSPI
                 DCD     PKCAU_IRQHandler                  ; 112:PKCAU
                 DCD     TSI_IRQHandler                    ; 113:TSI
                 DCD     ICACHE_IRQHandler                 ; 114:ICACHE
@@ -274,7 +272,7 @@ Default_Handler PROC
                 EXPORT     DMA0_Channel6_IRQHandler          [WEAK]
                 EXPORT     DMA0_Channel7_IRQHandler          [WEAK]
                 EXPORT     ADC_IRQHandler                    [WEAK]
-                EXPORT     TAMP_STAMP_S_IRQHandler           [WEAK]
+                EXPORT     TAMPER_STAMP_S_IRQHandler         [WEAK]
                 EXPORT     RTC_WKUP_S_IRQHandler             [WEAK]
                 EXPORT     RTC_Alarm_S_IRQHandler            [WEAK]
                 EXPORT     EXTI5_9_IRQHandler                [WEAK]
@@ -296,7 +294,7 @@ Default_Handler PROC
                 EXPORT     USART2_IRQHandler                 [WEAK]
                 EXPORT     EXTI10_15_IRQHandler              [WEAK]
                 EXPORT     RTC_Alarm_IRQHandler              [WEAK]
-                EXPORT     PVM_IRQHandler                    [WEAK]
+                EXPORT     VLVDF_IRQHandler                  [WEAK]
                 EXPORT     TIMER15_IRQHandler                [WEAK]
                 EXPORT     TIMER16_IRQHandler                [WEAK]
                 EXPORT     SDIO_IRQHandler                   [WEAK]
@@ -316,7 +314,7 @@ Default_Handler PROC
                 EXPORT     WLAN_WKUP_IRQHandler              [WEAK]
                 EXPORT     USBFS_IRQHandler                  [WEAK]
                 EXPORT     USBFS_WKUP_IRQHandler             [WEAK]
-                EXPORT     DCI_IRHandler                     [WEAK]
+                EXPORT     DCI_IRQHandler                    [WEAK]
                 EXPORT     CAU_IRQHandler                    [WEAK]
                 EXPORT     HAU_TRNG_IRQHandler               [WEAK]
                 EXPORT     FPU_IRQHandler                    [WEAK]
@@ -355,7 +353,7 @@ DMA0_Channel5_IRQHandler
 DMA0_Channel6_IRQHandler
 DMA0_Channel7_IRQHandler
 ADC_IRQHandler
-TAMP_STAMP_S_IRQHandler
+TAMPER_STAMP_S_IRQHandler
 RTC_WKUP_S_IRQHandler
 RTC_Alarm_S_IRQHandler
 EXTI5_9_IRQHandler
@@ -377,7 +375,7 @@ USART1_IRQHandler
 USART2_IRQHandler
 EXTI10_15_IRQHandler
 RTC_Alarm_IRQHandler
-PVM_IRQHandler
+VLVDF_IRQHandler
 TIMER15_IRQHandler
 TIMER16_IRQHandler
 SDIO_IRQHandler
@@ -397,7 +395,7 @@ DMA1_Channel7_IRQHandler
 WLAN_WKUP_IRQHandler
 USBFS_IRQHandler
 USBFS_WKUP_IRQHandler
-DCI_IRHandler
+DCI_IRQHandler
 CAU_IRQHandler
 HAU_TRNG_IRQHandler
 FPU_IRQHandler

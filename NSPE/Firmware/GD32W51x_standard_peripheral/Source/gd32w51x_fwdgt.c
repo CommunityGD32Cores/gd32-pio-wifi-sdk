@@ -1,34 +1,34 @@
 /*!
     \file    gd32w51x_fwdgt.c
     \brief   FWDGT driver
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -38,7 +38,7 @@ OF SUCH DAMAGE.
 #define RLD_RLD(regval)             (BITS(0,11) & ((uint32_t)(regval) << 0U))  /*!< write value to FWDGT_RLD_RLD bit field */
 
 /*!
-    \brief      enable write access to FWDGT_PSC, FWDGT_RLD
+    \brief      enable write access to FWDGT_PSC and FWDGT_RLD
     \param[in]  none
     \param[out] none
     \retval     none
@@ -49,7 +49,7 @@ void fwdgt_write_enable(void)
 }
 
 /*!
-    \brief      disable write access to FWDGT_PSC, FWDGT_RLD
+    \brief      disable write access to FWDGT_PSC and FWDGT_RLD
     \param[in]  none
     \param[out] none
     \retval     none
@@ -88,22 +88,22 @@ ErrStatus fwdgt_prescaler_value_config(uint16_t prescaler_value)
 {
     uint32_t timeout = FWDGT_PSC_TIMEOUT;
     uint32_t flag_status = RESET;
-    
+
     /* enable write access to FWDGT_PSC */
     FWDGT_CTL = FWDGT_WRITEACCESS_ENABLE;
-    
+
     /* wait until the PUD flag to be reset */
     do{
         flag_status = FWDGT_STAT & FWDGT_STAT_PUD;
     } while((--timeout > (uint32_t)0) && (RESET != flag_status));
-    
+
     if(RESET != flag_status){
         return ERROR;
     }
-    
+
     /* configure FWDGT */
     FWDGT_PSC = (uint32_t)prescaler_value;
-    
+
     return SUCCESS;
 }
 
@@ -117,19 +117,19 @@ ErrStatus fwdgt_reload_value_config(uint16_t reload_value)
 {
     uint32_t timeout = FWDGT_RLD_TIMEOUT;
     uint32_t flag_status = RESET;
-  
+
     /* enable write access to FWDGT_RLD */
     FWDGT_CTL = FWDGT_WRITEACCESS_ENABLE;
-  
+
     /* wait until the RUD flag to be reset */
     do{
         flag_status = FWDGT_STAT & FWDGT_STAT_RUD;
     }while((--timeout > 0U) && ((uint32_t)RESET != flag_status));
-   
+
     if ((uint32_t)RESET != flag_status){
         return ERROR;
     }
-    
+
     FWDGT_RLD = RLD_RLD(reload_value);
 
     return SUCCESS;
@@ -165,19 +165,19 @@ ErrStatus fwdgt_config(uint16_t reload_value, uint8_t prescaler_div)
 {
     uint32_t timeout = FWDGT_PSC_TIMEOUT;
     uint32_t flag_status = RESET;
-  
+
     /* enable write access to FWDGT_PSC,and FWDGT_RLD */
     FWDGT_CTL = FWDGT_WRITEACCESS_ENABLE;
-  
+
     /* wait until the PUD flag to be reset */
     do{
         flag_status = FWDGT_STAT & FWDGT_STAT_PUD;
     }while((--timeout > 0U) && ((uint32_t)RESET != flag_status));
-    
+
     if ((uint32_t)RESET != flag_status){
         return ERROR;
     }
-    
+
     /* configure FWDGT */
     FWDGT_PSC = (uint32_t)prescaler_div;
 
@@ -186,22 +186,22 @@ ErrStatus fwdgt_config(uint16_t reload_value, uint8_t prescaler_div)
     do{
         flag_status = FWDGT_STAT & FWDGT_STAT_RUD;
     }while((--timeout > 0U) && ((uint32_t)RESET != flag_status));
-   
+
     if ((uint32_t)RESET != flag_status){
         return ERROR;
     }
-    
+
     FWDGT_RLD = RLD_RLD(reload_value);
-    
+
     /* reload the counter */
     FWDGT_CTL = FWDGT_KEY_RELOAD;
-    
+
     return SUCCESS;
 }
 
 /*!
     \brief      get flag state of FWDGT
-    \param[in]  flag: flag to get 
+    \param[in]  flag: flag to get
                 only one parameter can be selected which is shown as below:
       \arg        FWDGT_FLAG_PUD: a write operation to FWDGT_PSC register is on going
       \arg        FWDGT_FLAG_RUD: a write operation to FWDGT_RLD register is on going

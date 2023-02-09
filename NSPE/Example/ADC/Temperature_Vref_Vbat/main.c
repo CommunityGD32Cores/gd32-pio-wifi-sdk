@@ -118,11 +118,11 @@ void adc_config(void)
     adc_channel_length_config(ADC_INSERTED_CHANNEL, 3U);
 
     /* ADC temperature sensor channel config */
-    adc_inserted_channel_config(0, ADC_CHANNEL_9, ADC_SAMPLETIME_480);
+    adc_inserted_channel_config(0, ADC_CHANNEL_9, ADC_SAMPLETIME_479POINT5);
     /* ADC internal reference voltage channel config */
-    adc_inserted_channel_config(1, ADC_CHANNEL_10, ADC_SAMPLETIME_480);
+    adc_inserted_channel_config(1, ADC_CHANNEL_10, ADC_SAMPLETIME_479POINT5);
     /* ADC 1/4 voltate of external battery config */
-    adc_inserted_channel_config(2, ADC_CHANNEL_11, ADC_SAMPLETIME_480);
+    adc_inserted_channel_config(2, ADC_CHANNEL_11, ADC_SAMPLETIME_479POINT5);
     /* ADC vbat channel enable */
     adc_channel_9_to_11(ADC_VBAT_CHANNEL_SWITCH, ENABLE);
     /* ADC temperature and vref enable */

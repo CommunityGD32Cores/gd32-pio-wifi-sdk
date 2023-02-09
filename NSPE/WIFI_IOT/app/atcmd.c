@@ -325,8 +325,8 @@ static void at_heap(int argc, char **argv)
 static void at_sysram(int argc, char **argv)
 {
 #if defined (__CC_ARM) || defined (__ARMCC_VERSION)
-    extern uint32_t Image$$RW_IRAM2$$ZI$$Limit;
-    uint32_t nspe_zi_limit = (uint32_t)&Image$$RW_IRAM2$$ZI$$Limit;
+    extern uint32_t Image$$RW_IRAM_MEM3$$ZI$$Limit;
+    uint32_t nspe_zi_limit = (uint32_t)&Image$$RW_IRAM_MEM3$$ZI$$Limit;
 #elif defined (__ICCARM)
     extern uint32_t DATA$$Limit;
     uint32_t nspe_zi_limit = (uint32_t)&DATA$$Limit;

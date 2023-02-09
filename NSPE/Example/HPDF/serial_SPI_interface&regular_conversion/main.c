@@ -40,6 +40,7 @@ OF SUCH DAMAGE.
 #define BUFFER_SIZE              25
 #define HPDF_OUTPUT_BUFFER       2
 
+#define DATA_LIMIT(N, L, H) (((N)<(L))?(L):(((N)>(H))?(H):(N)))
 uint8_t spi0_send_array[BUFFER_SIZE] = {0};
 
 int32_t tm_high_val = 32769;
@@ -112,7 +113,7 @@ int main(void)
         printf(" The range of maximum output resolution:\n ");
         /* get the PCM stereo data */
         for(i = 0; i < HPDF_OUTPUT_BUFFER; i++){
-            final_data[i] = conversion_data[i] >> 8;
+            final_data[i] = DATA_LIMIT((conversion_data[i] >> 8), -32768, 32767);
             printf("%d ", final_data[i]);
         }
     }

@@ -686,7 +686,7 @@ int flash_secure_config(void)
 	            flash_wm_config(1, RE_SST_OFFSET >> 12, (rom_flash_total_size() >> 12) - 1);
             }
         } else {
-            wm.memory_type = QSPIFMEM;
+            wm.memory_type = QSPI_FLASH_MEM;
             wm.region_number = NON_SECURE_MARK_REGION0;
             wm.start_address = RE_IMG_1_NSPE_OFFSET;
             wm.length = RE_SST_OFFSET - RE_IMG_1_NSPE_OFFSET;
@@ -702,7 +702,7 @@ int flash_secure_config(void)
 	            flash_wm_config(1, RE_IMG_1_PROT_OFFSET >> 12, (rom_flash_total_size() >> 12) - 1);
             }
 		} else {
-            wm.memory_type = QSPIFMEM;
+            wm.memory_type = QSPI_FLASH_MEM;
             wm.region_number = NON_SECURE_MARK_REGION0;
             wm.start_address = RE_IMG_0_NSPE_OFFSET;
             wm.length = RE_IMG_1_PROT_OFFSET - RE_IMG_0_NSPE_OFFSET;

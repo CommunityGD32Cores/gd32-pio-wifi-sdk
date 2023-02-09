@@ -156,10 +156,10 @@ void adc_config(void)
     /* ADC channel length config */
     adc_channel_length_config(ADC_REGULAR_CHANNEL, 4U);
     /* ADC inserted channel config */
-    adc_regular_channel_config(0U, ADC_CHANNEL_0, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(1U, ADC_CHANNEL_1, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(2U, ADC_CHANNEL_2, ADC_SAMPLETIME_56);
-    adc_regular_channel_config(3U, ADC_CHANNEL_3, ADC_SAMPLETIME_56);
+    adc_regular_channel_config(0U, ADC_CHANNEL_0, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(1U, ADC_CHANNEL_1, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(2U, ADC_CHANNEL_2, ADC_SAMPLETIME_55POINT5);
+    adc_regular_channel_config(3U, ADC_CHANNEL_3, ADC_SAMPLETIME_55POINT5);
     
     /* enable ADC interface */
     adc_enable();

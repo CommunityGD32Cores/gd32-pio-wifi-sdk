@@ -46,6 +46,8 @@ void tzbmpc_config();
 void nonsecure_init();
 /* configure LED pin to non-secure */
 CMSE_NS_ENTRY void led_nonsecure_cfg(void);
+/* get the current systemclock */
+CMSE_NS_ENTRY uint32_t secure_systemclockget(void);
 
 /*!
     \brief      main function
@@ -145,3 +147,15 @@ void led_nonsecure_cfg(void)
     gpio_bit_reset_sec_cfg(GPIOA, GPIO_PIN_15);
     gpio_bit_reset_sec_cfg(GPIOB, GPIO_PIN_6 | GPIO_PIN_8);
 }
+
+/*!
+    \brief      get the current systemclock
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+CMSE_NS_ENTRY uint32_t secure_systemclockget(void)
+{
+    return SystemCoreClock;
+}
+

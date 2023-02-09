@@ -284,21 +284,27 @@ void rtc_32k_time_get(struct time_rtc *cur_time, uint32_t is_wakeup)
         rtc_register_sync_wait();
     }
 
-    /* if sub_second is 0, rtc_time is most likely be updated */
-    do {
-        sub_second = rtc_subsecond_get();
-    } while (sub_second == 0);
+    /* If directly call rtc_subsecond_get() function to get sub-second,
+       it would unlock RTC_TIME and RTC_DATE by reading the RTC_DATE at the end.
+       This could not protect the situation where we read the time just 59.999.
+       as RTC_TIME may be updated to 00 at the next clock.
+    */
+   // Firstly we read RTC_SS to lock RTC_TIME and RTC_DATE.
+    sub_second = RTC_SS;
 
+    /* Then, we must call rtc_current_time_get here to read RTC_TIME and RTC_DATE
+       and unlock them by the way.
+    */
     rtc_current_time_get(&rtc_time);
+
     second = ((rtc_time.second >> 4) * 10) + (rtc_time.second & 0x0f);
 
     cur_time->tv_sec = second;
-    if (sub_second <= 1000) {
-        cur_time->tv_msec = 1000 - sub_second;
-    } else {
-        DEBUGPRINT("rtc sub second unexpected\r\n");
-        cur_time->tv_msec = 0;
-    }
+    /* The sub-second(unit ms) calculated formula is as follow:
+          sub_second = 1000*((float)(prescaler_s - RTC_SS)/(float)(prescaler_s + 1))
+       We can use the simple formula if prescaler_s = 999.
+    */
+    cur_time->tv_msec = 999 - sub_second;
 }
 
 /*!

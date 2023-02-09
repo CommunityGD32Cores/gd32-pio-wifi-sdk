@@ -28,13 +28,19 @@
 #include "gd32w51x.h"
 
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-#if defined (__CC_ARM) || defined ( __ARMCC_VERSION )
+#if defined (__CC_ARM) || defined ( __ARMCC_VERSION ) || defined(__GNUC__)
   extern uint32_t __Vectors;
 #endif
 #if defined (__ICCARM__)
   extern uint32_t __vector_table;
 #endif
 #endif
+
+#define HXTALSTB_DELAY {                             \
+                            volatile uint32_t i;     \
+                            for(i=0; i<0x2000; i++){ \
+                            }                        \
+                        }
 
 /*!
     \brief      configure the system clock to HXTAL
@@ -52,7 +58,7 @@ static void system_clock_hxtal(void)
     /* enable HXTAL */
     RCU_CTL |= RCU_CTL_HXTALEN;
     RCU_CTL |= RCU_CTL_HXTALENPLL;
-
+    HXTALSTB_DELAY
     RCU_CTL |= RCU_CTL_HXTALREADY;
     /* wait until HXTAL is stable or the startup time is longer than HXTAL_STARTUP_TIMEOUT */
     do{
@@ -70,9 +76,9 @@ static void system_clock_hxtal(void)
     /* AHB = SYSCLK */
     RCU_CFG0 |= RCU_AHB_CKSYS_DIV1;
     /* APB2 = AHB */
-    RCU_CFG0 |= RCU_APB2_CKAHB_DIV1;
+    RCU_CFG0 |= RCU_APB2_CKAHB_DIV2;
     /* APB1 = AHB */
-    // RCU_CFG0 |= RCU_APB1_CKAHB_DIV4;
+    RCU_CFG0 |= RCU_APB1_CKAHB_DIV4;
 
     /* select HXTAL as system clock */
     RCU_CFG0 &= ~RCU_CFG0_SCS;
@@ -99,11 +105,7 @@ void system_clock_180m_40m_hxtal(void)
     /* enable HXTAL */
     RCU_CTL |= RCU_CTL_HXTALEN;
     RCU_CTL |= RCU_CTL_HXTALENPLL;
-    {
-       __IO int i;
-       for (i = 0; i < 0x20; i++);
-    }
-
+    HXTALSTB_DELAY
     RCU_CTL |= RCU_CTL_HXTALREADY;
     /* wait until HXTAL is stable or the startup time is longer than HXTAL_STARTUP_TIMEOUT */
     do{
@@ -158,9 +160,9 @@ void system_clock_180m_40m_hxtal(void)
     \retval     none
 */
 void SystemInit (void)
-	{
+{
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-#if defined (__CC_ARM) || defined ( __ARMCC_VERSION )
+#if defined (__CC_ARM) || defined ( __ARMCC_VERSION ) || defined(__GNUC__)
     SCB->VTOR = (uint32_t) &__Vectors;
 #endif
 #if defined (__ICCARM__)
@@ -168,39 +170,41 @@ void SystemInit (void)
 #endif
 #endif
 #ifdef UNALIGNED_SUPPORT_DISABLE
-	SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
+    SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
 #endif
-	/* FPU settings ------------------------------------------------------------*/
+    /* FPU settings ------------------------------------------------------------*/
 #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
-	SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));  /* set CP10 and CP11 Full Access */
+    SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));  /* set CP10 and CP11 Full Access */
 #endif
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) && (__FPU_PRESENT == 1) && (__FPU_USED == 1)
-	/* set CP10 and CP11 non-secure access */
-	SCB->NSACR |= BIT(SCB_NSACR_CP11_Pos) | BIT(SCB_NSACR_CP10_Pos);
+    /* set CP10 and CP11 non-secure access */
+    SCB->NSACR |= BIT(SCB_NSACR_CP11_Pos) | BIT(SCB_NSACR_CP10_Pos);
 #endif
 
-	/* Reset the RCC clock configuration to the default reset state ------------*/
-	RCU_CTL |= RCU_CTL_HXTALBPS;
-	{
-		__IO uint32_t i;
-		for (i=0; i<20; i++);
-	}
+    /* reset the RCU clock configuration to the default reset state */
+    RCU_CTL |= RCU_CTL_HXTALBPS;
+    {
+       __IO int i;
+       for (i = 0; i < 0x20; i++);
+    }
 
-	/* Reset CFG0 register */
-	RCU_CFG0 = 0x00000000U;
+    /* reset CFG0 register */
+    RCU_CFG0 &= ~RCU_CFG0_SCS;
 
-	/* Reset HSEON, CSSON and PLLON bits */
-	RCU_CTL &= ~(RCU_CTL_PLLEN | RCU_CTL_CKMEN | RCU_CTL_HXTALEN);
+    /* reset HXTALEN, CKMEN and PLLEN bits */
+    RCU_CTL &= ~(RCU_CTL_PLLEN | RCU_CTL_CKMEN | RCU_CTL_HXTALEN);
+    /* reset CFG0 register */
+    RCU_CFG0 = 0x00009400U;
 
-	/* Reset PLLCFG register */
-	RCU_PLLCFG = RCU_PLLCFG_PLLDIGOSEL;
+    /* reset PLLCFGR register */
+    RCU_PLL = 0x00003010U;
 
 #ifdef CONFIG_PLATFORM_ASIC
-	system_clock_180m_40m_hxtal();
+    system_clock_180m_40m_hxtal();
 #else
-	system_clock_hxtal();
+    system_clock_hxtal();
 #endif
 
-	/* Enable icache */
-	icache_enable();
+    /* Enable icache */
+    icache_enable();
 }

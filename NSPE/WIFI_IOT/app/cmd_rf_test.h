@@ -34,4 +34,4 @@ OF SUCH DAMAGE.
 
 void mp_cmd_help(void);
 int mp_cmd_handler(int argc, char **argv);
-void mp_mode_config(void);
+void mp_mode_config(uint32_t log_uart);

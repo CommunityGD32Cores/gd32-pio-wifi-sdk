@@ -3,7 +3,7 @@
 
 #include "lwip/ip_addr.h"
 
-#ifndef PING_TASK_STACK_SIZE
+#ifndef PING_TASK_STACK_SIZE  /* PATCH TO ALLOW PING TO WORK */
 #define PING_TASK_STACK_SIZE                   256
 #endif
 #define PING_TASK_PRIO                         16

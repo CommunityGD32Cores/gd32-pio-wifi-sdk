@@ -178,10 +178,10 @@ void adc_config(void)
     /* ADC inserted channel length config */
     adc_channel_length_config(ADC_INSERTED_CHANNEL, 4U);
     /* ADC inserted channel config */
-    adc_inserted_channel_config(0, ADC_CHANNEL_0, ADC_SAMPLETIME_15);
-    adc_inserted_channel_config(1, ADC_CHANNEL_1, ADC_SAMPLETIME_15);
-    adc_inserted_channel_config(2, ADC_CHANNEL_2, ADC_SAMPLETIME_15);
-    adc_inserted_channel_config(3, ADC_CHANNEL_3, ADC_SAMPLETIME_15);
+    adc_inserted_channel_config(0, ADC_CHANNEL_0, ADC_SAMPLETIME_14POINT5);
+    adc_inserted_channel_config(1, ADC_CHANNEL_1, ADC_SAMPLETIME_14POINT5);
+    adc_inserted_channel_config(2, ADC_CHANNEL_2, ADC_SAMPLETIME_14POINT5);
+    adc_inserted_channel_config(3, ADC_CHANNEL_3, ADC_SAMPLETIME_14POINT5);
     /* ADC inserted channel trigger config */
     adc_external_trigger_source_config(ADC_INSERTED_CHANNEL, ADC_EXTTRIG_INSERTED_EXTI_15);
     /* ADC inserted channel external trigger enable */
@@ -195,10 +195,10 @@ void adc_config(void)
     /* ADC regular channel length config */
     adc_channel_length_config(ADC_REGULAR_CHANNEL, 4U);
     /* ADC regular channel config */
-    adc_regular_channel_config(0, ADC_CHANNEL_4, ADC_SAMPLETIME_15);
-    adc_regular_channel_config(1, ADC_CHANNEL_5, ADC_SAMPLETIME_15);
-    adc_regular_channel_config(2, ADC_CHANNEL_6, ADC_SAMPLETIME_15);
-    adc_regular_channel_config(3, ADC_CHANNEL_7, ADC_SAMPLETIME_15);
+    adc_regular_channel_config(0, ADC_CHANNEL_4, ADC_SAMPLETIME_14POINT5);
+    adc_regular_channel_config(1, ADC_CHANNEL_5, ADC_SAMPLETIME_14POINT5);
+    adc_regular_channel_config(2, ADC_CHANNEL_6, ADC_SAMPLETIME_14POINT5);
+    adc_regular_channel_config(3, ADC_CHANNEL_7, ADC_SAMPLETIME_14POINT5);
     /* ADC regular channel trigger config */
     adc_external_trigger_source_config(ADC_REGULAR_CHANNEL, ADC_EXTTRIG_REGULAR_EXTI_11);
     adc_external_trigger_config(ADC_REGULAR_CHANNEL, EXTERNAL_TRIGGER_RISING);

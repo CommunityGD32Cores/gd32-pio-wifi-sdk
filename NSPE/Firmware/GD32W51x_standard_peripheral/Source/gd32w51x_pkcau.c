@@ -313,7 +313,7 @@ void pkcau_mont_param_operation(pkcau_mont_parameter_struct *mont_para)
                   oprd_b: operand B
                   modulus_n: modulus value n
                   modulus_len: modulus length in byte
-    \param[in]  mode: arithmetic operation mode
+    \param[in]  mode: modular operation mode
                 only one parameter can be selected which is shown as below:
       \arg        PKCAU_MODE_MOD_ADD: modular addition
       \arg        PKCAU_MODE_MOD_SUB: modular subtraction
@@ -347,7 +347,7 @@ void pkcau_mod_operation(pkcau_mod_parameter_struct *mod_para, uint32_t mode)
                   modulus_n: modulus value n
                   modulus_len: modulus length in byte
                   mont_para: montgomery parameter R2 mod n
-    \param[in]  mode: arithmetic operation mode
+    \param[in]  mode: modular exponentation operation mode
                 only one parameter can be selected which is shown as below:
       \arg        PKCAU_MODE_MOD_EXP: montgomery parameter computation then modular exponentiation
       \arg        PKCAU_MODE_MOD_EXP_FAST: modular exponentiation only
@@ -431,7 +431,7 @@ void pkcau_mod_reduc_operation(pkcau_mod_reduc_parameter_struct *mod_reduc_para)
 }
 
 /*!
-    \brief      execute arithmetic addition operation
+    \brief      execute arithmetic operation
     \param[in]  arithmetic_para: PKCAU arithmetic parameter struct
                   oprd_a: operand A
                   oprd_b: operand B
@@ -475,7 +475,7 @@ void pkcau_arithmetic_operation(pkcau_arithmetic_parameter_struct *arithmetic_pa
     \param[out] none
     \retval     none
 */
-void pkcau_crt_exp_operation(const pkcau_crt_parameter_struct* crt_para)
+void pkcau_crt_exp_operation(pkcau_crt_parameter_struct* crt_para)
 {
     uint32_t max_len_in_bit = crt_para->oprd_len * 8U;
 

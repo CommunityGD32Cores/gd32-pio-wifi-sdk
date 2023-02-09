@@ -85,7 +85,7 @@ OF SUCH DAMAGE.
 #define MIN_FRAG_THRESHOLD          256U
 #define MAX_FRAG_THRESHOLD          2346U
 
-#define MAX_IE_SZ                   512
+#define MAX_IE_SZ                   1024 // 512
 
 #define IEEE80211_LENGTH_RATES      8
 #define IEEE80211_LENGTH_RATES_EX   16
@@ -580,6 +580,7 @@ typedef enum {
     STATUS_UNABLE_HANDLE_STA            = 17,
     STATUS_RATE_FAIL                    = 18,
     STATUS_REFUSED_TEMPORARILY          = 30,
+    STATUS_INVALID_PMKID                = 53,
     STATUS_ANTI_CLOGGING_TOKEN_REQ      = 76,
     STATUS_FINITE_CYCLIC_GROUP_NOT_SUPP = 77,
     STATUS_MAX

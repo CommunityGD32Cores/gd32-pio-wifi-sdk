@@ -274,6 +274,61 @@ Exit:
 }
 
 /*!
+    \brief      read flash while verify image during OTA
+    \param[in]  offset: flash offset
+    \param[out] data: pointer to the buffer store flash read data
+    \param[in]  len: length of data read from flash
+    \retval     result of read flash(0: read ok, or -1: read error)
+*/
+int flash_verify_read(uint32_t offset, void *data, int len)
+{
+    int cache_enabled = 0;
+    int ret;
+
+    uint32_t fmc_ofvr_temp = FMC_OFVR;
+
+    if (is_flash_cache_enabled()) {
+        flash_cache_disable();
+        cache_enabled = 1;
+    }
+
+    if (is_sip_flash()) {
+        __disable_irq(); //disable all irqs here, cause it will change the FMC_OFVR value
+
+        fmc_unlock();
+        ob_unlock();
+        fmc_offset_value_config(0);// reset FMC_OFVR to 0
+        ob_lock();
+        fmc_lock();
+
+        ret = flash_read(offset, data, len);
+
+        fmc_unlock();
+        ob_unlock();
+        fmc_offset_value_config(fmc_ofvr_temp);// recovery FMC_OFVR value
+        ob_lock();
+        fmc_lock();
+
+        __enable_irq();// enable irq here
+    } else {
+        if (!is_valid_flash_offset(offset) || data == NULL
+            || len <= 0 || !is_valid_flash_offset(offset + len - 1)) {
+            ret = -1;
+            goto Exit;
+        }
+        __disable_irq();
+        ret = qspi_flash_read(FLASH_START_QSPI + offset, data, len);
+        __enable_irq();
+    }
+
+Exit:
+    if (cache_enabled)
+        flash_cache_enable();
+    return ret;
+}
+
+
+/*!
     \brief      write flash
     \param[in]  offset: flash offset
     \param[in]  data: pointer to the data write to flash

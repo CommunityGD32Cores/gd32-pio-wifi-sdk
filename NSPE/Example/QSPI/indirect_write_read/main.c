@@ -1,34 +1,34 @@
 /*!
     \file    main.c
     \brief   QSPI FLASH example
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -50,7 +50,8 @@ uint8_t Rx_Buffer[BufferSize];
 void rcu_config(void);
 void gpio_config(void);
 void qspi_flash_init(void);
-void qspi_send_command(uint32_t instruction, uint32_t address, uint32_t dummyCycles, uint32_t instructionMode, uint32_t addressMode, uint32_t addressSize, uint32_t dataMode);
+void qspi_send_command(uint32_t instruction, uint32_t address, uint32_t dummyCycles, uint32_t instructionMode,
+uint32_t addressMode, uint32_t addressSize, uint32_t dataMode);
 ErrStatus memory_compare(uint8_t* src, uint8_t* dst, uint8_t length);
 qspi_command_struct        qspi_cmd;
 qspi_autopolling_struct    autopolling_cmd;
@@ -70,89 +71,89 @@ int main(void)
     /* QSPI config */
     qspi_flash_init();
 
-    /* Write enable */   
-    qspi_cmd.instructionmode   = QSPI_INSTRUCTION_1_LINE;
-    qspi_cmd.instruction       = WRITE_ENABLE_CMD;
-    qspi_cmd.addressmode       = QSPI_ADDRESS_NONE;
-    qspi_cmd.alternatebytemode = QSPI_ALTERNATE_BYTES_NONE;
-    qspi_cmd.datamode          = QSPI_DATA_NONE;
-    qspi_cmd.dummycycles       = 0;
-    qspi_cmd.sioomode          = QSPI_SIOO_INST_EVERY_CMD;
+    /* Write enable */
+    qspi_cmd.instruction_mode   = QSPI_INSTRUCTION_1_LINE;
+    qspi_cmd.instruction        = WRITE_ENABLE_CMD;
+    qspi_cmd.addr_mode          = QSPI_ADDR_NONE;
+    qspi_cmd.altebytes_mode     = QSPI_ALTE_BYTES_NONE;
+    qspi_cmd.data_mode          = QSPI_DATA_NONE;
+    qspi_cmd.dummycycles        = 0;
+    qspi_cmd.sioo_mode          = QSPI_SIOO_INST_EVERY_CMD;
     qspi_command(&qspi_cmd);
 
     /* Configure automatic polling mode to wait for write enabling */
-    autopolling_cmd.match           = 0x02;
-    autopolling_cmd.mask            = 0x02;
-    autopolling_cmd.matchmode       = QSPI_MATCH_MODE_AND;
-    autopolling_cmd.statusbytessize = 1;
-    autopolling_cmd.interval        = 0x10;
-    autopolling_cmd.automaticstop   = QSPI_AUTOMATIC_STOP_ENABLE;
+    autopolling_cmd.match            = 0x02;
+    autopolling_cmd.mask             = 0x02;
+    autopolling_cmd.match_mode       = QSPI_MATCH_MODE_AND;
+    autopolling_cmd.statusbytes_size = 1;
+    autopolling_cmd.interval         = 0x10;
+    autopolling_cmd.auto_stop        = QSPI_AUTO_STOP_ENABLE;
 
-    qspi_cmd.instruction    = READ_STATUS_REG1_CMD;
-    qspi_cmd.datamode       = QSPI_DATA_1_LINE;
+    qspi_cmd.instruction = READ_STATUS_REG1_CMD;
+    qspi_cmd.data_mode   = QSPI_DATA_1_LINE;
     qspi_autopolling(&qspi_cmd, &autopolling_cmd);
 
     /* erase sector 0-0x1000 */
-    qspi_send_command(SECTOR_ERASE_CMD, 0, 0, QSPI_INSTRUCTION_1_LINE, QSPI_ADDRESS_1_LINE, QSPI_ADDRESS_24_BITS, QSPI_DATA_NONE);
+    qspi_send_command(SECTOR_ERASE_CMD, 0, 0, QSPI_INSTRUCTION_1_LINE, QSPI_ADDR_1_LINE, QSPI_ADDR_24_BITS, QSPI_DATA_NONE);
 
     /* wait busy */
     qspi_cmd.instruction       = READ_STATUS_REG1_CMD;
-    qspi_cmd.addressmode       = QSPI_ADDRESS_NONE;
-    qspi_cmd.datamode          = QSPI_DATA_1_LINE;
+    qspi_cmd.addr_mode         = QSPI_ADDR_NONE;
+    qspi_cmd.data_mode         = QSPI_DATA_1_LINE;
 
-    autopolling_cmd.match           = 0x00;
-    autopolling_cmd.mask            = 0x01;
-    autopolling_cmd.matchmode       = QSPI_MATCH_MODE_AND;
-    autopolling_cmd.statusbytessize = 1;
-    autopolling_cmd.interval        = 0x10;
-    autopolling_cmd.automaticstop   = QSPI_AUTOMATIC_STOP_ENABLE;
+    autopolling_cmd.match            = 0x00;
+    autopolling_cmd.mask             = 0x01;
+    autopolling_cmd.match_mode       = QSPI_MATCH_MODE_AND;
+    autopolling_cmd.statusbytes_size = 1;
+    autopolling_cmd.interval         = 0x10;
+    autopolling_cmd.auto_stop        = QSPI_AUTO_STOP_ENABLE;
 
     qspi_autopolling(&qspi_cmd, &autopolling_cmd);
 
-     /* Write enable */   
-    qspi_cmd.instructionmode   = QSPI_INSTRUCTION_1_LINE;
-    qspi_cmd.instruction       = WRITE_ENABLE_CMD;
-    qspi_cmd.addressmode       = QSPI_ADDRESS_NONE;
-    qspi_cmd.alternatebytemode = QSPI_ALTERNATE_BYTES_NONE;
-    qspi_cmd.datamode          = QSPI_DATA_NONE;
-    qspi_cmd.dummycycles       = 0;
-    qspi_cmd.sioomode          = QSPI_SIOO_INST_EVERY_CMD;
+     /* Write enable */
+    qspi_cmd.instruction_mode = QSPI_INSTRUCTION_1_LINE;
+    qspi_cmd.instruction      = WRITE_ENABLE_CMD;
+    qspi_cmd.addr_mode        = QSPI_ADDR_NONE;
+    qspi_cmd.altebytes_mode   = QSPI_ALTE_BYTES_NONE;
+    qspi_cmd.data_mode        = QSPI_DATA_NONE;
+    qspi_cmd.dummycycles      = 0;
+    qspi_cmd.sioo_mode        = QSPI_SIOO_INST_EVERY_CMD;
     qspi_command(&qspi_cmd);
 
     /* Configure automatic polling mode to wait for write enabling */
-    autopolling_cmd.match           = 0x02;
-    autopolling_cmd.mask            = 0x02;
-    autopolling_cmd.matchmode       = QSPI_MATCH_MODE_AND;
-    autopolling_cmd.statusbytessize = 1;
-    autopolling_cmd.interval        = 0x10;
-    autopolling_cmd.automaticstop   = QSPI_AUTOMATIC_STOP_ENABLE;
+    autopolling_cmd.match            = 0x02;
+    autopolling_cmd.mask             = 0x02;
+    autopolling_cmd.match_mode       = QSPI_MATCH_MODE_AND;
+    autopolling_cmd.statusbytes_size = 1;
+    autopolling_cmd.interval         = 0x10;
+    autopolling_cmd.auto_stop        = QSPI_AUTO_STOP_ENABLE;
 
     qspi_cmd.instruction    = READ_STATUS_REG1_CMD;
-    qspi_cmd.datamode       = QSPI_DATA_1_LINE;
+    qspi_cmd.data_mode      = QSPI_DATA_1_LINE;
 
     qspi_autopolling(&qspi_cmd, &autopolling_cmd);
 
     /* write data */
-    qspi_send_command(PAGE_PROG_CMD, 0, 0, QSPI_INSTRUCTION_1_LINE, QSPI_ADDRESS_1_LINE, QSPI_ADDRESS_24_BITS, QSPI_DATA_1_LINE);
+    qspi_send_command(PAGE_PROG_CMD, 0, 0, QSPI_INSTRUCTION_1_LINE, QSPI_ADDR_1_LINE, QSPI_ADDR_24_BITS, QSPI_DATA_1_LINE);
     QSPI_DTLEN = BufferSize - 1;
     qspi_transmit(Tx_Buffer);
 
     /* wait busy */
-    qspi_cmd.instruction       = READ_STATUS_REG1_CMD;
-    qspi_cmd.addressmode       = QSPI_ADDRESS_NONE;
-    qspi_cmd.datamode          = QSPI_DATA_1_LINE;
+    qspi_cmd.instruction    = READ_STATUS_REG1_CMD;
+    qspi_cmd.addr_mode      = QSPI_ADDR_NONE;
+    qspi_cmd.data_mode      = QSPI_DATA_1_LINE;
 
-    autopolling_cmd.match           = 0x00;
-    autopolling_cmd.mask            = 0x01;
-    autopolling_cmd.matchmode       = QSPI_MATCH_MODE_AND;
-    autopolling_cmd.statusbytessize = 1;
-    autopolling_cmd.interval        = 0x10;
-    autopolling_cmd.automaticstop   = QSPI_AUTOMATIC_STOP_ENABLE;
+    autopolling_cmd.match            = 0x00;
+    autopolling_cmd.mask             = 0x01;
+    autopolling_cmd.match_mode       = QSPI_MATCH_MODE_AND;
+    autopolling_cmd.statusbytes_size = 1;
+    autopolling_cmd.interval         = 0x10;
+    autopolling_cmd.auto_stop        = QSPI_AUTO_STOP_ENABLE;
 
     qspi_autopolling(&qspi_cmd, &autopolling_cmd);
 
     /* read data */
-    qspi_send_command(READ_CMD, 0, 0, QSPI_INSTRUCTION_1_LINE, QSPI_ADDRESS_1_LINE, QSPI_ADDRESS_24_BITS, QSPI_DATA_1_LINE);
+    qspi_send_command(READ_CMD, 0, 0, QSPI_INSTRUCTION_1_LINE, QSPI_ADDR_1_LINE, QSPI_ADDR_24_BITS, QSPI_DATA_1_LINE);
     QSPI_DTLEN = BufferSize - 1;
     qspi_receive(Rx_Buffer);
 
@@ -186,7 +187,7 @@ void rcu_config(void)
     \param[out] none
     \retval     ErrStatus: ERROR or SUCCESS
 */
-ErrStatus memory_compare(uint8_t* src, uint8_t* dst, uint8_t length) 
+ErrStatus memory_compare(uint8_t* src, uint8_t* dst, uint8_t length)
 {
     while(length--){
         if(*src++ != *dst++){
@@ -215,11 +216,11 @@ void qspi_flash_init(void)
     gpio_mode_set(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_PIN_3 | GPIO_PIN_4);
     gpio_output_options_set(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, GPIO_PIN_3 | GPIO_PIN_4);
 
-    qspi_initstructure.clockmode = QSPI_CLOCK_MODE_0;
-    qspi_initstructure.fifothreshold = 4;
-    qspi_initstructure.sampleshift = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
-    qspi_initstructure.chipselecthightime = QSPI_CS_HIGH_TIME_2_CYCLE;
-    qspi_initstructure.flashsize = 27;
+    qspi_initstructure.clock_mode     = QSPI_CLOCK_MODE_0;
+    qspi_initstructure.fifo_threshold = 4;
+    qspi_initstructure.sample_shift   = QSPI_SAMPLE_SHIFTING_HALFCYCLE;
+    qspi_initstructure.cs_high_time   = QSPI_CS_HIGH_TIME_2_CYCLE;
+    qspi_initstructure.flash_size     = 27;
     qspi_initstructure.prescaler = 4;
     qspi_init(&qspi_initstructure);
 }
@@ -230,20 +231,21 @@ void qspi_flash_init(void)
     \param[out] none
     \retval     none
 */
-void qspi_send_command(uint32_t instruction, uint32_t address, uint32_t dummyCycles, uint32_t instructionMode, uint32_t addressMode, uint32_t addressSize, uint32_t dataMode)
+void qspi_send_command(uint32_t instruction, uint32_t address, uint32_t dummyCycles, uint32_t instructionMode,
+uint32_t addressMode, uint32_t addressSize, uint32_t dataMode)
 {
-    qspi_cmd.instruction = instruction;
-    qspi_cmd.instructionmode = instructionMode;
-    qspi_cmd.address = address;
-    qspi_cmd.addressmode = addressMode;
-    qspi_cmd.addresssize = addressSize;
-    qspi_cmd.alternatebytes = 0;
-    qspi_cmd.alternatebytemode = QSPI_ALTERNATE_BYTES_NONE;
-    qspi_cmd.alternatebytessize = QSPI_ALTERNATE_BYTES_8_BITS;
-    qspi_cmd.datamode = dataMode;
-    qspi_cmd.nbdata = 1;
-    qspi_cmd.dummycycles = dummyCycles;
-    qspi_cmd.sioomode = QSPI_SIOO_INST_EVERY_CMD;
+    qspi_cmd.instruction      = instruction;
+    qspi_cmd.instruction_mode = instructionMode;
+    qspi_cmd.addr             = address;
+    qspi_cmd.addr_mode        = addressMode;
+    qspi_cmd.addr_size        = addressSize;
+    qspi_cmd.altebytes        = 0;
+    qspi_cmd.altebytes_mode   = QSPI_ALTE_BYTES_NONE;
+    qspi_cmd.altebytes_size   = QSPI_ALTE_BYTES_8_BITS;
+    qspi_cmd.data_mode        = dataMode;
+    qspi_cmd.data_length      = 1;
+    qspi_cmd.dummycycles      = dummyCycles;
+    qspi_cmd.sioo_mode        = QSPI_SIOO_INST_EVERY_CMD;
     qspi_command(&qspi_cmd);
 }
 

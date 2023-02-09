@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -36,7 +36,7 @@ OF SUCH DAMAGE.
 
 /*!
     \brief      reset GPIO port
-    \param[in]  gpio_periph: GPIOx(x = A,B,C) 
+    \param[in]  gpio_periph: GPIOx(x = A,B,C)
                 only one parameter can be selected which is shown as below:
       \arg        GPIOx(x = A,B,C)
     \param[out] none
@@ -67,7 +67,7 @@ void gpio_deinit(uint32_t gpio_periph)
 
 /*!
     \brief      set GPIO mode
-    \param[in]  gpio_periph: GPIOx(x = A,B,C) 
+    \param[in]  gpio_periph: GPIOx(x = A,B,C)
                 only one parameter can be selected which is shown as below:
       \arg        GPIOx(x = A,B,C)
     \param[in]  mode: gpio pin mode
@@ -177,7 +177,7 @@ void gpio_bit_set(uint32_t gpio_periph, uint32_t pin)
 
 /*!
     \brief      reset GPIO pin bit
-    \param[in]  gpio_periph: GPIOx(x = A,B,C) 
+    \param[in]  gpio_periph: GPIOx(x = A,B,C)
                 only one parameter can be selected which is shown as below:
       \arg        GPIOx(x = A,B,C)
     \param[in]  pin: GPIO pin
@@ -308,14 +308,14 @@ uint16_t gpio_output_port_get(uint32_t gpio_periph)
       \arg        GPIO_AF_4: TSI, TIMER4, SPI0, I2C0, QSPI, I2C1, I2S1
       \arg        GPIO_AF_5: SPI0, SPI1, I2C0, I2S1
       \arg        GPIO_AF_6: SPI0, SPI1, I2S1, I2C1
-      \arg        GPIO_AF_7:  USART0, USART1, USART2, TIMER4, TIMER16, SPI0, SPI1, DCI
+      \arg        GPIO_AF_7: USART0, USART1, USART2, TIMER4, TIMER16, SPI0, SPI1, DCI(DCI not support on GD32W515TX series devices)
       \arg        GPIO_AF_8: USART2, SQPI, TIMER0, TIMER15
       \arg        GPIO_AF_9: RTC, TIMER1, IR_OUT, I2C1
       \arg        GPIO_AF_10: USART2, TIMER16, USBFS
       \arg        GPIO_AF_11: TIMER15
-      \arg        GPIO_AF_12: SDIO, DCI
-      \arg        GPIO_AF_13: DCI
-      \arg        GPIO_AF_14: HPDF,DCI
+      \arg        GPIO_AF_12: SDIO, DCI(DCI not support on GD32W515TX series devices)
+      \arg        GPIO_AF_13: DCI(DCI not support on GD32W515TX series devices)
+      \arg        GPIO_AF_14: HPDF,DCI(HPDF and DCI not support on GD32W515TX series devices)
       \arg        GPIO_AF_15: EVENTOUT
     \param[in]  pin: GPIO pin
                 one or more parameters can be selected which are shown as below:
@@ -353,7 +353,7 @@ void gpio_af_set(uint32_t gpio_periph, uint32_t alt_func_num, uint32_t pin)
 
 /*!
     \brief      lock GPIO pin bit
-    \param[in]  gpio_periph: GPIOx(x = A,B,C) 
+    \param[in]  gpio_periph: GPIOx(x = A,B,C)
                 only one parameter can be selected which is shown as below:
       \arg        GPIOx(x = A,B,C)
     \param[in]  pin: GPIO pin
@@ -406,7 +406,7 @@ void gpio_port_toggle(uint32_t gpio_periph)
 }
 
 /*!
-    \brief      set GPIO pin secure configuration bit
+    \brief      configure GPIO pin bit secure configuration bit status to set
     \param[in]  gpio_periph: GPIOx(x = A,B,C)
                 only one parameter can be selected which is shown as below:
       \arg        GPIOx(x = A,B,C)
@@ -422,7 +422,7 @@ void gpio_bit_set_sec_cfg(uint32_t gpio_periph, uint32_t pin)
 }
 
 /*!
-    \brief      reset GPIO pin secure configuration bit
+    \brief      configure GPIO pin bit secure configuration bit status to reset
     \param[in]  gpio_periph: GPIOx(x = A,B,C)
                 only one parameter can be selected which is shown as below:
       \arg        GPIOx(x = A,B,C)
@@ -461,6 +461,3 @@ FlagStatus gpio_sec_cfg_bit_get(uint32_t gpio_periph, uint32_t pin)
     }
 
 }
-
-
-

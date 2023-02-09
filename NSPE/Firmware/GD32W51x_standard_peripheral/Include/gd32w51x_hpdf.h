@@ -1,7 +1,7 @@
 /*!
     \file  gd32w51x_hpdf.h
     \brief definitions for the HPDF
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
@@ -10,27 +10,27 @@
 
     All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -534,7 +534,7 @@ void hpdf_clock_output_source_config(uint32_t source);
 void hpdf_clock_output_duty_mode_disable(void);
 /* enable serial clock output duty mode */
 void hpdf_clock_output_duty_mode_enable(void);
-/* configure serial clock output divider */ 
+/* configure serial clock output divider */
 void hpdf_clock_output_divider_config(uint8_t divider);
 
 /* configure HPDF channel */
@@ -546,9 +546,9 @@ void hpdf_channel_disable(hpdf_channel_enum channelx);
 void hpdf_spi_clock_source_config(hpdf_channel_enum channelx, uint32_t clock_source);
 /* configure serial interface type */
 void hpdf_serial_interface_type_config(hpdf_channel_enum channelx, uint32_t type);
-/* disable malfunction monitor detector */
+/* disable malfunction monitor */
 void hpdf_malfunction_monitor_disable(hpdf_channel_enum channelx);
-/* enable malfunction monitor detector */
+/* enable malfunction monitor */
 void hpdf_malfunction_monitor_enable(hpdf_channel_enum channelx);
 /* disable clock loss detector */
 void hpdf_clock_loss_disable(hpdf_channel_enum channelx);
@@ -564,7 +564,7 @@ void hpdf_channel_multiplexer_config(hpdf_channel_enum channelx, uint32_t data_s
 void hpdf_data_pack_mode_config(hpdf_channel_enum channelx, uint32_t mode);
 /* configure data right bit-shift */
 void hpdf_data_right_bit_shift_config(hpdf_channel_enum channelx, uint8_t right_shift);
-/* calibration offset configuration */
+/* configure calibration offset */
 void hpdf_calibration_offset_config(hpdf_channel_enum channelx, int32_t offset);
 /* configure malfunction monitor break signal */
 void hpdf_malfunction_break_signal_config(hpdf_channel_enum channelx, uint32_t break_signal);

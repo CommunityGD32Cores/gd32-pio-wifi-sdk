@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -41,7 +41,7 @@ OF SUCH DAMAGE.
     #pragma O0
 #elif defined (__GNUC__)        /*!< GNU compiler */
     #pragma GCC optimize ("O0")
-#elif defined  (__TASKING__)    /*!< TASKING compiler */ 
+#elif defined  (__TASKING__)    /*!< TASKING compiler */
     #pragma optimize=0
 #endif /* __CC_ARM */
 
@@ -138,8 +138,8 @@ uint32_t usbh_isr (usb_core_driver *udev)
     \param[out] none
     \retval     none
 */
-static inline void usb_pp_halt (usb_core_driver *udev, 
-                                uint8_t pp_num, 
+static inline void usb_pp_halt (usb_core_driver *udev,
+                                uint8_t pp_num,
                                 uint32_t pp_int,
                                 usb_pipe_staus pp_status)
 {
@@ -205,9 +205,9 @@ static uint32_t usbh_int_port (usb_core_driver *udev)
 
                 if (HCTL_48MHZ != clock_type) {
                     usb_phyclock_config (udev, HCTL_48MHZ);
-                }
 
-                port_reset = 1U;
+                    port_reset = 1U;
+                }
             } else {
                 /* for high speed device and others */
                 port_reset = 1U;
@@ -431,7 +431,7 @@ static uint32_t usbh_int_pipe_out (usb_core_driver *udev, uint32_t pp_num)
             pp->urb_state = URB_DONE;
 
             if ((uint8_t)USB_EPTYPE_BULK == ((pp_reg->HCHCTL & HCHCTL_EPTYPE) >> 18U)) {
-                pp->data_toggle_out ^= 1U; 
+                pp->data_toggle_out ^= 1U;
             }
             break;
 

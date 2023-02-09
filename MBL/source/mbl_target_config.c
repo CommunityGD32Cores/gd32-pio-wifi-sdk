@@ -296,7 +296,7 @@ void mbl_flash_wm_config(uint8_t boot_idx)
     } else {
         tzpcu_non_secure_mark_struct wm;
 
-        wm.memory_type = QSPIFMEM;
+        wm.memory_type = QSPI_FLASH_MEM;
         wm.region_number = NON_SECURE_MARK_REGION0;
         if (boot_idx == IMAGE_0) {
             wm.start_address = RE_IMG_0_NSPE_OFFSET;

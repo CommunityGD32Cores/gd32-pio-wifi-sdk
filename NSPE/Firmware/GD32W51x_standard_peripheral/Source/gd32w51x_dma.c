@@ -216,7 +216,7 @@ void dma_multi_data_mode_init(uint32_t dma_periph, dma_channel_enum channelx, dm
     /* configure peripheral and memory transfer width,channel priotity,transfer mode,peripheral and memory burst transfer width */
     ctl = DMA_CHCTL(dma_periph, channelx);
     ctl &= ~(DMA_CHXCTL_PWIDTH | DMA_CHXCTL_MWIDTH | DMA_CHXCTL_PRIO | DMA_CHXCTL_TM | DMA_CHXCTL_PBURST | DMA_CHXCTL_MBURST);
-    ctl |= (init_struct->periph_width | (init_struct->memory_width ) | init_struct->priority | init_struct->direction | init_struct->memory_burst_width | init_struct->periph_burst_width);
+    ctl |= (init_struct->periph_width | (init_struct->memory_width) | init_struct->priority | init_struct->direction | init_struct->memory_burst_width | init_struct->periph_burst_width);
     DMA_CHCTL(dma_periph, channelx) = ctl;
 
     /* configure peripheral increasing mode */
@@ -283,7 +283,7 @@ void dma_periph_address_config(uint32_t dma_periph, dma_channel_enum channelx, u
 }
 
 /*!
-    \brief      set DMA Memory0 base address
+    \brief      set DMA memory0 base address
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel to set Memory base address
@@ -459,7 +459,7 @@ void dma_periph_width_config (uint32_t dma_periph, dma_channel_enum channelx, ui
 }
 
 /*!
-    \brief      configure memory address generation generation_algorithm
+    \brief      configure memory address generation algorithm
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
@@ -589,13 +589,15 @@ void dma_transfer_direction_config(uint32_t dma_periph, dma_channel_enum channel
 }
 
 /*!
-    \brief      DMA switch buffer mode config
+    \brief      configure DMA switch buffer mode
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
       \arg        DMA_CHx(x=0..7)
     \param[in]  memory1_addr: memory1 base address
-    \param[in]  memory_select: DMA_MEMORY_0 or DMA_MEMORY_1
+    \param[in]  memory_select: select memory transfer area
+      \arg        DMA_MEMORY_0: select memory0 as memory transfer area
+      \arg        DMA_MEMORY_1: select memory1 as memory transfer area
     \param[out] none
     \retval     none
 */
@@ -612,7 +614,7 @@ void dma_switch_buffer_mode_config(uint32_t dma_periph, dma_channel_enum channel
 }
 
 /*!
-    \brief      DMA using memory get
+    \brief      get the current buffer used by the DMA
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
@@ -630,7 +632,7 @@ uint32_t dma_using_memory_get(uint32_t dma_periph, dma_channel_enum channelx)
 }
 
 /*!
-    \brief      DMA channel peripheral select
+    \brief      select DMA channel peripheral
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
@@ -653,7 +655,7 @@ void dma_channel_subperipheral_select(uint32_t dma_periph, dma_channel_enum chan
 }
 
 /*!
-    \brief      DMA flow controller configure
+    \brief      configure DMA flow controller
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
@@ -675,28 +677,37 @@ void dma_flow_controller_config(uint32_t dma_periph, dma_channel_enum channelx, 
 }
 
 /*!
-    \brief      DMA switch buffer mode enable
+    \brief      enable DMA switch buffer mode
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
       \arg        DMA_CHx(x=0..7)
-    \param[in]  newvalue: ENABLE or DISABLE
     \param[out] none
     \retval     none
 */
-void dma_switch_buffer_mode_enable(uint32_t dma_periph, dma_channel_enum channelx, ControlStatus newvalue)
+void dma_switch_buffer_mode_enable(uint32_t dma_periph, dma_channel_enum channelx)
 {
-    if(ENABLE == newvalue){
-        /* switch buffer mode enable */
-        DMA_CHCTL(dma_periph, channelx) |= DMA_CHXCTL_SBMEN;
-    }else{
-        /* switch buffer mode disable */
-        DMA_CHCTL(dma_periph, channelx) &= ~DMA_CHXCTL_SBMEN;
-    }
+    /* switch buffer mode enable */
+    DMA_CHCTL(dma_periph, channelx) |= DMA_CHXCTL_SBMEN;
 }
 
 /*!
-    \brief      DMA FIFO status get
+    \brief      disable DMA switch buffer mode
+    \param[in]  dma_periph: DMAx(x=0,1)
+      \arg        DMAx(x=0,1)
+    \param[in]  channelx: specify which DMA channel
+      \arg        DMA_CHx(x=0..7)
+    \param[out] none
+    \retval     none
+*/
+void dma_switch_buffer_mode_disable(uint32_t dma_periph, dma_channel_enum channelx)
+{
+    /* switch buffer mode disable */
+    DMA_CHCTL(dma_periph, channelx) &= ~DMA_CHXCTL_SBMEN;
+}
+
+/*!
+    \brief      get DMA FIFO status
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
@@ -710,7 +721,7 @@ uint32_t dma_fifo_status_get(uint32_t dma_periph, dma_channel_enum channelx)
 }
 
 /*!
-    \brief      get DMA flag is set or not
+    \brief      check the designated flag of a DMA channel is set or not
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel to get flag
@@ -721,7 +732,7 @@ uint32_t dma_fifo_status_get(uint32_t dma_periph, dma_channel_enum channelx)
       \arg        DMA_FLAG_SDE: single data mode exception flag
       \arg        DMA_FLAG_TAE: transfer access error flag
       \arg        DMA_FLAG_HTF: half transfer finish flag
-      \arg        DMA_FLAG_FTF: full transger finish flag
+      \arg        DMA_FLAG_FTF: full transfer finish flag
     \param[out] none
     \retval     FlagStatus: SET or RESET
 */
@@ -744,7 +755,7 @@ FlagStatus dma_flag_get(uint32_t dma_periph, dma_channel_enum channelx, uint32_t
 }
 
 /*!
-    \brief      clear DMA a channel flag
+    \brief      clear the designated flag of a DMA channel
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel to get flag
@@ -770,45 +781,45 @@ void dma_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, uint32_t fla
 }
 
 /*!
-    \brief      get DMA interrupt flag is set or not
+    \brief      check DMA interrupt flag is set or not
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel to get interrupt flag
       \arg        DMA_CHx(x=0..7)
     \param[in]  interrupt: specify get which flag
                 only one parameter can be selected which is shown as below:
-      \arg        DMA_INT_FLAG_FEE: FIFO error and exception flag
-      \arg        DMA_INT_FLAG_SDE: single data mode exception flag
-      \arg        DMA_INT_FLAG_TAE: transfer access error flag
-      \arg        DMA_INT_FLAG_HTF: half transfer finish flag
-      \arg        DMA_INT_FLAG_FTF: full transger finish flag
+      \arg        DMA_INT_FLAG_FEE: FIFO error and exception interrupt flag
+      \arg        DMA_INT_FLAG_SDE: single data mode exception interrupt flag
+      \arg        DMA_INT_FLAG_TAE: transfer access error interrupt flag
+      \arg        DMA_INT_FLAG_HTF: half transfer finish interrupt flag
+      \arg        DMA_INT_FLAG_FTF: full transger finish interrupt flag
     \param[out] none
     \retval     FlagStatus: SET or RESET
 */
-FlagStatus dma_interrupt_flag_get(uint32_t dma_periph, dma_channel_enum channelx, uint32_t interrupt)
+FlagStatus dma_interrupt_flag_get(uint32_t dma_periph, dma_channel_enum channelx, uint32_t int_flag)
 {
     uint32_t interrupt_enable = 0U,interrupt_flag = 0U;
     dma_channel_enum channel_flag_offset = channelx;
     if(channelx < DMA_CH4){
-        switch(interrupt){
+        switch(int_flag){
         case DMA_INTF_FEEIF:
-            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(interrupt, channelx);
+            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(int_flag, channelx);
             interrupt_enable = DMA_CHFCTL(dma_periph, channelx) & DMA_CHXFCTL_FEEIE;
             break;
         case DMA_INTF_SDEIF:
-            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(interrupt, channelx);
+            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(int_flag, channelx);
             interrupt_enable = DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_SDEIE;
             break;
         case DMA_INTF_TAEIF:
-            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(interrupt, channelx);
+            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(int_flag, channelx);
             interrupt_enable = DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_TAEIE;
             break;
         case DMA_INTF_HTFIF:
-            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(interrupt, channelx);
+            interrupt_flag = DMA_INTF0(dma_periph) & DMA_FLAG_ADD(int_flag, channelx);
             interrupt_enable = DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_HTFIE;
             break;
         case DMA_INTF_FTFIF:
-            interrupt_flag = (DMA_INTF0(dma_periph) & DMA_FLAG_ADD(interrupt, channelx));
+            interrupt_flag = (DMA_INTF0(dma_periph) & DMA_FLAG_ADD(int_flag, channelx));
             interrupt_enable = (DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_FTFIE);
             break;
         default:
@@ -816,25 +827,25 @@ FlagStatus dma_interrupt_flag_get(uint32_t dma_periph, dma_channel_enum channelx
         }
     }else{
         channel_flag_offset -= (dma_channel_enum)4;
-        switch(interrupt){
+        switch(int_flag){
         case DMA_INTF_FEEIF:
-            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(interrupt, channel_flag_offset);
+            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(int_flag, channel_flag_offset);
             interrupt_enable = DMA_CHFCTL(dma_periph, channelx) & DMA_CHXFCTL_FEEIE;
             break;
         case DMA_INTF_SDEIF:
-            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(interrupt, channel_flag_offset);
+            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(int_flag, channel_flag_offset);
             interrupt_enable = DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_SDEIE;
             break;
         case DMA_INTF_TAEIF:
-            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(interrupt, channel_flag_offset);
+            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(int_flag, channel_flag_offset);
             interrupt_enable = DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_TAEIE;
             break;
         case DMA_INTF_HTFIF:
-            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(interrupt, channel_flag_offset);
+            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(int_flag, channel_flag_offset);
             interrupt_enable = DMA_CHCTL(dma_periph, channelx) & DMA_CHXCTL_HTFIE;
             break;
         case DMA_INTF_FTFIF:
-            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(interrupt,channel_flag_offset);
+            interrupt_flag = DMA_INTF1(dma_periph) & DMA_FLAG_ADD(int_flag,channel_flag_offset);
             interrupt_enable = DMA_CHCTL(dma_periph,channelx) & DMA_CHXCTL_FTFIE;
             break;
         default:
@@ -857,21 +868,21 @@ FlagStatus dma_interrupt_flag_get(uint32_t dma_periph, dma_channel_enum channelx
       \arg        DMA_CHx(x=0..7)
     \param[in]  interrupt: specify get which flag
                 only one parameter can be selected which is shown as below:
-      \arg        DMA_INT_FLAG_FEE: FIFO error and exception flag
-      \arg        DMA_INT_FLAG_SDE: single data mode exception flag
-      \arg        DMA_INT_FLAG_TAE: transfer access error flag
-      \arg        DMA_INT_FLAG_HTF: half transfer finish flag
-      \arg        DMA_INT_FLAG_FTF: full transger finish flag
+      \arg        DMA_INT_FLAG_FEE: FIFO error and exception interrupt flag
+      \arg        DMA_INT_FLAG_SDE: single data mode exception interrupt flag
+      \arg        DMA_INT_FLAG_TAE: transfer access error interrupt flag
+      \arg        DMA_INT_FLAG_HTF: half transfer finish interrupt flag
+      \arg        DMA_INT_FLAG_FTF: full transger finish interrupt flag
     \param[out] none
     \retval     none
 */
-void dma_interrupt_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, uint32_t interrupt)
+void dma_interrupt_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, uint32_t int_flag)
 {
     if(channelx < DMA_CH4){
-        DMA_INTC0(dma_periph) |= DMA_FLAG_ADD(interrupt, channelx);
+        DMA_INTC0(dma_periph) |= DMA_FLAG_ADD(int_flag, channelx);
     }else{
         channelx -= (dma_channel_enum)4;
-        DMA_INTC1(dma_periph) |= DMA_FLAG_ADD(interrupt, channelx);
+        DMA_INTC1(dma_periph) |= DMA_FLAG_ADD(int_flag, channelx);
     }
 }
 
@@ -883,11 +894,11 @@ void dma_interrupt_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, ui
       \arg        DMA_CHx(x=0..7)
     \param[in]  source: specify which interrupt to enbale
                 one or more parameters can be selected which are shown as below:
-      \arg        DMA_CHXCTL_SDEIE: single data mode exception interrupt enable
-      \arg        DMA_CHXCTL_TAEIE: tranfer access error interrupt enable
-      \arg        DMA_CHXCTL_HTFIE: half transfer finish interrupt enable
-      \arg        DMA_CHXCTL_FTFIE: full transfer finish interrupt enable
-      \arg        DMA_CHXFCTL_FEEIE: FIFO exception interrupt enable
+      \arg        DMA_INT_SDE: single data mode exception interrupt enable
+      \arg        DMA_INT_TAE: tranfer access error interrupt enable
+      \arg        DMA_INT_HTF: half transfer finish interrupt enable
+      \arg        DMA_INT_FTF: full transfer finish interrupt enable
+      \arg        DMA_INT_FEE: FIFO exception interrupt enable
     \param[out] none
     \retval     none
 */
@@ -908,11 +919,11 @@ void dma_interrupt_enable(uint32_t dma_periph, dma_channel_enum channelx, uint32
       \arg        DMA_CHx(x=0..7)
     \param[in]  source: specify which interrupt to disbale
                 one or more parameters can be selected which are shown as below:
-      \arg        DMA_CHXCTL_SDEIE: single data mode exception interrupt enable
-      \arg        DMA_CHXCTL_TAEIE: tranfer access error interrupt enable
-      \arg        DMA_CHXCTL_HTFIE: half transfer finish interrupt enable
-      \arg        DMA_CHXCTL_FTFIE: full transfer finish interrupt enable
-      \arg        DMA_CHXFCTL_FEEIE: FIFO exception interrupt enable
+      \arg        DMA_INT_SDE: single data mode exception interrupt enable
+      \arg        DMA_INT_TAE: tranfer access error interrupt enable
+      \arg        DMA_INT_HTF: half transfer finish interrupt enable
+      \arg        DMA_INT_FTF: full transfer finish interrupt enable
+      \arg        DMA_INT_FEE: FIFO exception interrupt enable
     \param[out] none
     \retval     none
 */
@@ -952,12 +963,12 @@ void dma_security_config(uint32_t dma_periph, dma_channel_enum channelx, uint32_
     DMA_CHSCTL(dma_periph, channelx) = ctl;
 }
 /*!
-    \brief      configure security attribution of DMA channel
+    \brief      configure privileged mode of DMA channel
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel
       \arg        DMA_CHx(x=0..7)
-    \param[in]  security: security attribution of this channel
+    \param[in]  priv: privileged mode of this channel
                 only one parameter can be selected which is shown as below:
       \arg        DMA_CHANNEL_PRIV: privileged mode
       \arg        DMA_CHANNEL_NONPRIV: non-privileged mode
@@ -994,7 +1005,7 @@ FlagStatus dma_illegal_access_flag_get(uint32_t dma_periph, dma_channel_enum cha
     }
 }
 /*!
-    \brief      check DMA channel illegal flag is set or not
+    \brief      clear DMA channel illegal flag
     \param[in]  dma_periph: DMAx(x=0,1)
       \arg        DMAx(x=0,1)
     \param[in]  channelx: specify which DMA channel

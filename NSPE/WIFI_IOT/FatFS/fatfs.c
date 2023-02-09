@@ -56,6 +56,7 @@ OF SUCH DAMAGE.
 #define FATFS_OTHER_ERROR -1
 
 static FATFS *fs = NULL;     /* Filesystem object */
+static void fresult_analyse(int8_t res);
 
 /*!
     \brief      fatfs: create a fatfs volume and mount a logical drive

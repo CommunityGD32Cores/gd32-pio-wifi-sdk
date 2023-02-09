@@ -126,7 +126,7 @@ void adc_config(void)
     /* ADC channel length config */
     adc_channel_length_config(ADC_REGULAR_CHANNEL, 1U);
     /* ADC inserted channel config */
-    adc_regular_channel_config(0U, BOARD_ADC_CHANNEL, ADC_SAMPLETIME_56);
+    adc_regular_channel_config(0U, BOARD_ADC_CHANNEL, ADC_SAMPLETIME_55POINT5);
 
     /* 16 times sample, 4 bits shift */
     adc_oversample_mode_config(ADC_OVERSAMPLING_ALL_CONVERT, ADC_OVERSAMPLING_SHIFT_4B, ADC_OVERSAMPLING_RATIO_MUL16);

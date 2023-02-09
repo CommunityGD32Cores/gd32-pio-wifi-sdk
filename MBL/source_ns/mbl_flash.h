@@ -54,6 +54,7 @@ uint32_t flash_total_size(void);
 uint32_t flash_erase_size(void);
 int flash_init(void);
 int flash_indirect_read(uint32_t offset, void *data, int len);
+int flash_verify_read(uint32_t offset, void *data, int len);
 int flash_read(uint32_t offset, void *data, int len);
 int flash_write(uint32_t offset, const void *data, int len);
 int flash_fast_write(uint32_t offset, const void *data, int len);

@@ -1,7 +1,9 @@
 #include "wrapper_os.h"
 #ifdef CONFIG_AIRKISS_SUPPORT
 #include "lwip/sockets.h"
+#include "wifi_management.h"
 #include "wifi_netlink.h"
+#include "wifi_netif.h"
 #include "malloc.h"
 #include "debug_print.h"
 #include "airkiss.h"
@@ -28,7 +30,7 @@ static os_timer_t airkiss_timer;
 
 airkiss_context_t *akcontext = NULL;
 
-//static u8 gbssid[ETH_ALEN];
+//static uint8_t gbssid[ETH_ALEN];
 
 //for airkiss send notification
 int g_UDPBCServerFd = -1;
@@ -48,13 +50,13 @@ struct sockaddr_in g_stUDPBCAddr;
     called about every 5s
 
 */
-int airkiss_send_active_lan_discovery_packets(int client_socket_fd, int send_times,u8 *device_mac)
+int airkiss_send_active_lan_discovery_packets(int client_socket_fd, int send_times,uint8_t *device_mac)
 {
 #if CONFIG_LWIP_LAYER
     int ret = -1;
     struct sockaddr_in to_addr;
-    u8 lan_buf[200];
-    u16 lan_buf_len = sizeof(lan_buf);
+    uint8_t lan_buf[200];
+    uint16_t lan_buf_len = sizeof(lan_buf);
 #if 1
     if (send_times != 1) {
         airkiss_printf(AIRKISS_ERROR, "airkiss_send_active_lan_discovery_packets fail!\n");
@@ -94,12 +96,12 @@ int airkiss_send_active_lan_discovery_packets(int client_socket_fd, int send_tim
     return 0;
 }
 
-void airkiss_lan_server_reply(int client_socket_fd, struct sockaddr_in addr, char *pdata, unsigned short len,u8* device_mac)
+void airkiss_lan_server_reply(int client_socket_fd, struct sockaddr_in addr, char *pdata, unsigned short len,uint8_t* device_mac)
 {
     int ret = -1;
     int pack_ret;
-    u8 lan_buf[200];
-    u16 lan_buf_len = sizeof(lan_buf);
+    uint8_t lan_buf[200];
+    uint16_t lan_buf_len = sizeof(lan_buf);
 
     ret = airkiss_lan_recv(pdata, len, &akconf);
 
@@ -124,7 +126,7 @@ void airkiss_lan_server_reply(int client_socket_fd, struct sockaddr_in addr, cha
 }
 
 
-int airkiss_lan_server_create(int client_socket_fd,u8 *device_mac)
+int airkiss_lan_server_create(int client_socket_fd,uint8_t *device_mac)
 {
     int server_sock_fd,len;
     struct sockaddr_in addr;
@@ -234,23 +236,23 @@ int airkiss_createudpbroadcast(int udp_port)
     return ret;
 }
 
-int airkiss_send_notification(u8 random)
+void airkiss_send_notification(uint8_t random)
 {
-    int i = 0, ret = 0;
+    int i = 0;
     if(airkiss_createudpbroadcast(10000) == -1){
-        ret = -1;
         printf("create udp socket fail!\r\n");
-        return ret;
+        return;
     }
 
-    for (i = 0; i <= 20; i++) {
+    for (i = 0; i <= 200; i++) {
         if (g_UDPBCServerFd > -1) {
-            ret = sendto(g_UDPBCServerFd, (char*)&random, 1, 0 ,(struct sockaddr*)&g_stUDPBCAddr, sizeof(g_stUDPBCAddr));
+            sendto(g_UDPBCServerFd, (char*)&random, 1, 0 ,(struct sockaddr*)&g_stUDPBCAddr, sizeof(g_stUDPBCAddr));
+            sys_ms_sleep(2);
         }
     }
     close(g_UDPBCServerFd);
     g_UDPBCServerFd = 0;
-    return ret;
+    return;
 }
 
 
@@ -274,11 +276,11 @@ void airkiss_finish_task(void *parm)
     int retry = 2;
     int i;
     airkiss_result_t result;
-    u8 *mac = NULL;
+    uint8_t *mac = NULL;
 
     ret = airkiss_get_result(context, &result);
     if (ret == 0) {
-        airkiss_printf(AIRKISS_INFO,"\r\n airkiss get result ok,ssid = %s, pwd = %s,ssid length = %d,pwd length = %d,random = 0x%02x",
+        airkiss_printf(AIRKISS_INFO,"\r\n airkiss get result ok,ssid = %s, pwd = %s,ssid length = %d,pwd length = %d,random = 0x%02x\r\n",
                    result.ssid, result.pwd, result.ssid_length,result.pwd_length,result.random);
     }
     else{
@@ -287,7 +289,7 @@ void airkiss_finish_task(void *parm)
     }
 
     while (retry) {
-        ret = wifi_netlink_connect_req((u8 *)result.ssid, (u8 *)result.pwd);
+        ret = wifi_management_connect((uint8_t *)result.ssid, (uint8_t *)result.pwd, TRUE);
         if(ret != 0){
             airkiss_printf(AIRKISS_ERROR, "\n\r Airkiss: wifi connect failed");
             airkiss_deinit_content();
@@ -309,9 +311,7 @@ void airkiss_finish_task(void *parm)
     airkiss_deinit_content();
 
     //airkiss send notification
-    if(airkiss_send_notification(result.random) == -1) {
-        airkiss_printf(AIRKISS_ERROR, "airkiss send notifacation fail\r\n");
-    }
+    airkiss_send_notification(result.random);
 
     //wifi_set_connection_result(result.ssid, result.pwd);
 
@@ -330,7 +330,7 @@ void set_channel_timer_handler(void *p_tmr, void *p_arg)
     else
         ak_ctrl.cur_channel ++;
 
-    wifi_netlink_channel_set(ak_ctrl.cur_channel, 20, 0);
+    wifi_netlink_channel_set(ak_ctrl.cur_channel, CHANNEL_WIDTH_20, 0);
     /* inform airkiss we have changed channel */
     airkiss_change_channel(akcontext);
 
@@ -352,7 +352,7 @@ void airkiss_timeout_handler(void *p_tmr, void *p_arg)
     }
 
     ak_ctrl.cur_channel = ak_ctrl.lock_channel;
-    wifi_netlink_channel_set(ak_ctrl.cur_channel, 20, 0);
+    wifi_netlink_channel_set(ak_ctrl.cur_channel, CHANNEL_WIDTH_20, 0);
 
     sys_timer_start(&set_channel_timer, 0);
     sys_timer_start(&airkiss_timer, 0);
@@ -534,7 +534,7 @@ static void wifi_lock_channel(unsigned char *buf, unsigned short len)
         bssid = ak_ctrl.wlan_hdr.addr1;
         ak_ctrl.lock_channel = wifi_netlink_ap_channel_get(bssid);
         if (ak_ctrl.lock_channel != 0) {
-            wifi_netlink_channel_set(ak_ctrl.lock_channel, 20, 0);
+            wifi_netlink_channel_set(ak_ctrl.lock_channel, CHANNEL_WIDTH_20, 0);
         }
         ak_ctrl.lock_length = len;
         airkiss_printf(AIRKISS_INFO, "wifi_promiscuous_rx, lock length is %d\n", ak_ctrl.lock_length);
@@ -571,7 +571,7 @@ static void wifi_promiscuous_rx(unsigned char *buf, unsigned short len, signed c
         wifi_netlink_promisc_mode_set(0, NULL);
         airkiss_printf(AIRKISS_INFO,"========= Airkiss: quit promiscuous mode! =========\r\n");
 
-        handle = sys_task_create(NULL, (const u8 *)"airkiss_finish", NULL,
+        handle = sys_task_create(NULL, (const uint8_t *)"airkiss_finish", NULL,
                     AIRKISS_FINISH_STACK_SIZE, 0, AIRKISS_FINISH_TASK_PRIO,
                     (task_func_t)airkiss_finish_task, akcontext);
         if (handle == NULL) {
@@ -662,7 +662,7 @@ int airkiss_start(void)
     sys_timer_init(&airkiss_timer, "airkiss_timer", AIRKISS_COMPLETE_TIME, 0,
                 (timer_func_t)airkiss_timeout_handler, NULL);
 
-    wifi_netlink_channel_set(ak_ctrl.cur_channel, 20, 0);
+    wifi_netlink_channel_set(ak_ctrl.cur_channel, CHANNEL_WIDTH_20, 0);
 
     sys_timer_start(&set_channel_timer, 0);
     sys_timer_start(&airkiss_timer, 0);

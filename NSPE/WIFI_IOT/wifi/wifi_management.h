@@ -149,6 +149,7 @@ EXTERN wifi_management_sm_data_t wifi_sm_data;
 /*============================ PROTOTYPES ====================================*/
 void wifi_management_init(void);
 void wifi_management_start(void);
+void wifi_management_stop(void);
 int wifi_management_scan(uint8_t blocked);
 int wifi_management_connect(uint8_t *ssid, uint8_t *password, uint8_t blocked);
 int wifi_management_disconnect(void);

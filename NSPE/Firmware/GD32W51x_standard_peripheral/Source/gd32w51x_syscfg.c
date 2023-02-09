@@ -172,8 +172,8 @@ void sram1_access_security_config(uint32_t access_mode)
     \brief      configure FPU security
     \param[in]  access_mode: secure access or secure and non-secure access
                 only one parameter can be selected which is shown as below:
-                  FPU_SECURE_ACCESS: SYSCFG_FPUINTMSK register can be written by secure access only
-                  FPU_SECURE_NONSECURE_ACCESS: SYSCFG_FPUINTMSK register can be written by secure and non-secure access
+                  FPU_SECURE_ACCESS: SYSCFG_FPUINTEN register can be written by secure access only
+                  FPU_SECURE_NONSECURE_ACCESS: SYSCFG_FPUINTEN register can be written by secure and non-secure access
     \param[out] none
     \retval     none
 */
@@ -256,14 +256,14 @@ void syscfg_lock_config(uint32_t syscfg_lock)
 }
 
 /*!
-    \brief      write data to RSS
-    \param[in]  data: the data to be written in to RSS
+    \brief      write data to GSSA
+    \param[in]  data: the data to be written in to GSSA
     \param[out] none
     \retval     none
 */
-void rsscmd_write_data(uint32_t data)
+void gssacmd_write_data(uint32_t data)
 {
-    SYSCFG_RSSCMD = data;
+    SYSCFG_GSSACMD = data;
 }
 
 /*!
@@ -274,7 +274,7 @@ void rsscmd_write_data(uint32_t data)
 */
 ErrStatus sram1_erase(void)
 {
-    if (SYSCFG_SCS & SYSCFG_SCS_SRAM1BSY) {
+    if (RESET != (SYSCFG_SCS & SYSCFG_SCS_SRAM1BSY)){
         return ERROR;
     }else{
         SYSCFG_SCS |= SYSCFG_SCS_SRAM1ERS;
@@ -323,7 +323,7 @@ void sram1_write_protect_0_31(uint32_t page)
     \brief      SRAM1 write protect range from page32 to page63
     \param[in]  page: specify the page of SRAM1 to protect
                 only one parameter can be selected which is shown as below:
-    \arg          SRAM1_PAGEx: enable write protection of SRAM1 page x (x=32,33,...63)
+    \arg          SRAM1_PAGEx_WRITE_PROTECT: enable write protection of SRAM1 page x (x=32,33,...63)
     \param[out] none
     \retval     none
 */
@@ -376,7 +376,7 @@ FlagStatus sram1_bsy_flag_get(void)
 */
 void fpu_interrupt_enable(uint32_t interrupt)
 {
-    SYSCFG_FPUINTMSK |= interrupt;
+    SYSCFG_FPUINTEN |= interrupt;
 }
 
 /*!
@@ -394,5 +394,5 @@ void fpu_interrupt_enable(uint32_t interrupt)
 */
 void fpu_interrupt_disable(uint32_t interrupt)
 {
-    SYSCFG_FPUINTMSK &= ~(interrupt);
+    SYSCFG_FPUINTEN &= ~(interrupt);
 }

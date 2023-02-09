@@ -1,34 +1,34 @@
 /*!
     \file    gd32w51x_icache.h
     \brief   definitions for the ICACHE
-    
+
     \version 2021-10-30, V1.0.0, firmware for GD32W51x
 */
 
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -92,13 +92,13 @@ OF SUCH DAMAGE.
 /* ICACHE monitor source */
 #define ICACHE_MONITOR_HIT            ICACHE_CTL_HMEN                /*!< hit monitor enable */
 #define ICACHE_MONITOR_MISS           ICACHE_CTL_MMEN                /*!< miss monitor enable */
-#define ICACHE_MONITOR_HIT_MISS       (ICACHE_MONITOR_HIT | ICACHE_MONITOR_MISS) /*!<hit and miss monitor enable */                                                                
+#define ICACHE_MONITOR_HIT_MISS       (ICACHE_MONITOR_HIT | ICACHE_MONITOR_MISS) /*!<hit and miss monitor enable */
 
 /* ICACHE monitor reset source */
 #define ICACHE_MONITOR_RESET_HIT      ICACHE_CTL_HMRST               /*!< hit monitor reset */
 #define ICACHE_MONITOR_RESET_MISS     ICACHE_CTL_MMRST               /*!< miss monitor reset */
 #define ICACHE_MONITOR_RESET_HIT_MISS (ICACHE_MONITOR_RESET_HIT | ICACHE_MONITOR_RESET_MISS)  /*!<hit and miss monitor reset */
-                                        
+
 /* ICACHE way mode selection */
 #define ICACHE_N_WAYS                 1U                             /*!< icache n-way associative cache*/
 
@@ -120,8 +120,6 @@ OF SUCH DAMAGE.
 #define ICACHE_ERRC_FLAG              ICACHE_FC_ENDC                 /*!< error clear flag */
 
 #define ICACHE_CTL_DEFAULT            0x00000004U                    /*!< ICACHE control register default value */
-
-
 
 /* ICACHE REMAP TYPE */
 typedef struct
@@ -160,16 +158,16 @@ void icache_monitor_enable(uint32_t monitor_source);
 void icache_monitor_disable(uint32_t monitor_source);
 /* reset the icache monitor */
 void icache_monitor_reset(uint32_t reset_monitor_source);
-/* select icache way (associativity mode) */
-ErrStatus icache_way_selection(uint32_t icache_way);
+/* configure icache way (associativity mode) */
+ErrStatus icache_way_configure(void);
 /* select icache burst type */
-ErrStatus icache_burst_type_sel(uint32_t burst_type);
-/* invalid icache*/
+ErrStatus icache_burst_type_select(uint32_t burst_type);
+/* invalidate icache*/
 ErrStatus icache_invalidation(void);
 /* get the hit monitor value */
 uint32_t icache_hitvalue_get(void);
 /* get the miss monitor value */
-uint32_t get_icache_missvalue_get(void);
+uint32_t icache_missvalue_get(void);
 /* enable the icache remap function */
 ErrStatus icache_remap_enable(icache_remap_struct * icache_remap_config);
 /* disable the icache remap function */

@@ -58,6 +58,7 @@ OF SUCH DAMAGE.
 os_mutex_t hw_pka_lock;
 os_mutex_t hw_cryp_lock;
 os_mutex_t hw_hash_lock;
+os_sema_t mgmt_task_exit_sema = NULL;
 /*============================ LOCAL VARIABLES ===============================*/
 static int8_t candidate_rssi_avg;
 static int8_t candidate_rssi;
@@ -696,6 +697,8 @@ void wifi_management_task(void *arg)
 
     eloop_destroy();
 
+    sys_sema_up(&mgmt_task_exit_sema);
+
     sys_task_delete(NULL);
 }
 /*!
@@ -710,15 +713,37 @@ void wifi_management_start(void)
 
     COMPILE_TIME_ASSERT(WIFI_MGMT_EVENT_MAX <= UINT16_MAX);
 
+    sys_sema_init(&mgmt_task_exit_sema, 0);
+
     handle = sys_task_create(&wifi_mgmt_task_tcb, (const uint8_t *)"wifi_mgmt", &wifi_mgmt_task_stk[0],
                     WIFI_MGMT_TASK_STK_SIZE, WIFI_MGMT_TASK_QUEUE_SIZE, WIFI_MGMT_TASK_PRIO,
                     (task_func_t)wifi_management_task, NULL);
     if (handle == NULL) {
         DEBUGPRINT("creating wifi management task failed\r\n");
+        sys_sema_free(&mgmt_task_exit_sema);
+        mgmt_task_exit_sema = NULL;
         return;
     }
 
     eloop_event_send(WIFI_MGMT_EVENT_INIT);
+}
+
+/*!
+    \brief      wifi management stop
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void wifi_management_stop(void)
+{
+    eloop_event_send(ELOOP_EVENT_TERMINATE);
+
+    if (mgmt_task_exit_sema != NULL) {
+        // wait until wifi_management_task run finish
+        sys_sema_down(&mgmt_task_exit_sema, 0);
+        sys_sema_free(&mgmt_task_exit_sema);
+        mgmt_task_exit_sema = NULL;
+    }
 }
 
 /*!
@@ -821,7 +846,7 @@ void wifi_management_init(void)
     wifi_netlink_dev_open();
 
 #ifdef CONFIG_RF_TEST_SUPPORT
-    mp_mode_config();
+    mp_mode_config(LOG_UART);
 #endif
 
 #ifdef CONFIG_WIFI_MANAGEMENT_TASK

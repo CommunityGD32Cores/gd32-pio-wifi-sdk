@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -59,13 +59,14 @@ void rcu_deinit(void)
     /* enable IRC16M */
     RCU_CTL |= RCU_CTL_IRC16MEN;
     rcu_osci_stab_wait(RCU_IRC16M);
+    RCU_CFG0 &= ~RCU_CFG0_SCS;
+    /* reset CTL register */
+    RCU_CTL &= ~(RCU_CTL_HXTALEN | RCU_CTL_CKMEN | RCU_CTL_PLLEN | RCU_CTL_PLLI2SEN | RCU_CTL_PLLDIGEN |
+                 RCU_CTL_HXTALPU | RCU_CTL_HXTALENI2S | RCU_CTL_PLLDIGPU | RCU_CTL_HXTALENPLL | RCU_CTL_RFCKMEN);
     /* reset CFG0 register */
     RCU_CFG0 &= ~(RCU_CFG0_SCS | RCU_CFG0_AHBPSC | RCU_CFG0_APB1PSC | RCU_CFG0_APB2PSC |
                   RCU_CFG0_RTCDIV | RCU_CFG0_CKOUT0SEL  | RCU_CFG0_CKOUT0DIV |
                   RCU_CFG0_CKOUT1DIV | RCU_CFG0_CKOUT1SEL);
-    /* reset CTL register */
-    RCU_CTL &= ~(RCU_CTL_HXTALEN | RCU_CTL_CKMEN | RCU_CTL_PLLEN | RCU_CTL_PLLI2SEN | RCU_CTL_PLLDIGEN |
-                 RCU_CTL_HXTALPU | RCU_CTL_HXTALENI2S | RCU_CTL_PLLDIGPU | RCU_CTL_HXTALENPLL | RCU_CTL_RFCKMEN);
     /* reset CFG1 register */
     RCU_CFG1 = 0x00000000U;
     /* reset ADDCTL register */
@@ -88,17 +89,17 @@ void rcu_deinit(void)
       \arg        RCU_CRC: CRC clock
       \arg        RCU_WIFI: WIFI clock
       \arg        RCU_WIFIRUN: WIFIRUN clock
-      \arg        RCU_SRAMx: (x=0,1,2,3):SRAM clock
+      \arg        RCU_SRAMx (x=0,1,2,3):SRAM clock
       \arg        RCU_DMAx (x=0,1): DMA clock
       \arg        RCU_USBFS: USBFS clock
-      \arg        RCU_DCI: DCI clock
+      \arg        RCU_DCI (not available for GD32W515TX series): DCI clock
       \arg        RCU_PKCAU: PKCAU clock
       \arg        RCU_CAU: CAU clock
       \arg        RCU_HAU: HAU clock
       \arg        RCU_TRNG: TRNG clock
       \arg        RCU_SQPI: SQPI clock
       \arg        RCU_QSPI: QSPI clock
-      \arg        RCU_TIMERx (x=0,1,2,3,4,5,15,16): TIMER clock
+      \arg        RCU_TIMERx (x=0,1,2,3,4,5,15,16,TIMER3 are not available for GD32W515TX series): TIMER clock
       \arg        RCU_WWDGT: WWDGT clock
       \arg        RCU_SPIx (x=0,1): SPI clock
       \arg        RCU_USARTx (x=0,1,2): USART clock
@@ -108,7 +109,7 @@ void rcu_deinit(void)
       \arg        RCU_ADC : ADC clock
       \arg        RCU_SDIO: SDIO clock
       \arg        RCU_SYSCFG: SYSCFG clock
-      \arg        RCU_HPDF: HPDF clock
+      \arg        RCU_HPDF (not available for GD32W515TX series): HPDF clock
       \arg        RCU_RF: RF clock
     \param[out] none
     \retval     none
@@ -131,14 +132,14 @@ void rcu_periph_clock_enable(rcu_periph_enum periph)
       \arg        RCU_SRAMx: (x=0,1,2,3):SRAM clock
       \arg        RCU_DMAx (x=0,1): DMA clock
       \arg        RCU_USBFS: USBFS clock
-      \arg        RCU_DCI: DCI clock
+      \arg        RCU_DCI (not available for GD32W515TX series): DCI clock
       \arg        RCU_PKCAU: PKCAU clock
       \arg        RCU_CAU: CAU clock
       \arg        RCU_HAU: HAU clock
       \arg        RCU_TRNG: TRNG clock
       \arg        RCU_SQPI: SQPI clock
       \arg        RCU_QSPI: QSPI clock
-      \arg        RCU_TIMERx (x=0,1,2,3,4,5,15,16): TIMER clock
+      \arg        RCU_TIMERx (x=0,1,2,3,4,5,15,16,TIMER3 are not available for GD32W515TX series): TIMER clock
       \arg        RCU_WWDGT: WWDGT clock
       \arg        RCU_SPIx (x=0,1): SPI clock
       \arg        RCU_USARTx (x=0,1,2): USART clock
@@ -148,7 +149,7 @@ void rcu_periph_clock_enable(rcu_periph_enum periph)
       \arg        RCU_ADC: ADC clock
       \arg        RCU_SDIO: SDIO clock
       \arg        RCU_SYSCFG: SYSCFG clock
-      \arg        RCU_HPDF: HPDF clock
+      \arg        RCU_HPDF (not available for GD32W515TX series): HPDF clock
       \arg        RCU_RF: RF clock
     \param[out] none
     \retval     none
@@ -168,18 +169,18 @@ void rcu_periph_clock_disable(rcu_periph_enum periph)
       \arg        RCU_CRC_SLP: CRC clock
       \arg        RCU_WIFI_SLP: WIFI clock
       \arg        RCU_WIFIRUN_SLP: WIFIRUN clock
-      \arg        RCU_FMC_SLP: WIFI clock
+      \arg        RCU_FMC_SLP: FMC clock
       \arg        RCU_SRAMx_SLP:(x=0,1,2,3): SRAM clock
       \arg        RCU_DMAx_SLP (x=0,1): DMA clock
       \arg        RCU_USBFS_SLP: USBFS clock
-      \arg        RCU_DCI_SLP: DCI clock
+      \arg        RCU_DCI_SLP (not available for GD32W515TX series): DCI clock
       \arg        RCU_PKCAU_SLP: PKCAU clock
       \arg        RCU_CAU_SLP: CAU clock
       \arg        RCU_HAU_SLP: HAU clock
       \arg        RCU_TRNG_SLP: TRNG clock
       \arg        RCU_SQPI_SLP: SQPI clock
       \arg        RCU_QSPI_SLP: QSPI clock
-      \arg        RCU_TIMERx_SLP (x=0,1,2,3,4,5,15,16): TIMER clock
+      \arg        RCU_TIMERx_SLP (x=0,1,2,3,4,5,15,16,TIMER3 are not available for GD32W515TX series): TIMER clock
       \arg        RCU_WWDGT_SLP: WWDGT clock
       \arg        RCU_SPIx_SLP (x=0,1): SPI clock
       \arg        RCU_USARTx_SLP (x=0,1,2): USART clock
@@ -189,7 +190,7 @@ void rcu_periph_clock_disable(rcu_periph_enum periph)
       \arg        RCU_ADC_SLP: ADC clock
       \arg        RCU_SDIO_SLP: SDIO clock
       \arg        RCU_SYSCFG_SLP: SYSCFG clock
-      \arg        RCU_HPDF_SLP: HPDF clock
+      \arg        RCU_HPDF_SLP:(not available for GD32W515TX series): HPDF clock
       \arg        RCU_RF_SLP: RF clock
     \param[out] none
     \retval     none
@@ -213,14 +214,14 @@ void rcu_periph_clock_sleep_enable(rcu_periph_sleep_enum periph)
       \arg        RCU_SRAMx_SLP:(x=0,1,2,3): SRAM clock
       \arg        RCU_DMAx_SLP (x=0,1): DMA clock
       \arg        RCU_USBFS_SLP: USBFS clock
-      \arg        RCU_DCI_SLP: DCI clock
+      \arg        RCU_DCI_SLP (not available for GD32W515TX series): DCI clock
       \arg        RCU_PKCAU_SLP: PKCAU clock
       \arg        RCU_CAU_SLP: CAU clock
       \arg        RCU_HAU_SLP: HAU clock
       \arg        RCU_TRNG_SLP: TRNG clock
       \arg        RCU_SQPI_SLP: SQPI clock
       \arg        RCU_QSPI_SLP: QSPI clock
-      \arg        RCU_TIMERx_SLP (x=0,1,2,3,4,5,15,16): TIMER clock
+      \arg        RCU_TIMERx_SLP (x=0,1,2,3,4,5,15,16,TIMER3 are not available for GD32W515TX series): TIMER clock
       \arg        RCU_WWDGT_SLP: WWDGT clock
       \arg        RCU_SPIx_SLP (x=0,1): SPI clock
       \arg        RCU_USARTx_SLP (x=0,1,2): USART clock
@@ -230,7 +231,7 @@ void rcu_periph_clock_sleep_enable(rcu_periph_sleep_enum periph)
       \arg        RCU_ADC_SLP: ADC clock
       \arg        RCU_SDIO_SLP: SDIO clock
       \arg        RCU_SYSCFG_SLP: SYSCFG clock
-      \arg        RCU_HPDF_SLP: HPDF clock
+      \arg        RCU_HPDF_SLP:(not available for GD32W515TX series):HPDF clock
       \arg        RCU_RF_SLP: RF clock
     \param[out] none
     \retval     none
@@ -251,14 +252,14 @@ void rcu_periph_clock_sleep_disable(rcu_periph_sleep_enum periph)
       \arg        RCU_WIFIRST: reset WIFI
       \arg        RCU_DMAxRST (x=0,1): reset DMA
       \arg        RCU_USBFSRST: reset USBFS
-      \arg        RCU_DCIRST: reset DCI
+      \arg        RCU_DCIRST (not available for GD32W515TX series): reset DCI
       \arg        RCU_PKCAURST: reset PKCAU
       \arg        RCU_CAURST: reset CAU
       \arg        RCU_HAURST: reset HAU
       \arg        RCU_TRNGRST: reset TRNG
       \arg        RCU_SQPIRST: reset SQPI
       \arg        RCU_QSPIRST: reset QSPI
-      \arg        RCU_TIMERxRST (x=0,1,2,3,4,5,15,16): reset TIMER
+      \arg        RCU_TIMERxRST (x=0,1,2,3,4,5,15,16,TIMER3 are not available for GD32W515TX series): reset TIMER
       \arg        RCU_WWDGTRST: reset WWDGT
       \arg        RCU_SPIxRST (x=0,1): reset SPI
       \arg        RCU_USARTxRST (x=0,1,2): reset USART
@@ -267,7 +268,7 @@ void rcu_periph_clock_sleep_disable(rcu_periph_sleep_enum periph)
       \arg        RCU_ADCRST : reset ADC
       \arg        RCU_SDIORST: reset SDIO
       \arg        RCU_SYSCFGRST: reset SYSCFG
-      \arg        RCU_HPDFRST: reset HPDF
+      \arg        RCU_HPDFRST (not available for GD32W515TX series): reset HPDF
       \arg        RCU_RFRST: reset RF
     \param[out] none
     \retval     none
@@ -288,14 +289,14 @@ void rcu_periph_reset_enable(rcu_periph_reset_enum periph_reset)
       \arg        RCU_WIFIRST: reset WIFI
       \arg        RCU_DMAxRST (x=0,1): reset DMA
       \arg        RCU_USBFSRST: reset USBFS
-      \arg        RCU_DCIRST: reset DCI
+      \arg        RCU_DCIRST (not available for GD32W515TX series): reset DCI
       \arg        RCU_PKCAURST: reset PKCAU
       \arg        RCU_CAURST: reset CAU
       \arg        RCU_HAURST: reset HAU
       \arg        RCU_TRNGRST: reset TRNG
       \arg        RCU_SQPIRST: reset SQPI
       \arg        RCU_QSPIRST: reset QSPI
-      \arg        RCU_TIMERxRST (x=0,1,2,3,4,5,15,16): reset TIMER
+      \arg        RCU_TIMERxRST (x=0,1,2,3,4,5,15,16,TIMER3 are not available for GD32W515TX series): reset TIMER
       \arg        RCU_WWDGTRST: reset WWDGT
       \arg        RCU_SPIxRST (x=0,1): reset SPI
       \arg        RCU_USARTxRST (x=0,1,2): reset USART
@@ -304,7 +305,7 @@ void rcu_periph_reset_enable(rcu_periph_reset_enum periph_reset)
       \arg        RCU_ADCRST : reset ADC
       \arg        RCU_SDIORST: reset SDIO
       \arg        RCU_SYSCFGRST: reset SYSCFG
-      \arg        RCU_HPDFRST: reset HPDF
+      \arg        RCU_HPDFRST (not available for GD32W515TX series): reset HPDF
       \arg        RCU_RFRST: reset RF
     \param[out] none
     \retval     none
@@ -348,6 +349,17 @@ void rcu_hxtal_plli2s_enable(void)
 }
 
 /*!
+    \brief      disable HXTAL for PLLI2S
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_hxtal_plli2s_disable(void)
+{
+    RCU_CTL &= ~RCU_CTL_HXTALENI2S;
+}
+
+/*!
     \brief      enable HXTAL for system CK_PLLP
     \param[in]  none
     \param[out] none
@@ -356,6 +368,17 @@ void rcu_hxtal_plli2s_enable(void)
 void rcu_hxtal_pllp_enable(void)
 {
     RCU_CTL |= RCU_CTL_HXTALENPLL;
+}
+
+/*!
+    \brief      disable HXTAL for system CK_PLLP
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_hxtal_pllp_disable(void)
+{
+    RCU_CTL &= ~RCU_CTL_HXTALENPLL;
 }
 
 /*!
@@ -370,6 +393,17 @@ void rcu_plldig_enable(void)
 }
 
 /*!
+    \brief      disable CK_PLLDIG
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_plldig_disable(void)
+{
+    RCU_CTL &= ~RCU_CTL_PLLDIGEN;
+}
+
+/*!
     \brief      power on the HXTAL
     \param[in]  none
     \param[out] none
@@ -381,7 +415,7 @@ void rcu_hxtal_poweron(void)
 }
 
 /*!
-    \brief      power down the HXTAL 
+    \brief      power down the HXTAL
     \param[in]  none
     \param[out] none
     \retval     none
@@ -392,7 +426,7 @@ void rcu_hxtal_powerdown(void)
 }
 
 /*!
-    \brief      power on the PLLDIG 
+    \brief      power on the PLLDIG
     \param[in]  none
     \param[out] none
     \retval     none
@@ -436,7 +470,7 @@ void rcu_rfpll_cal_disable(void)
 }
 
 /*!
-    \brief      power on the RF PLL 
+    \brief      power on the RF PLL
     \param[in]  none
     \param[out] none
     \retval     none
@@ -447,7 +481,7 @@ void rcu_rfpll_poweron(void)
 }
 
 /*!
-    \brief      power down the RF PLL 
+    \brief      power down the RF PLL
     \param[in]  none
     \param[out] none
     \retval     none
@@ -458,7 +492,7 @@ void rcu_rfpll_powerdown(void)
 }
 
 /*!
-    \brief      power on the RF PLL 
+    \brief      power on LDO analog
     \param[in]  none
     \param[out] none
     \retval     none
@@ -469,7 +503,7 @@ void rcu_ldoana_poweron(void)
 }
 
 /*!
-    \brief      power down the RF PLL 
+    \brief      power down LDO analog
     \param[in]  none
     \param[out] none
     \retval     none
@@ -480,7 +514,7 @@ void rcu_ldoana_powerdown(void)
 }
 
 /*!
-    \brief      power on the LDO clock 
+    \brief      power on the LDO clock
     \param[in]  none
     \param[out] none
     \retval     none
@@ -491,7 +525,7 @@ void rcu_ldoclk_poweron(void)
 }
 
 /*!
-    \brief      power down the LDO clock 
+    \brief      power down the LDO clock
     \param[in]  none
     \param[out] none
     \retval     none
@@ -502,18 +536,7 @@ void rcu_ldoclk_powerdown(void)
 }
 
 /*!
-    \brief      power down the BandGap 
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rcu_bandgap_powerdown(void)
-{
-    RCU_CFG1 &= ~RCU_CFG1_BGPU;
-}
-
-/*!
-    \brief      power on the BandGap 
+    \brief      power on the BandGap
     \param[in]  none
     \param[out] none
     \retval     none
@@ -521,6 +544,17 @@ void rcu_bandgap_powerdown(void)
 void rcu_bandgap_poweron(void)
 {
     RCU_CFG1 |= RCU_CFG1_BGPU;
+}
+
+/*!
+    \brief      power down the BandGap
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void rcu_bandgap_powerdown(void)
+{
+    RCU_CFG1 &= ~RCU_CFG1_BGPU;
 }
 
 /*!
@@ -537,7 +571,7 @@ void rcu_bandgap_poweron(void)
 void rcu_system_clock_source_config(uint32_t ck_sys)
 {
     uint32_t reg;
-    
+
     reg = RCU_CFG0;
     /* reset the SCS bits and set according to ck_sys */
     reg &= ~RCU_CFG0_SCS;
@@ -570,7 +604,7 @@ uint32_t rcu_system_clock_source_get(void)
 void rcu_ahb_clock_config(uint32_t ck_ahb)
 {
     uint32_t reg;
-    
+
     reg = RCU_CFG0;
     /* reset the AHBPSC bits and set according to ck_ahb */
     reg &= ~RCU_CFG0_AHBPSC;
@@ -590,7 +624,7 @@ void rcu_ahb_clock_config(uint32_t ck_ahb)
 void rcu_apb1_clock_config(uint32_t ck_apb1)
 {
     uint32_t reg;
-    
+
     reg = RCU_CFG0;
     /* reset the APB1PSC and set according to ck_apb1 */
     reg &= ~RCU_CFG0_APB1PSC;
@@ -612,7 +646,7 @@ void rcu_apb1_clock_config(uint32_t ck_apb1)
 void rcu_apb2_clock_config(uint32_t ck_apb2)
 {
     uint32_t reg;
-    
+
     reg = RCU_CFG0;
     /* reset the APB2PSC and set according to ck_apb2 */
     reg &= ~RCU_CFG0_APB2PSC;
@@ -627,7 +661,7 @@ void rcu_apb2_clock_config(uint32_t ck_apb2)
       \arg        RCU_CKOUT0SRC_LXTAL: LXTAL selected
       \arg        RCU_CKOUT0SRC_HXTAL: HXTAL selected
       \arg        RCU_CKOUT0SRC_PLLP: PLLP selected
-    \param[in]  ckout0_div: CK_OUT0 divider 
+    \param[in]  ckout0_div: CK_OUT0 divider
       \arg        RCU_CKOUT0_DIVx(x=1,2,3,4,5): CK_OUT0 is divided by x
     \param[out] none
     \retval     none
@@ -635,7 +669,7 @@ void rcu_apb2_clock_config(uint32_t ck_apb2)
 void rcu_ckout0_config(uint32_t ckout0_src, uint32_t ckout0_div)
 {
     uint32_t reg;
-    
+
     reg = RCU_CFG0;
     /* reset the CKOUT0SRC, CKOUT0DIV and set according to ckout0_src and ckout0_div */
     reg &= ~(RCU_CFG0_CKOUT0SEL | RCU_CFG0_CKOUT0DIV );
@@ -647,10 +681,10 @@ void rcu_ckout0_config(uint32_t ckout0_src, uint32_t ckout0_div)
     \param[in]  ckout1_src: CK_OUT1 clock source selection
                 only one parameter can be selected which is shown as below:
       \arg        RCU_CKOUT1SRC_CKSYS: system clock selected
-      \arg        RCU_CKOUT1SRC_PLLI2S: PLLI2SR selected
+      \arg        RCU_CKOUT1SRC_PLLI2S: PLLI2S selected
       \arg        RCU_CKOUT1SRC_HXTAL: HXTAL selected
-      \arg        RCU_CKOUT1SRC_PLLP: PLLP selected           
-    \param[in]  ckout1_div: CK_OUT1 divider 
+      \arg        RCU_CKOUT1SRC_PLLDIG: PLLDIG selected
+    \param[in]  ckout1_div: CK_OUT1 divider
       \arg        RCU_CKOUT1_DIVx(x=1,2,3,4,5): CK_OUT1 is divided by x
     \param[out] none
     \retval     none
@@ -658,7 +692,7 @@ void rcu_ckout0_config(uint32_t ckout0_src, uint32_t ckout0_div)
 void rcu_ckout1_config(uint32_t ckout1_src, uint32_t ckout1_div)
 {
     uint32_t reg;
-    
+
     reg = RCU_CFG0;
     /* reset the CKOUT1SRC, CKOUT1DIV and set according to ckout1_src and ckout1_div */
     reg &= ~(RCU_CFG0_CKOUT1SEL | RCU_CFG0_CKOUT1DIV);
@@ -666,7 +700,7 @@ void rcu_ckout1_config(uint32_t ckout1_src, uint32_t ckout1_div)
 }
 
 /*!
-    \brief      configure the main PLL clock 
+    \brief      configure the main PLL clock
     \param[in]  pll_src: PLL clock source selection
       \arg        RCU_PLLSRC_IRC16M: select IRC16M as PLL source clock
       \arg        RCU_PLLSRC_HXTAL: select HXTAL as PLL source clock
@@ -683,7 +717,7 @@ ErrStatus rcu_pll_config(uint32_t pll_src, uint32_t pll_psc, uint32_t pll_n, uin
 {
     uint32_t ss_modulation_inc;
     uint32_t ss_modulation_reg;
-    
+
     ss_modulation_inc = 0U;
     ss_modulation_reg = RCU_PLLSSCTL;
 
@@ -695,9 +729,9 @@ ErrStatus rcu_pll_config(uint32_t pll_src, uint32_t pll_psc, uint32_t pll_n, uin
             ss_modulation_inc += RCU_SS_MODULATION_CENTER_INC;
         }
     }
-    
+
     /* check the function parameter */
-    if(CHECK_PLL_PSC_VALID(pll_psc) && CHECK_PLL_N_VALID(pll_n,ss_modulation_inc) && 
+    if(CHECK_PLL_PSC_VALID(pll_psc) && CHECK_PLL_N_VALID(pll_n,ss_modulation_inc) &&
        CHECK_PLL_P_VALID(pll_p)){
          RCU_PLL = pll_psc | (pll_n << 6) | (((pll_p >> 1) - 1U) << 16) |
                    (pll_src);
@@ -705,7 +739,7 @@ ErrStatus rcu_pll_config(uint32_t pll_src, uint32_t pll_psc, uint32_t pll_n, uin
         /* return status */
         return ERROR;
     }
-    
+
     /* return status */
     return SUCCESS;
 }
@@ -739,9 +773,9 @@ ErrStatus rcu_plli2s_config(uint32_t plli2s_n, uint32_t plli2s_psc,uint32_t plli
         /* return status */
         return ERROR;
     }
-    
+
     /* return status */
-    return SUCCESS;  
+    return SUCCESS;
 }
 
 /*!
@@ -794,15 +828,15 @@ void rcu_plldigfsys_div_config(uint32_t plldigfsys_div)
 void rcu_rtc_clock_config(uint32_t rtc_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_BDCTL; 
+
+    reg = RCU_BDCTL;
     /* reset the RTCSRC bits and set according to rtc_clock_source */
     reg &= ~RCU_BDCTL_RTCSRC;
     RCU_BDCTL = (reg | rtc_clock_source);
 }
 
 /*!
-    \brief      configure the frequency division of RTC clock when HXTAL was selected as its clock source 
+    \brief      configure the frequency division of RTC clock when HXTAL was selected as its clock source
     \param[in]  rtc_div: RTC clock frequency division
                 only one parameter can be selected which is shown as below:
       \arg        RCU_RTC_HXTAL_NONE: no clock for RTC
@@ -812,8 +846,8 @@ void rcu_rtc_clock_config(uint32_t rtc_clock_source)
 */
 void rcu_rtc_div_config(uint32_t rtc_div)
 {
-    uint32_t reg;    
-    reg = RCU_CFG0; 
+    uint32_t reg;
+    reg = RCU_CFG0;
     /* reset the RTCDIV bits and set according to rtc_div value */
     reg &= ~RCU_CFG0_RTCDIV;
     RCU_CFG0 = (reg | rtc_div);
@@ -832,15 +866,15 @@ void rcu_rtc_div_config(uint32_t rtc_div)
 void rcu_i2s_clock_config(uint32_t i2s_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_ADDCTL; 
+
+    reg = RCU_ADDCTL;
     /* reset the I2SSEL bit and set according to i2s_clock_source */
     reg &= ~RCU_ADDCTL_I2SSEL;
     RCU_ADDCTL = (reg | i2s_clock_source);
 }
 
 /*!
-    \brief      configure the PLL divider factor for I2S clock 
+    \brief      configure the PLL divider factor for I2S clock
     \param[in]  pllfi2s_div: PLL divider factor for I2S clock
                 only one parameter can be selected which is shown as below:
       \arg        RCU_PLLFI2SDIV_DIVx(x=1,2,...,64): PLL clock divided by x for I2S clock
@@ -869,8 +903,8 @@ void rcu_pllfi2s_clock_div_config(uint32_t pllfi2s_div)
 void rcu_hpdf_clock_config(uint32_t hpdf_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_ADDCTL; 
+
+    reg = RCU_ADDCTL;
     /* reset the HPDFSEL bit and set according to hpdf_clock_source */
     reg &= ~RCU_ADDCTL_HPDFSEL;
     RCU_ADDCTL = (reg | hpdf_clock_source);
@@ -890,8 +924,8 @@ void rcu_hpdf_clock_config(uint32_t hpdf_clock_source)
 void rcu_hpdf_audio_clock_config(uint32_t hpdfaudio_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_ADDCTL; 
+
+    reg = RCU_ADDCTL;
     /* reset the HPDFAUDIOSEL bit and set according to hpdfaudio_clock_source */
     reg &= ~RCU_ADDCTL_HPDFAUDIOSEL;
     RCU_ADDCTL = (reg | hpdfaudio_clock_source);
@@ -911,25 +945,25 @@ void rcu_hpdf_audio_clock_config(uint32_t hpdfaudio_clock_source)
 void rcu_sdio_clock_config(uint32_t sdio_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_ADDCTL; 
+
+    reg = RCU_ADDCTL;
     /* reset the SDIOSEL bit and set according to sdio_clock_source */
     reg &= ~(RCU_SDIOSRC_MASK);
     RCU_ADDCTL = (reg | sdio_clock_source);
 }
 
 /*!
-    \brief      configure the frequency division of the sdio source clock 
+    \brief      configure the frequency division of the sdio source clock
     \param[in]  sdio_div: SDIO clock frequency division
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_SDIODIV_DIVx: USBFSDIV clock select x, x = 1....32
+      \arg        RCU_SDIODIV_DIVx: SDIODIV input source clock divided by x, x = 1,...,32
     \param[out] none
     \retval     none
 */
 void rcu_sdio_div_config(uint32_t sdio_div)
 {
-    uint32_t reg;    
-    reg = RCU_ADDCTL; 
+    uint32_t reg;
+    reg = RCU_ADDCTL;
     /* reset the RTCDIV bits and set according to rtc_div value */
     reg &= ~RCU_ADDCTL_SDIODIV;
     RCU_ADDCTL = (reg | sdio_div);
@@ -947,25 +981,25 @@ void rcu_sdio_div_config(uint32_t sdio_div)
 void rcu_usbfs_clock_config(uint32_t usbfs_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_ADDCTL; 
+
+    reg = RCU_ADDCTL;
     /* reset the USBFSSEL bit and set according to usbfs_clock_source */
     reg &= ~RCU_ADDCTL_USBFSSEL;
     RCU_ADDCTL = (reg | usbfs_clock_source);
 }
 
 /*!
-    \brief      configure the frequency division of the usbfs source clock 
+    \brief      configure the frequency division of the usbfs source clock
     \param[in]  usbfs_div: USBFS clock frequency division
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_USBFS_DIVx: USBFSDIV clock select x, x = 1....32
+      \arg        RCU_USBFS_DIVx: USBFSDIV input source clock divided by x, x = 1....32
     \param[out] none
     \retval     none
 */
 void rcu_usbfs_div_config(uint32_t usbfs_div)
 {
-    uint32_t reg;    
-    reg = RCU_ADDCTL; 
+    uint32_t reg;
+    reg = RCU_ADDCTL;
     /* reset the RTCDIV bits and set according to rtc_div value */
     reg &= ~RCU_ADDCTL_USBFSDIV;
     RCU_ADDCTL = (reg | usbfs_div);
@@ -984,8 +1018,8 @@ void rcu_usbfs_div_config(uint32_t usbfs_div)
 void rcu_i2c0_clock_config(uint32_t i2c0_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_CFG1; 
+
+    reg = RCU_CFG1;
     /* reset the I2C0SEL bit and set according to i2c0_clock_source */
     reg &= ~RCU_CFG1_I2C0SEL;
     RCU_CFG1 = (reg | i2c0_clock_source);
@@ -1005,8 +1039,8 @@ void rcu_i2c0_clock_config(uint32_t i2c0_clock_source)
 void rcu_usart0_clock_config(uint32_t usart0_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_CFG1; 
+
+    reg = RCU_CFG1;
     /* reset the USART0SEL bit and set according to usart0_clock_source */
     reg &= ~RCU_CFG1_USART0SEL;
     RCU_CFG1 = (reg | usart0_clock_source);
@@ -1026,14 +1060,13 @@ void rcu_usart0_clock_config(uint32_t usart0_clock_source)
 void rcu_usart2_clock_config(uint32_t usart2_clock_source)
 {
     uint32_t reg;
-    
-    reg = RCU_CFG1; 
+
+    reg = RCU_CFG1;
     /* reset the USART2SEL bit and set according to usart2_clock_source */
     reg &= ~RCU_CFG1_USART2SEL;
     RCU_CFG1 = (reg | usart2_clock_source);
 }
 
-/* configure IRC16M clock divider factor for system clock */
 /*!
     \brief      configure IRC16M clock divider factor for system clock
     \param[in]  irc16m_div: IRC16M clock divider factor for system clock
@@ -1055,13 +1088,13 @@ void rcu_irc16m_div_config(uint32_t irc16m_div)
     \brief      configure the TIMER clock prescaler selection
     \param[in]  timer_clock_prescaler: TIMER clock selection
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_TIMER_PSC_MUL2: if APB1PSC/APB2PSC in RCU_CFG0 register is 0b0xx(CK_APBx = CK_AHB) 
+      \arg        RCU_TIMER_PSC_MUL2: if APB1PSC/APB2PSC in RCU_CFG0 register is 0b0xx(CK_APBx = CK_AHB)
                                       or 0b100(CK_APBx = CK_AHB/2), the TIMER clock is equal to CK_AHB(CK_TIMERx = CK_AHB).
-                                      or else, the TIMER clock is twice the corresponding APB clock (TIMER in APB1 domain: CK_TIMERx = 2 x CK_APB1; 
+                                      or else, the TIMER clock is twice the corresponding APB clock (TIMER in APB1 domain: CK_TIMERx = 2 x CK_APB1;
                                       TIMER in APB2 domain: CK_TIMERx = 2 x CK_APB2)
-      \arg        RCU_TIMER_PSC_MUL4: if APB1PSC/APB2PSC in RCU_CFG0 register is 0b0xx(CK_APBx = CK_AHB), 
-                                      0b100(CK_APBx = CK_AHB/2), or 0b101(CK_APBx = CK_AHB/4), the TIMER clock is equal to CK_AHB(CK_TIMERx = CK_AHB). 
-                                      or else, the TIMER clock is four timers the corresponding APB clock (TIMER in APB1 domain: CK_TIMERx = 4 x CK_APB1;  
+      \arg        RCU_TIMER_PSC_MUL4: if APB1PSC/APB2PSC in RCU_CFG0 register is 0b0xx(CK_APBx = CK_AHB),
+                                      0b100(CK_APBx = CK_AHB/2), or 0b101(CK_APBx = CK_AHB/4), the TIMER clock is equal to CK_AHB(CK_TIMERx = CK_AHB).
+                                      or else, the TIMER clock is four timers the corresponding APB clock (TIMER in APB1 domain: CK_TIMERx = 4 x CK_APB1;
                                       TIMER in APB2 domain: CK_TIMERx = 4 x CK_APB2)
     \param[out] none
     \retval     none
@@ -1087,7 +1120,6 @@ void rcu_timer_clock_prescaler_config(uint32_t timer_clock_prescaler)
       \arg        RCU_FLAG_PLLDIGSTB: PLLDIG stabilization flag
       \arg        RCU_FLAG_LXTALSTB: LXTAL stabilization flag
       \arg        RCU_FLAG_IRC32KSTB: IRC32K stabilization flag
-      \arg        RCU_FLAG_IRC48MSTB: IRC48M stabilization flag
       \arg        RCU_FLAG_OBLRST: option byte loader reset flags
       \arg        RCU_FLAG_EPRST: external PIN reset flag
       \arg        RCU_FLAG_PORRST: power reset flag
@@ -1210,16 +1242,16 @@ void rcu_interrupt_disable(rcu_int_enum interrupt)
       \arg        RCU_LXTALDRI_LOWER_DRIVE: lower driving capability
       \arg        RCU_LXTALDRI_HIGH_DRIVE: high driving capability
       \arg        RCU_LXTALDRI_HIGHER_DRIVE: higher driving capability
-      \arg        RCU_LXTALDRI_HIGHEST_DRIVE: higher driving capability
+      \arg        RCU_LXTALDRI_HIGHEST_DRIVE: highest driving capability
     \param[out] none
     \retval     none
 */
 void rcu_lxtal_drive_capability_config(uint32_t lxtal_dricap)
 {
     uint32_t reg;
-    
+
     reg = RCU_BDCTL;
-    
+
     /* reset the LXTALDRI bits and set according to lxtal_dricap */
     reg &= ~RCU_BDCTL_LXTALDRI;
     RCU_BDCTL = (reg | lxtal_dricap);
@@ -1245,7 +1277,7 @@ ErrStatus rcu_osci_stab_wait(rcu_osci_type_enum osci)
     uint32_t stb_cnt = 0U;
     ErrStatus reval = ERROR;
     FlagStatus osci_stat = RESET;
-    
+
     switch(osci){
     /* wait HXTAL stable */
     case RCU_HXTAL:
@@ -1253,7 +1285,7 @@ ErrStatus rcu_osci_stab_wait(rcu_osci_type_enum osci)
             osci_stat = rcu_flag_get(RCU_FLAG_HXTALSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_HXTALSTB)){
             reval = SUCCESS;
@@ -1265,19 +1297,19 @@ ErrStatus rcu_osci_stab_wait(rcu_osci_type_enum osci)
             osci_stat = rcu_flag_get(RCU_FLAG_LXTALSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_LXTALSTB)){
             reval = SUCCESS;
         }
         break;
-    /* wait IRC16M stable */    
+    /* wait IRC16M stable */
     case RCU_IRC16M:
         while((RESET == osci_stat) && (IRC16M_STARTUP_TIMEOUT != stb_cnt)){
             osci_stat = rcu_flag_get(RCU_FLAG_IRC16MSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_IRC16MSTB)){
             reval = SUCCESS;
@@ -1289,19 +1321,19 @@ ErrStatus rcu_osci_stab_wait(rcu_osci_type_enum osci)
             osci_stat = rcu_flag_get(RCU_FLAG_IRC32KSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_IRC32KSTB)){
             reval = SUCCESS;
         }
         break;
-    /* wait PLL stable */    
+    /* wait PLL stable */
     case RCU_PLL_CK:
         while((RESET == osci_stat) && (OSC_STARTUP_TIMEOUT != stb_cnt)){
             osci_stat = rcu_flag_get(RCU_FLAG_PLLSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_PLLSTB)){
             reval = SUCCESS;
@@ -1313,29 +1345,29 @@ ErrStatus rcu_osci_stab_wait(rcu_osci_type_enum osci)
             osci_stat = rcu_flag_get(RCU_FLAG_PLLI2SSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_PLLI2SSTB)){
             reval = SUCCESS;
         }
         break;
-    /* wait PLLDIG stable */    
+    /* wait PLLDIG stable */
     case RCU_PLLDIG_CK:
         while((RESET == osci_stat) && (OSC_STARTUP_TIMEOUT != stb_cnt)){
             osci_stat = rcu_flag_get(RCU_FLAG_PLLDIGSTB);
             stb_cnt++;
         }
-        
+
         /* check whether flag is set */
         if(RESET != rcu_flag_get(RCU_FLAG_PLLDIGSTB)){
             reval = SUCCESS;
         }
         break;
-    
+
     default:
         break;
     }
-    
+
     /* return value */
     return reval;
 }
@@ -1394,7 +1426,7 @@ void rcu_osci_bypass_mode_enable(rcu_osci_type_enum osci)
     uint32_t reg;
 
     switch(osci){
-    /* enable HXTAL to bypass mode */    
+    /* enable HXTAL to bypass mode */
     case RCU_HXTAL:
         RCU_CTL &= ~RCU_CTL_HXTALEN;
         RCU_CTL &= ~RCU_CTL_HXTALBPS;
@@ -1409,7 +1441,7 @@ void rcu_osci_bypass_mode_enable(rcu_osci_type_enum osci)
     case RCU_IRC32K:
     case RCU_PLL_CK:
     case RCU_PLLI2S_CK:
-    case RCU_PLLDIG_CK:    
+    case RCU_PLLDIG_CK:
         break;
     default:
         break;
@@ -1428,9 +1460,9 @@ void rcu_osci_bypass_mode_enable(rcu_osci_type_enum osci)
 void rcu_osci_bypass_mode_disable(rcu_osci_type_enum osci)
 {
     uint32_t reg;
-    
+
     switch(osci){
-    /* disable HXTAL to bypass mode */    
+    /* disable HXTAL to bypass mode */
     case RCU_HXTAL:
         reg = RCU_CTL;
         RCU_CTL &= ~RCU_CTL_HXTALEN;
@@ -1446,7 +1478,7 @@ void rcu_osci_bypass_mode_disable(rcu_osci_type_enum osci)
     case RCU_IRC32K:
     case RCU_PLL_CK:
     case RCU_PLLI2S_CK:
-    case RCU_PLLDIG_CK:    
+    case RCU_PLLDIG_CK:
         break;
     default:
         break;
@@ -1477,7 +1509,7 @@ void rcu_hxtal_clock_monitor_disable(void)
 }
 
 /*!
-    \brief      enable the RF HXTAL clock monitor 
+    \brief      enable the RF HXTAL clock monitor
     \param[in]  none
     \param[out] none
     \retval     none
@@ -1488,7 +1520,7 @@ void rcu_rf_hxtal_clock_monitor_enable(void)
 }
 
 /*!
-    \brief      disable the RF HXTAL clock monitor 
+    \brief      disable the RF HXTAL clock monitor
     \param[in]  none
     \param[out] none
     \retval     none
@@ -1508,7 +1540,7 @@ void rcu_rf_hxtal_clock_monitor_disable(void)
 void rcu_irc16m_adjust_value_set(uint32_t irc16m_adjval)
 {
     uint32_t reg;
-    
+
     reg = RCU_CTL;
     /* reset the IRC16MADJ bits and set according to irc16m_adjval */
     reg &= ~RCU_CTL_IRC16MADJ;
@@ -1538,7 +1570,7 @@ void rcu_voltage_key_unlock(void)
     \retval     none
 */
 void rcu_deepsleep_voltage_set(uint32_t dsvol)
-{    
+{
     dsvol &= RCU_DSV_DSLPVS;
     RCU_DSV = dsvol;
 }
@@ -1558,7 +1590,7 @@ void rcu_deepsleep_voltage_set(uint32_t dsvol)
 void rcu_spread_spectrum_config(uint32_t spread_spectrum_type, uint32_t modstep, uint32_t modcnt)
 {
     uint32_t reg;
-    
+
     reg = RCU_PLLSSCTL;
     /* reset the RCU_PLLSSCTL register bits */
     reg &= ~(RCU_PLLSSCTL_MODCNT | RCU_PLLSSCTL_MODSTEP | RCU_PLLSSCTL_SS_TYPE);
@@ -1589,7 +1621,7 @@ void rcu_spread_spectrum_disable(void)
 
 /*!
     \brief      enable the security attribution
-    \param[in]  security: clock stabilization interrupt, refer to rcu_int_enum
+    \param[in]  security: clock security attribution, refer to rcu_sec_enum
                 Only one parameter can be selected which is shown as below:
       \arg        RCU_SEC_IRC16MSEC: IRC16M clock configuration and status bits security
       \arg        RCU_SEC_HXTALSEC: HXTAL clock configuration and status bits security
@@ -1611,7 +1643,7 @@ void rcu_security_enable(rcu_sec_enum security)
 }
 /*!
     \brief      disable the security attribution
-    \param[in]  security: clock stabilization interrupt, refer to rcu_int_enum
+    \param[in]  security: clock security attribution, refer to rcu_sec_enum
                 Only one parameter can be selected which is shown as below:
       \arg        RCU_SEC_IRC16MSEC: IRC16M clock configuration and status bits security
       \arg        RCU_SEC_HXTALSEC: HXTAL clock configuration and status bits security
@@ -1654,16 +1686,16 @@ void rcu_privilege_disable(void)
 }
 
 /*!
-    \brief      get the clock stabilization interrupt and ckm flags
+    \brief      get the peripherals clock secure flag
     \param[in]  sec_flag: secure flag, refer to rcu_sec_flag_enum
                 only one parameter can be selected which is shown as below:
-      \arg        RCU_SEC_FLAG_IRC16MSEC:  IRC16M secure flag 
-      \arg        RCU_SEC_FLAG_HXTALSEC:  HXTAL secure flag in slave mode
+      \arg        RCU_SEC_FLAG_IRC16MSEC: IRC16M secure flag
+      \arg        RCU_SEC_FLAG_HXTALSEC: HXTAL secure flag
       \arg        RCU_SEC_FLAG_IRC32KSEC: LXTAL secure flag
-      \arg        RCU_SEC_FLAG_LXTALSEC: header of 10-bit address is sent in master mode
+      \arg        RCU_SEC_FLAG_LXTALSEC: LXTAL clock secure flag
       \arg        RCU_SEC_FLAG_SYSCLKSEC: SYSCLK secure flag
       \arg        RCU_SEC_FLAG_PRESCSEC: PRESC secure flag
-      \arg        RCU_SEC_FLAG_PLLSEC: PLL secure flag 
+      \arg        RCU_SEC_FLAG_PLLSEC: PLL secure flag
       \arg        RCU_SEF_PLLDIGSEC: PLLDIG secure flag
       \arg        RCU_SEC_FLAG_PLLI2SSEC: PLLI2S secure flag
       \arg        RCU_SEC_FLAG_RMVRSTSEC: RMVRST secure flag
@@ -1672,7 +1704,7 @@ void rcu_privilege_disable(void)
       \arg        RCU_SEC_FLAG_AHB1_WIFI: WIFI security flag
       \arg        RCU_SEC_FLAG_AHB1_SRAMx: (x=0,1,2,3): SRAMx security flag
       \arg        RCU_SEC_FLAG_AHB1_DMAx:(x=0,1): DMAx security flag
-      \arg        RCU_SEC_FLAG_AHB2_DCI: DCI security flag
+      \arg        RCU_SEC_FLAG_AHB2_DCI (not available for GD32W515TX series): DCI security flag
       \arg        RCU_SEC_FLAG_AHB2_PKCAU: PKCAU security flag
       \arg        RCU_SEC_FLAG_AHB2_CAU: CAU security flag
       \arg        RCU_SEC_FLAG_AHB2_HAU: HAU security flag
@@ -1690,7 +1722,7 @@ void rcu_privilege_disable(void)
       \arg        RCU_SEC_FLAG_APB2_SPI0: SPI0 security flag
       \arg        RCU_SEC_FLAG_APB2_SYSCFG: SYSCFG security flag
       \arg        RCU_SEC_FLAG_APB2_HPDF: HPDF security flag
-      \arg        RCU_SEC_FLAG_APB2_RF: RF security flag 
+      \arg        RCU_SEC_FLAG_APB2_RF: RF security flag
     \param[out] none
     \retval     FlagStatus: SET or RESET
 */
@@ -1712,6 +1744,9 @@ FlagStatus rcu_security_flag_get(rcu_sec_flag_enum sec_flag)
       \arg        CK_AHB: AHB clock frequency
       \arg        CK_APB1: APB1 clock frequency
       \arg        CK_APB2: APB2 clock frequency
+      \arg        CK_USART0: USART0 clock frequency
+      \arg        CK_USART2: USART2 clock frequency
+      \arg        CK_I2C0: I2C0 clock frequency
     \param[out] none
     \retval     clock frequency of system, AHB, APB1, APB2
 */
@@ -1719,9 +1754,9 @@ uint32_t rcu_clock_freq_get(rcu_clock_freq_enum clock)
 {
     uint32_t sws, ck_freq = 0U;
     uint32_t cksys_freq, ahb_freq, apb1_freq, apb2_freq;
-    uint32_t usart2_freq = 0U, usart0_freq = 0U,i2c0_freq = 0U;    
+    uint32_t usart2_freq = 0U, usart0_freq = 0U,i2c0_freq = 0U;
     uint32_t pllpsc, plln, pllsel, pllp, ck_src, idx, clk_exp;
-    
+
     /* exponent of AHB, APB1 and APB2 clock divider */
     const uint8_t ahb_exp[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
     const uint8_t apb1_exp[8] = {0, 0, 0, 0, 1, 2, 3, 4};
@@ -1761,17 +1796,17 @@ uint32_t rcu_clock_freq_get(rcu_clock_freq_enum clock)
     idx = GET_BITS(RCU_CFG0, 4, 7);
     clk_exp = ahb_exp[idx];
     ahb_freq = cksys_freq >> clk_exp;
-    
+
     /* calculate APB1 clock frequency */
     idx = GET_BITS(RCU_CFG0, 10, 12);
     clk_exp = apb1_exp[idx];
     apb1_freq = ahb_freq >> clk_exp;
-    
+
     /* calculate APB2 clock frequency */
     idx = GET_BITS(RCU_CFG0, 13, 15);
     clk_exp = apb2_exp[idx];
     apb2_freq = ahb_freq >> clk_exp;
-    
+
     /* return the clocks frequency */
     switch(clock){
     case CK_SYS:

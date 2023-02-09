@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -222,11 +222,11 @@ void adc_special_function_config(uint32_t function, ControlStatus newvalue)
         if(RESET != (function & ADC_INSERTED_CHANNEL_AUTO)){
             /* enable inserted channel group convert automatically */
             ADC_CTL0 |= ADC_INSERTED_CHANNEL_AUTO;
-        } 
+        }
         if(RESET != (function & ADC_CONTINUOUS_MODE)){
             /* enable continuous mode */
             ADC_CTL1 |= ADC_CONTINUOUS_MODE;
-        }        
+        }
     }else{
         if(RESET != (function & ADC_SCAN_MODE)){
             /* disable scan mode */
@@ -235,11 +235,11 @@ void adc_special_function_config(uint32_t function, ControlStatus newvalue)
         if(RESET != (function & ADC_INSERTED_CHANNEL_AUTO)){
             /* disable inserted channel group convert automatically */
             ADC_CTL0 &= ~ADC_INSERTED_CHANNEL_AUTO;
-        } 
+        }
         if(RESET != (function & ADC_CONTINUOUS_MODE)){
             /* disable continuous mode */
             ADC_CTL1 &= ~ADC_CONTINUOUS_MODE;
-        }       
+        }
     }
 }
 
@@ -263,7 +263,7 @@ void adc_channel_9_to_11(uint32_t function, ControlStatus newvalue)
         if(RESET != (function & ADC_TEMP_VREF_CHANNEL_SWITCH)){
             /* enable ADC VREF and Temperature channel */
             ADC_CCTL |= ADC_TEMP_VREF_CHANNEL_SWITCH;
-        }      
+        }
     }else{
         if(RESET != (function & ADC_VBAT_CHANNEL_SWITCH)){
             /* disable ADC VBAT channel  */
@@ -272,12 +272,12 @@ void adc_channel_9_to_11(uint32_t function, ControlStatus newvalue)
         if(RESET != (function & ADC_TEMP_VREF_CHANNEL_SWITCH)){
             /* disable ADC VREF and temperature channel */
             ADC_CCTL &= ~ADC_TEMP_VREF_CHANNEL_SWITCH;
-        } 
+        }
     }
 }
 
 /*!
-    \brief      configure ADC data alignment 
+    \brief      configure ADC data alignment
     \param[in]  data_alignment: data alignment select
                 only one parameter can be selected which is shown as below:
       \arg        ADC_DATAALIGN_RIGHT: right alignment
@@ -338,21 +338,21 @@ void adc_channel_length_config(uint8_t channel_group, uint32_t length)
       \arg        ADC_CHANNEL_x(x=0..11): ADC Channelx
     \param[in]  sample_time: the sample time value
                 only one parameter can be selected which is shown as below:
-      \arg        ADC_SAMPLETIME_2: 2 cycles
-      \arg        ADC_SAMPLETIME_15: 15 cycles
-      \arg        ADC_SAMPLETIME_28: 28 cycles
-      \arg        ADC_SAMPLETIME_56: 56 cycles
-      \arg        ADC_SAMPLETIME_84: 84 cycles
-      \arg        ADC_SAMPLETIME_112: 112 cycles
-      \arg        ADC_SAMPLETIME_144: 144 cycles
-      \arg        ADC_SAMPLETIME_480: 480 cycles
+      \arg        ADC_SAMPLETIME_1POINT5: 1.5 cycles
+      \arg        ADC_SAMPLETIME_14POINT5: 14.5 cycles
+      \arg        ADC_SAMPLETIME_27POINT5: 27.5 cycles
+      \arg        ADC_SAMPLETIME_55POINT5: 55.5 cycles
+      \arg        ADC_SAMPLETIME_83POINT5: 83.5 cycles
+      \arg        ADC_SAMPLETIME_111POINT5: 111.5 cycles
+      \arg        ADC_SAMPLETIME_143POINT5: 143.5 cycles
+      \arg        ADC_SAMPLETIME_479POINT5: 479.5 cycles
     \param[out] none
     \retval     none
 */
 void adc_regular_channel_config(uint8_t rank, uint8_t channel, uint32_t sample_time)
 {
     uint32_t rsq,sampt;
-    
+
     /* configure ADC regular sequence */
     if(rank < ADC_REGULAR_CHANNEL_RANK_SIX){
         /* the regular group sequence rank is smaller than six */
@@ -371,7 +371,7 @@ void adc_regular_channel_config(uint8_t rank, uint8_t channel, uint32_t sample_t
     }else{
         /* illegal parameters */
     }
-    
+
     /* configure ADC sampling time */
     if(channel < ADC_CHANNEL_SAMPLE_TEN){
         /* the regular group sequence rank is smaller than ten */
@@ -400,14 +400,14 @@ void adc_regular_channel_config(uint8_t rank, uint8_t channel, uint32_t sample_t
       \arg        ADC_CHANNEL_x(x=0..11): ADC Channelx
     \param[in]  sample_time: The sample time value
                 only one parameter can be selected which is shown as below:
-      \arg        ADC_SAMPLETIME_2: 2 cycles
-      \arg        ADC_SAMPLETIME_15: 15 cycles
-      \arg        ADC_SAMPLETIME_28: 28 cycles
-      \arg        ADC_SAMPLETIME_56: 56 cycles
-      \arg        ADC_SAMPLETIME_84: 84 cycles
-      \arg        ADC_SAMPLETIME_112: 112 cycles
-      \arg        ADC_SAMPLETIME_144: 144 cycles
-      \arg        ADC_SAMPLETIME_480: 480 cycles
+      \arg        ADC_SAMPLETIME_1POINT5: 1.5 cycles
+      \arg        ADC_SAMPLETIME_14POINT5: 14.5 cycles
+      \arg        ADC_SAMPLETIME_27POINT5: 27.5 cycles
+      \arg        ADC_SAMPLETIME_55POINT5: 55.5 cycles
+      \arg        ADC_SAMPLETIME_83POINT5: 83.5 cycles
+      \arg        ADC_SAMPLETIME_111POINT5: 111.5 cycles
+      \arg        ADC_SAMPLETIME_143POINT5: 143.5 cycles
+      \arg        ADC_SAMPLETIME_479POINT5: 479.5 cycles
     \param[out] none
     \retval     none
 */
@@ -465,7 +465,7 @@ void adc_inserted_channel_offset_config(uint8_t inserted_channel, uint16_t offse
 
     inserted_length = (uint8_t)GET_BITS(ADC_ISQ, 20U, 21U);
     num = ((uint32_t)ADC_OFFSET_LENGTH - ((uint32_t)inserted_length - (uint32_t)inserted_channel));
-    
+
     if(num <= ADC_OFFSET_LENGTH){
         /* calculate the offset of the register */
         num = num * ADC_OFFSET_SHIFT_LENGTH;
@@ -516,26 +516,26 @@ void adc_external_trigger_config(uint8_t channel_group, uint32_t trigger_mode)
     \param[in]  external_trigger_source: regular or inserted group trigger source
                 for regular channel:
                 only one parameter can be selected which is shown as below:
-      \arg        ADC_EXTTRIG_REGULAR_T0_CH0: external trigger TIMER0 CH0 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T0_CH1: external trigger TIMER0 CH1 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T0_CH2: external trigger TIMER0 CH2 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T1_CH1: external trigger TIMER1 CH1 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T1_CH2: external trigger TIMER1 CH2 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T1_CH3: external trigger TIMER1 CH3 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T1_TRGO: external trigger TIMER1 TRGO event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T2_CH0 : external trigger TIMER2 CH0 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T2_TRGO : external trigger TIMER2 TRGO event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T3_CH3: external trigger TIMER3 CH3 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T4_CH0: external trigger TIMER4 CH0 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T4_CH1: external trigger TIMER4 CH1 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_T4_CH2: external trigger TIMER4 CH2 event select for regular channel 
-      \arg        ADC_EXTTRIG_REGULAR_EXTI_11: external trigger extiline 11 select for regular channel 
+      \arg        ADC_EXTTRIG_REGULAR_T0_CH0: external trigger TIMER0 CH0 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T0_CH1: external trigger TIMER0 CH1 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T0_CH2: external trigger TIMER0 CH2 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T1_CH1: external trigger TIMER1 CH1 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T1_CH2: external trigger TIMER1 CH2 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T1_CH3: external trigger TIMER1 CH3 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T1_TRGO: external trigger TIMER1 TRGO event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T2_CH0 : external trigger TIMER2 CH0 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T2_TRGO : external trigger TIMER2 TRGO event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T3_CH3: external trigger TIMER3 CH3 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T4_CH0: external trigger TIMER4 CH0 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T4_CH1: external trigger TIMER4 CH1 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_T4_CH2: external trigger TIMER4 CH2 event select for regular channel
+      \arg        ADC_EXTTRIG_REGULAR_EXTI_11: external trigger extiline 11 select for regular channel
                 for inserted channel:
                 only one parameter can be selected which is shown as below:
       \arg        ADC_EXTTRIG_INSERTED_T0_CH3: TIMER0 CH3 event select for inserted channel
       \arg        ADC_EXTTRIG_INSERTED_T0_TRGO: TIMER0 TRGO event event select for inserted channel
       \arg        ADC_EXTTRIG_INSERTED_T1_CH0: TIMER1 CH0 event select for inserted channel
-      \arg        ADC_EXTTRIG_INSERTED_T1_TRGO: TIMER1 TRGO event event select for inserted channel 
+      \arg        ADC_EXTTRIG_INSERTED_T1_TRGO: TIMER1 TRGO event event select for inserted channel
       \arg        ADC_EXTTRIG_INSERTED_T2_CH1: TIMER2 CH1 event select for inserted channel
       \arg        ADC_EXTTRIG_INSERTED_T2_CH3: TIMER2 CH3 event select for inserted channel
       \arg        ADC_EXTTRIG_INSERTED_T3_CH0: TIMER3 CH0 event select for inserted channel
@@ -549,7 +549,7 @@ void adc_external_trigger_config(uint8_t channel_group, uint32_t trigger_mode)
     \retval     none
 */
 void adc_external_trigger_source_config(uint8_t channel_group, uint32_t external_trigger_source)
-{   
+{
     switch(channel_group){
     case ADC_REGULAR_CHANNEL:
         /* configure ADC regular group external trigger source */

@@ -116,7 +116,7 @@ typedef struct{
 /* CRT paramter structure */
 typedef struct{
     const uint8_t* oprd_a;                                              /*!< operand A */
-    uint32_t oprd_len;                                                  /*!< operand length in byte */
+    uint32_t oprd_len;                                                  /*!< length of operand in byte */
     uint8_t* oprd_dp;                                                   /*!< operand dp */
     uint8_t* oprd_dq;                                                   /*!< operand dq */
     uint8_t* oprd_qinv;                                                 /*!< operand qinv */
@@ -244,14 +244,14 @@ void pkcau_mod_reduc_operation(pkcau_mod_reduc_parameter_struct *mod_reduc_para)
 /* execute arithmetic addition operation */
 void pkcau_arithmetic_operation(pkcau_arithmetic_parameter_struct *arithmetic_para, uint32_t mode);
 /* execute RSA CRT exponentation operation */
-void pkcau_crt_exp_operation(const pkcau_crt_parameter_struct* crt_para);
+void pkcau_crt_exp_operation(pkcau_crt_parameter_struct* crt_para);
 /* execute point check operation */
 void pkcau_point_check_operation(pkcau_point_parameter_struct* point_para, const pkcau_ec_group_parameter_struct* curve_group_para);
 /* execute point multiplication operation */
 void pkcau_point_mul_operation(pkcau_point_parameter_struct *point_para, const pkcau_ec_group_parameter_struct* curve_group_para, uint32_t mode);
 /* execute ECDSA sign operation */
 void pkcau_ecdsa_sign_operation(const uint8_t* p_key_d, const uint8_t* k, pkcau_hash_parameter_struct *hash_para, const pkcau_ec_group_parameter_struct* curve_group_para);
-/* execute ECDSA sign operation */
+/* execute ECDSA verify operation */
 void pkcau_ecdsa_verification_operation(pkcau_point_parameter_struct *point_para, pkcau_hash_parameter_struct *hash_para, pkcau_signature_parameter_struct *signature_para, pkcau_ec_group_parameter_struct* curve_group_para);
 /* read result from PKCAU RAM */
 void pkcau_memread(uint32_t offset, uint8_t buf[], uint32_t size);

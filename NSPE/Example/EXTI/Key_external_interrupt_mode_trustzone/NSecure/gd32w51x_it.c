@@ -170,7 +170,7 @@ void EXTI2_IRQHandler(void)
         exti_interrupt_flag_clear(EXTI_2);
         if(0 == flag){
             /* register led_spark function to secure world */
-            entry_cb_func_register(led_spark);
+            entry_cb_func_register((void *)led_spark);
             flag = 1;
         }
         secure_led_toggle();

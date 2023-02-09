@@ -124,11 +124,11 @@ typedef enum IRQn
     DMA0_Channel4_IRQn          = 15,     /*!< DMA0 channel4 interrupt */
     DMA0_Channel5_IRQn          = 16,     /*!< DMA0 channel5 interrupt */
     DMA0_Channel6_IRQn          = 17,     /*!< DMA0 channel6 interrupt */
-    DMA0_Channel7_IRQn          = 18,     /*!< ADC interrupt */
-    ADC_IRQn                    = 19,     /*!< CAN0 TX interrupt */
-    TAMP_STAMP_S_IRQn           = 20,     /*!< CAN0 RX0 interrupt */
-    RTC_WKUP_S_IRQn             = 21,     /*!< CAN0 RX1 interrupt */
-    RTC_Alarm_S_IRQn            = 22,     /*!< CAN0 EWMC interrupt */
+    DMA0_Channel7_IRQn          = 18,     /*!< DMA0 channel7 interrupt */
+    ADC_IRQn                    = 19,     /*!< ADC interrupt */
+    TAMPER_STAMP_S_IRQn         = 20,     /*!< RTC tamper and TimeStamp events security interrupt*/
+    RTC_WKUP_S_IRQn             = 21,     /*!< RTC wakeup security interrupt*/
+    RTC_Alarm_S_IRQn            = 22,     /*!< RTC Alarm security interrupt */
     EXTI5_9_IRQn                = 23,     /*!< EXTI[9:5] interrupts */
     TIMER0_BRK_IRQn             = 24,     /*!< TIMER0 break interrupts */
     TIMER0_UP_IRQn              = 25,     /*!< TIMER0 update interrupts */
@@ -148,15 +148,15 @@ typedef enum IRQn
     USART2_IRQn                 = 39,     /*!< USART2 interrupt */
     EXTI10_15_IRQn              = 40,     /*!< EXTI[15:10] interrupts */
     RTC_Alarm_IRQn              = 41,     /*!< RTC alarm interrupt */
-    PVM_IRQn                    = 42,     /*!< Vdda low voltage detector interrupt */
-    TIMER15_IRQn                = 44,     /*!< TIMER7 break and TIMER11 interrupts */
-    TIMER16_IRQn                = 45,     /*!< TIMER7 update and TIMER12 interrupts */
-    SDIO_IRQn                   = 49,     /*!< TIMER7 trigger and commutation and TIMER13 interrupts */
-    TIMER4_IRQn                 = 50,     /*!< TIMER7 channel capture compare interrupt */
-    I2C0_WKUP_IRQn              = 51,     /*!< DMA0 channel7 interrupt */
+    VLVDF_IRQn                  = 42,     /*!< VLVDF interrupts */
+    TIMER15_IRQn                = 44,     /*!< TIMER15 global interrupt */
+    TIMER16_IRQn                = 45,     /*!< TIMER16 global interrupt */
+    SDIO_IRQn                   = 49,     /*!< SDIO global interrupt */
+    TIMER4_IRQn                 = 50,     /*!< TIMER4 global interrupt */
+    I2C0_WKUP_IRQn              = 51,     /*!< I2C0 Wakeup interrupt*/
     USART0_WKUP_IRQn            = 52,     /*!< USART0 Wakeup */
     USART2_WKUP_IRQn            = 53,     /*!< USART2 Wakeup */
-    TIMER5_IRQn                 = 54,     /*!< TIMER 5 */
+    TIMER5_IRQn                 = 54,     /*!< TIMER5 global interrupt */
     DMA1_Channel0_IRQn          = 56,     /*!< DMA1 channel0 interrupt */
     DMA1_Channel1_IRQn          = 57,     /*!< DMA1 channel1 interrupt */
     DMA1_Channel2_IRQn          = 58,     /*!< DMA1 channel2 interrupt */
@@ -169,21 +169,22 @@ typedef enum IRQn
     USBFS_IRQn                  = 67,     /*!< USBFS interrupt */
     USBFS_WKUP_IRQn             = 76,     /*!< USBFS wakeup through EXTI line interrupt */
     DCI_IRQn                    = 78,     /*!< DCI interrupt */
-    CAU_IRQn                    = 79,     /*!< DCI interrupt */
+    CAU_IRQn                    = 79,     /*!< CAU interrupt */
     HAU_TRNG_IRQn               = 80,     /*!< HAU and TRNG interrupt */
     FPU_IRQn                    = 81,     /*!< FPU interrupt */
     HPDF_INT0_IRQn              = 89,     /*!< HPDF global Interrupt 0 */
     HPDF_INT1_IRQn              = 90,     /*!< HPDF global Interrupt 1 */
-    WIFI11N_INT0_IRQn           = 91,     /*!< WIFI11N-RXD */
-    WIFI11N_INT1_IRQn           = 92,     /*!< WIFI11N-TXD */
-    WIFI11N_INT2_IRQn           = 93,     /*!< WIFI11N-OTHER */
-    EFUSE_IRQn                  = 94,     /*!< EFUSE */
-    QSPI_IRQn                   = 95,     /*!< QSPI */
-    PKCAU_IRQn                  = 96,     /*!< PKCAU */
-    ICACHE_IRQn                 = 98,     /*!< ICACHE */
+    WIFI11N_INT0_IRQn           = 91,     /*!< WIFI11N global interrupt0 */
+    WIFI11N_INT1_IRQn           = 92,     /*!< WIFI11N global interrupt1 */
+    WIFI11N_INT2_IRQn           = 93,     /*!< WIFI11N global interrupt2 */
+    EFUSE_IRQn                  = 94,     /*!< EFUSE global interrupt */
+    QSPI_IRQn                   = 95,     /*!< QSPI global interrupt */
+    PKCAU_IRQn                  = 96,     /*!< PKCAU global interrupt */
+    TSI_IRQ                     = 97,     /*!< TSI global interrupt */
+    ICACHE_IRQn                 = 98,     /*!< ICACHE global interrupt */
     TZIAC_S_IRQn                = 99,     /*!< TrustZone Interrupt Controller secure interrupts */
     FMC_S_IRQn                  = 100,    /*!< FMC secure interrupt */
-    QSPI1_S_IRQn                = 101,    /*!< QSPI1 security interrupt */
+    QSPI_S_IRQn                 = 101,    /*!< QSPI security interrupt */
 } IRQn_Type;
 
 /* includes */
@@ -219,9 +220,9 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define AHB2_BUS_BASE_NS         ((uint32_t)0x4C000000U)           /*!< ahb2 base address */
 
 /* SQPI_PSRAM memory map */
-#define SQPI_PSRAM               ((uint32_t)0x60000000U)           /*!< EXMC register base address */
-/* SQPI_PSRAM memory map */
-#define QSPI_PSRAM               ((uint32_t)0x90000000U)           /*!< EXMC register base address */
+#define SQPI_PSRAM               ((uint32_t)0x60000000U)           /*!< SQPI_PSRAM memory map base address */
+/* QSPI_FLASH memory map */
+#define QSPI_FLASH               ((uint32_t)0x90000000U)           /*!< QSPI_FLASH base address */
 /* advanced peripheral bus 1 memory map */
 #define TIMER_BASE_NS            (APB1_BUS_BASE_NS + 0x00000000U)  /*!< TIMER base address */
 #define RTC_BASE_NS              (APB1_BUS_BASE_NS + 0x00002800U)  /*!< RTC base address */
@@ -292,7 +293,6 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define I2C_BASE_S              (APB1_BUS_BASE_S + 0x00005400U)    /*!< I2C base address */
 #define PMU_BASE_S              (APB1_BUS_BASE_S + 0x00007000U)    /*!< PMU base address */
 
-
 /* advanced peripheral bus 2 memory map */
 #define WIFI_RF_BASE_S          (APB2_BUS_BASE_S + 0x00007800U)    /*!< WIFI base address */
 #define HPDF_BASE_S             (APB2_BUS_BASE_S + 0x00006000U)    /*!< HPDF base address */
@@ -300,6 +300,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define EXTI_BASE_S             (APB2_BUS_BASE_S + 0x00003C00U)    /*!< EXTI base address */
 #define SDIO_BASE_S             (APB2_BUS_BASE_S + 0x00002C00U)    /*!< SDIO base address */
 #define ADC_BASE_S              (APB2_BUS_BASE_S + 0x00002000U)    /*!< ADC base address */
+
 /* advanced high performance bus 1 memory map */
 #define GPIO_BASE_S             (AHB1_BUS_BASE_S + 0x00000000U)    /*!< GPIO base address */
 #define FMC_BASE_S              (AHB1_BUS_BASE_S + 0x00002000U)    /*!< FMC base address */
@@ -319,7 +320,6 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define TZBMPC2_BASE_S          (AHB1_BUS_BASE_S + 0x00090000U)    /*!< TZBMPC2 base address */
 #define TZBMPC3_BASE_S          (AHB1_BUS_BASE_S + 0x00090400U)    /*!< TZBMPC3 base address */
 #define USBFS_BASE_S            (AHB1_BUS_BASE_S + 0x08FE0000U)    /*!< USBFS base address */
-
 
 /* advanced high performance bus 2 memory map */
 #define DCI_BASE_S              (AHB2_BUS_BASE_S + 0x00050000U)    /*!< DCI base address */
@@ -345,7 +345,6 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define AHB1_BUS_BASE         AHB1_BUS_BASE_S                      /*!< ahb1 base address */
 #define AHB2_BUS_BASE         AHB2_BUS_BASE_S                      /*!< ahb2 base address */
 
-
 /* advanced peripheral bus 1 memory map */
 #define TIMER_BASE            TIMER_BASE_S                         /*!< TIMER base address */
 #define RTC_BASE              RTC_BASE_S                           /*!< RTC base address */
@@ -364,6 +363,7 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define EXTI_BASE             EXTI_BASE_S                          /*!< EXTI base address */
 #define SDIO_BASE             SDIO_BASE_S                          /*!< SDIO base address */
 #define ADC_BASE              ADC_BASE_S                           /*!< ADC base address */
+
 /* advanced high performance bus 1 memory map */
 #define GPIO_BASE             GPIO_BASE_S                          /*!< GPIO base address */
 #define FMC_BASE              FMC_BASE_S                           /*!< FMC base address */
@@ -404,7 +404,6 @@ typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrStatus;
 #define APB2_BUS_BASE         APB2_BUS_BASE_NS                     /*!< apb2 base address */
 #define AHB1_BUS_BASE         AHB1_BUS_BASE_NS                     /*!< ahb1 base address */
 #define AHB2_BUS_BASE         AHB2_BUS_BASE_NS                     /*!< ahb2 base address */
-
 
 /* advanced peripheral bus 1 memory map */
 #define TIMER_BASE            TIMER_BASE_NS                        /*!< TIMER base address */

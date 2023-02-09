@@ -11,7 +11,7 @@ set INDEX=0
 
 if "%TOOLKIT%" == "KEIL" (
     set ROOT=%4\..\..\..\..\..\..\
-) 
+)
 if "%TOOLKIT%" == "IAR" (
     set ROOT=%4\..\..\..\..\..\
 )
@@ -94,15 +94,14 @@ if "%TOOLKIT%" == "KEIL" (
     copy %OUTPUT_IMAGE_PATH%\prot-sign%AES_SUFFIX%.hex  %OUTPUT_PATH%\%OUTPUT_NAME%.hex
 )
 
+copy %OUTPUT_PATH%\s_veneers.o %ROOT%\NSPE\WIFI_IOT\lib\%TOOLKIT%\mbedtls_s_veneers.o
+
 :: Download to FLASH
 cd %ROOT%
 python %DLTOOL% -a %ALGO% -f %OUTPUT_IMAGE_PATH%\prot-sign%AES_SUFFIX%.hex --debugger %DEBUGGER%
 cd %WORK_PATH%
 
-copy %OUTPUT_PATH%\s_veneers.o %ROOT%\NSPE\WIFI_IOT\lib\%TOOLKIT%\mbedtls_s_veneers.o
-
 :: Convert binary to uint8 array
 :: python %BIN2ARRAY% -name prot_bin %OUTPUT_IMAGE_PATH%\prot-sign.bin ..\..\..\source\prot_bin.c
-
 
 ::exit

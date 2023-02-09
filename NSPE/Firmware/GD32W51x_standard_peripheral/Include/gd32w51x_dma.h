@@ -8,27 +8,27 @@
 /*
     Copyright (c) 2021, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification, 
+    Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this 
+    1. Redistributions of source code must retain the above copyright notice, this
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
+    3. Neither the name of the copyright holder nor the names of its contributors
+       may be used to endorse or promote products derived from this software without
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
 OF SUCH DAMAGE.
 */
 
@@ -196,7 +196,7 @@ OF SUCH DAMAGE.
 
 /* constants definitions */
 /* DMA channel select */
-typedef enum 
+typedef enum
 {
     DMA_CH0 = 0,                                    /*!< DMA Channel 0 */
     DMA_CH1,                                        /*!< DMA Channel 1 */
@@ -209,7 +209,7 @@ typedef enum
 } dma_channel_enum;
 
 /* DMA peripheral select */
-typedef enum 
+typedef enum
 {
     DMA_SUBPERI0 = 0,                               /*!< DMA Peripheral 0 */
     DMA_SUBPERI1,                                   /*!< DMA Peripheral 1 */
@@ -226,7 +226,7 @@ typedef struct
 {
     uint32_t periph_addr;                           /*!< peripheral base address */
     uint32_t periph_width;                          /*!< transfer data size of peripheral */
-    uint32_t periph_inc;                            /*!< peripheral increasing mode */  
+    uint32_t periph_inc;                            /*!< peripheral increasing mode */
 
     uint32_t memory0_addr;                          /*!< memory 0 base address */
     uint32_t memory_width;                          /*!< transfer data size of memory */
@@ -246,7 +246,7 @@ typedef struct
 typedef struct
 {
     uint32_t periph_addr;                           /*!< peripheral base address */
-    uint32_t periph_inc;                            /*!< peripheral increasing mode */  
+    uint32_t periph_inc;                            /*!< peripheral increasing mode */
 
     uint32_t memory0_addr;                          /*!< memory 0 base address */
     uint32_t memory_inc;                            /*!< memory increasing mode */
@@ -328,8 +328,8 @@ typedef struct
 #define DMA_FIFO_4_WORD                    CHFCTL_FCCV(3)                            /*!< critical value 4 word */
 
 /* memory select */
-#define DMA_MEMORY_0                       ((uint32_t)0x00000000U)                   /*!< select memory 0 */
-#define DMA_MEMORY_1                       ((uint32_t)0x00000001U)                   /*!< select memory 1 */
+#define DMA_MEMORY_0                       ((uint32_t)0x00000000U)                   /*!< select memory0 as memory transfer area */
+#define DMA_MEMORY_1                       ((uint32_t)0x00000001U)                   /*!< select memory1 as memory transfer area */
 
 /* DMA circular mode */
 #define DMA_CIRCULAR_MODE_ENABLE           ((uint32_t)0x00000000U)                   /*!< circular mode enable */
@@ -365,6 +365,13 @@ typedef struct
 #define DMA_CHFCTL_RESET_VALUE             ((uint32_t)0x00000000U)                   /*!< the reset value of DMA channel CHXFCTL register */
 
 /* DMA_INTF register */
+/* DMA flag bits */
+#define DMA_FLAG_FEE                       DMA_INTF_FEEIF                            /*!< FIFO error and exception flag */
+#define DMA_FLAG_SDE                       DMA_INTF_SDEIF                            /*!< single data mode exception flag */
+#define DMA_FLAG_TAE                       DMA_INTF_TAEIF                            /*!< transfer access error flag */
+#define DMA_FLAG_HTF                       DMA_INTF_HTFIF                            /*!< half transfer finish flag */
+#define DMA_FLAG_FTF                       DMA_INTF_FTFIF                            /*!< full transger finish flag */
+
 /* interrupt flag bits */
 #define DMA_INT_FLAG_FEE                   DMA_INTF_FEEIF                            /*!< FIFO error and exception flag */
 #define DMA_INT_FLAG_SDE                   DMA_INTF_SDEIF                            /*!< single data mode exception flag */
@@ -372,12 +379,12 @@ typedef struct
 #define DMA_INT_FLAG_HTF                   DMA_INTF_HTFIF                            /*!< half transfer finish flag */
 #define DMA_INT_FLAG_FTF                   DMA_INTF_FTFIF                            /*!< full transger finish flag */
 
-/* interrupt flag bits */
-#define DMA_FLAG_FEE                       DMA_INTF_FEEIF                            /*!< FIFO error and exception flag */
-#define DMA_FLAG_SDE                       DMA_INTF_SDEIF                            /*!< single data mode exception flag */
-#define DMA_FLAG_TAE                       DMA_INTF_TAEIF                            /*!< transfer access error flag */
-#define DMA_FLAG_HTF                       DMA_INTF_HTFIF                            /*!< half transfer finish flag */
-#define DMA_FLAG_FTF                       DMA_INTF_FTFIF                            /*!< full transger finish flag */
+/* interrupt enable bits */
+#define DMA_INT_SDE                        DMA_CHXCTL_SDEIE                          /* single data mode exception interrupt enable */
+#define DMA_INT_TAE                        DMA_CHXCTL_TAEIE                          /* tranfer access error interrupt enable */
+#define DMA_INT_HTF                        DMA_CHXCTL_HTFIE                          /* half transfer finish interrupt enable */
+#define DMA_INT_FTF                        DMA_CHXCTL_FTFIE                          /* full transfer finish interrupt enable */
+#define DMA_INT_FEE                        DMA_CHXFCTL_FEEIE                         /* FIFO exception interrupt enable */
 
 /* DMA security */
 #define DMA_CHANNEL_SECURE                 DMA_CHXSCTL_SECM                          /*!< the secure mode of DMA channel */
@@ -442,28 +449,30 @@ void dma_channel_disable(uint32_t dma_periph, dma_channel_enum channelx);
 
 /* configure the direction of data transfer on the channel */
 void dma_transfer_direction_config(uint32_t dma_periph, dma_channel_enum channelx, uint8_t direction);
-/* DMA switch buffer mode config */
+/* configure DMA switch buffer mode */
 void dma_switch_buffer_mode_config(uint32_t dma_periph, dma_channel_enum channelx, uint32_t memory1_addr, uint32_t memory_select);
-/* DMA using memory get */
+/* get the current buffer used by the DMA */
 uint32_t dma_using_memory_get(uint32_t dma_periph, dma_channel_enum channelx);
-/* DMA channel peripheral select */
+/* select DMA channel peripheral */
 void dma_channel_subperipheral_select(uint32_t dma_periph, dma_channel_enum channelx, dma_subperipheral_enum sub_periph);
-/* DMA flow controller configure */
+/* configure DMA flow controller */
 void dma_flow_controller_config(uint32_t dma_periph, dma_channel_enum channelx, uint32_t controller);
-/* DMA flow controller enable */
-void dma_switch_buffer_mode_enable(uint32_t dma_periph, dma_channel_enum channelx, ControlStatus newvalue);
-/* DMA FIFO status get */
+/* enable DMA switch buffer mode */
+void dma_switch_buffer_mode_enable(uint32_t dma_periph, dma_channel_enum channelx);
+/* disable DMA switch buffer mode */
+void dma_switch_buffer_mode_disable(uint32_t dma_periph, dma_channel_enum channelx);
+/* get DMA FIFO status */
 uint32_t dma_fifo_status_get(uint32_t dma_periph, dma_channel_enum channelx);
 
 /* flag and interrupt functions */
-/* check DMA flag is set or not */
+/* check the designated flag of a DMA channel is set or not */
 FlagStatus dma_flag_get(uint32_t dma_periph, dma_channel_enum channelx, uint32_t flag);
-/* clear DMA a channel flag */
+/* clear the designated flag of a DMA channel */
 void dma_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, uint32_t flag);
-/* check DMA flag is set or not */
-FlagStatus dma_interrupt_flag_get(uint32_t dma_periph, dma_channel_enum channelx, uint32_t interrupt);
-/* clear DMA a channel flag */
-void dma_interrupt_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, uint32_t interrupt);
+/* check the designated interrupt flag of a DMA channel is set or not */
+FlagStatus dma_interrupt_flag_get(uint32_t dma_periph, dma_channel_enum channelx, uint32_t int_flag);
+/* clear the designated interrupt flag of a DMA channel */
+void dma_interrupt_flag_clear(uint32_t dma_periph, dma_channel_enum channelx, uint32_t int_flag);
 /* enable DMA interrupt */
 void dma_interrupt_enable(uint32_t dma_periph, dma_channel_enum channelx, uint32_t source);
 /* disable DMA interrupt */

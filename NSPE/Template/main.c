@@ -73,6 +73,8 @@ void led_spark(void)
 
 int main(void)
 {
+    /* enable icache */
+    icache_enable();
     /* configure systick */
     systick_config();
     /* initilize the LEDs, USART and key */

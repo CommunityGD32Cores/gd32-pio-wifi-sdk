@@ -50,7 +50,7 @@ do {\
  * 定义AIRKISS_ENABLE_CRYPT为1以启用AirKiss加密功能
  */
 #ifndef AIRKISS_ENABLE_CRYPT
-#define AIRKISS_ENABLE_CRYPT         1
+#define AIRKISS_ENABLE_CRYPT         0
 #endif
 
 #define DUPLICATED_OCTET_PATCH    0

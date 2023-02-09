@@ -49,6 +49,7 @@ const uint32_t mbl_api[MBL_MAX_API_NUM] = {
     (uint32_t)sys_trng_seed_set,
     /* FLASH */
     (uint32_t)flash_indirect_read,
+    (uint32_t)flash_verify_read,
     (uint32_t)flash_fast_write,
     (uint32_t)flash_erase,
 };
